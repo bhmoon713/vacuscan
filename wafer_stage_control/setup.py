@@ -23,6 +23,7 @@ setup(
             'wafer_joint_broadcaster = wafer_stage_control.wafer_joint_broadcaster:main',
             'wafer_wire_visualizer = wafer_stage_control.wafer_wire_visualizer:main',
             'wire_length_publisher = wafer_stage_control.wire_length_publisher:main',
+            'waypoint_runner = wafer_stage_control.waypoint_runner:main',
         ],
     },
 )

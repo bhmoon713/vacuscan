@@ -22,3 +22,8 @@ cd ~/ros2_ws/src/wafer_stage_webui/web
 python3 -m http.server 8080
 
 ros2 launch wafer_stage_gazebo sim.launch.py 
+
+
+ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints '{route_name: demo_square, loop: false}'
+ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints '{route_name: demo_square, loop: false}'
+ros2 service call /wafer/abort_waypoints std_srvs/srv/Trigger {}

@@ -1,0 +1,26 @@
+routes:
+  demo_square:
+    tol_mm: 50
+    timeout_s: 10
+    pause_s: 1.5
+    points:
+      - {x: 0, y: 0}
+      - [100, -100]
+      - [100, 100]
+      - [-100, 100]
+      - [-100, -100]
+
+  center_cross:
+    tol_mm: 30
+    timeout_s: 8
+    pause_s: 1.2
+    points:
+      - {x: 0, y: 0}
+      - {pause_s: 0.5}
+      - [-50, 0]
+      - [0, 0]
+      - [50, 0]
+      - [0, 0]
+      - [0, -50]
+      - [0, 0]
+      - [0, 50]

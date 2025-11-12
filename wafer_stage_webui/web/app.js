@@ -39,7 +39,16 @@
   const kpiYum = document.getElementById('kpiYum');
   const logEl = document.getElementById('log');
 
-  // ---- Bars canvas ----
+  // Waypoints UI
+  const wpRoute = document.getElementById('wpRoute');
+  const wpTol = document.getElementById('wpTol');
+  const wpTimeout = document.getElementById('wpTimeout');
+  const wpPause = document.getElementById('wpPause');
+  const wpLoop = document.getElementById('wpLoop');
+  const btnRunRoute = document.getElementById('btnRunRoute');
+  const btnStopRoute = document.getElementById('btnStopRoute');
+
+  // ---- Bars canvas (keep existing working behaviour) ----
   const bars = document.getElementById('bars');
   const ctx = bars.getContext('2d');
   const maxMM = 500; // chart scale
@@ -51,6 +60,7 @@
   let connected = false;
   let pose = {x:0, y:0};  // meters
   let poseTopic = null, lengthsTopic = null, gotoSrv = null;
+  let runWpSrv = null, stopWpSrv = null, routesTopic = null;
 
   function log(msg) {
     const t = new Date().toLocaleTimeString();
@@ -65,6 +75,8 @@
     btnDisconnect.disabled = !state;
     btnGoto.disabled = !state;
     [jogXm,jogXp,jogYm,jogYp,btnHome].forEach(b => b.disabled = !state);
+    btnRunRoute.disabled = !state;
+    btnStopRoute.disabled = !state;
   }
 
   function inLimits(x_mm, y_mm) {
@@ -174,6 +186,31 @@
       gotoSrv = new ROSLIB.Service({
         ros, name: '/wafer/goto', serviceType: 'wafer_stage_interfaces/srv/WaferGoto'
       });
+
+      // Waypoints services
+      runWpSrv = new ROSLIB.Service({
+        ros, name: '/wafer/run_waypoints', serviceType: 'wafer_stage_interfaces/srv/RunWaypoints'
+      });
+      stopWpSrv = new ROSLIB.Service({
+        ros, name: '/wafer/stop_waypoints', serviceType: 'std_srvs/srv/Trigger'
+      });
+
+      // Optional routes topic (std_msgs/String with YAML keys)
+      routesTopic = new ROSLIB.Topic({
+        ros, name: '/wafer/waypoint_routes', messageType: 'std_msgs/msg/String', throttle_rate: 1000
+      });
+      routesTopic.subscribe(msg => {
+        try {
+          // expect a simple YAML dict like: {demo_square: [...], center_cross: [...]}
+          const keys = Object.keys((window.jsyaml ? window.jsyaml.load(msg.data) : JSON.parse(msg.data)));
+          if (keys.length) {
+            wpRoute.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+            log(`Routes updated: ${keys.join(', ')}`);
+          }
+        } catch(_e) {
+          // silently ignore if not parseable; your node may publish another format
+        }
+      });
     });
 
     ros.on('error', (e) => {
@@ -188,8 +225,9 @@
       log('Disconnected');
       try { poseTopic && poseTopic.unsubscribe(); } catch(e){}
       try { lengthsTopic && lengthsTopic.unsubscribe(); } catch(e){}
-      poseTopic = lengthsTopic = null;
-      gotoSrv = null;
+      try { routesTopic && routesTopic.unsubscribe(); } catch(e){}
+      poseTopic = lengthsTopic = routesTopic = null;
+      gotoSrv = runWpSrv = stopWpSrv = null;
     });
   }
 
@@ -214,6 +252,37 @@
     });
   }
 
+  function callRunRoute() {
+    if (!runWpSrv) return log('RunWaypoints service not ready.');
+    const req = new ROSLIB.ServiceRequest({
+      route: wpRoute.value,
+      tol_mm: parseFloat(wpTol.value),
+      timeout_s: parseFloat(wpTimeout.value),
+      pause_s: parseFloat(wpPause.value),
+      loop: (wpLoop.value === 'true')
+    });
+    btnRunRoute.disabled = true;
+    runWpSrv.callService(req, (res) => {
+      btnRunRoute.disabled = false;
+      log(`[RUN] accepted=${res.accepted} msg="${res.message||''}"`);
+    }, (err) => {
+      btnRunRoute.disabled = false;
+      log(`[RUN] error: ${err}`);
+    });
+  }
+
+  function callStopRoute() {
+    if (!stopWpSrv) return log('Stop service not ready.');
+    btnStopRoute.disabled = true;
+    stopWpSrv.callService(new ROSLIB.ServiceRequest({}), (res) => {
+      btnStopRoute.disabled = false;
+      log(`[STOP] success=${res.success} msg="${res.message||''}"`);
+    }, (err) => {
+      btnStopRoute.disabled = false;
+      log(`[STOP] error: ${err}`);
+    });
+  }
+
   // ---- Wire up UI ----
   document.getElementById('btnConnect').addEventListener('click', connect);
   document.getElementById('btnDisconnect').addEventListener('click', disconnect);
@@ -234,6 +303,10 @@
   document.getElementById('jogXp').addEventListener('click', () => jog(+parseFloat(jogStep.value), 0));
   document.getElementById('jogYm').addEventListener('click', () => jog(0, -parseFloat(jogStep.value)));
   document.getElementById('jogYp').addEventListener('click', () => jog(0, +parseFloat(jogStep.value)));
+
+  // Waypoints
+  btnRunRoute.addEventListener('click', callRunRoute);
+  btnStopRoute.addEventListener('click', callStopRoute);
 
   // First paint
   redrawBars();
