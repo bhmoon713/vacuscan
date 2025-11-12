@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<robot name="wafer_stage" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Params -->
+  <xacro:property name="corner" value="0.34"/>       <!-- base half-size (m) -->
+  <xacro:property name="wafer_r" value="0.150"/>     <!-- wafer radius (m) -->
+  <xacro:property name="anchor_off" value="0.152"/>  <!-- wafer frame anchor offset (m) -->
+
+  <!-- Materials -->
+  <material name="silver"><color rgba="0.8 0.8 0.85 1.0"/></material>
+  <material name="anchor_color"><color rgba="0.2 0.8 0.2 1.0"/></material>
+  <material name="testbed_gray"><color rgba="1.0 0.0 0.0 1.0"/></material>
+
+  <!-- Base and corner posts (CCW from TOP-RIGHT) -->
+  <link name="base">
+    <inertial>
+      <mass value="5.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <link name="corner_1"/>
+  <link name="corner_2"/>
+  <link name="corner_3"/>
+  <link name="corner_4"/>
+
+  <joint name="j_c1" type="fixed"><parent link="base"/><child link="corner_1"/><origin xyz="${corner} ${corner} 0"/></joint>
+  <joint name="j_c2" type="fixed"><parent link="base"/><child link="corner_2"/><origin xyz="-${corner} ${corner} 0"/></joint>
+  <joint name="j_c3" type="fixed"><parent link="base"/><child link="corner_3"/><origin xyz="-${corner} -${corner} 0"/></joint>
+  <joint name="j_c4" type="fixed"><parent link="base"/><child link="corner_4"/><origin xyz="${corner} -${corner} 0"/></joint>
+
+  <!-- Planar slides (XY) -->
+  <link name="x_axis">
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="x_slide" type="prismatic">
+    <parent link="base"/><child link="x_axis"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.2" upper="0.2" effort="1" velocity="0.5"/>
+  </joint>
+
+  <!-- Wafer (moving) -->
+  <link name="wafer">
+    <visual>
+      <geometry><cylinder radius="${wafer_r}" length="0.01"/></geometry>
+      <!-- Put wafer top surface at z=0.005 (same plane as frame visual below) -->
+      <origin xyz="0 0 0.005"/>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="${wafer_r}" length="0.01"/></geometry>
+      <origin xyz="0 0 0.005"/>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0.005"/>
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="y_slide" type="prismatic">
+    <parent link="x_axis"/><child link="wafer"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.2" upper="0.2" effort="1" velocity="0.5"/>
+  </joint>
+
+  <!-- Frame (moves with wafer; same z level) -->
+  <link name="wafer_frame">
+    <visual>
+      <geometry>
+        <mesh filename="package://wafer_stage_description/meshes/frame_vacuscan.stl" scale="0.001 0.001 0.001"/>
+        <!-- <cylinder radius="0.16" length="0.01"/> -->
+      </geometry>
+      <origin xyz="0 0 0.005" rpy="0 0 0"/>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://wafer_stage_description/meshes/frame_vacuscan.stl" scale="0.001 0.001 0.001"/>
+        <!-- <cylinder radius="0.16" length="0.01"/> -->
+      </geometry>
+      <origin xyz="0 0 0.005"/>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0.005"/>
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="wafer_to_wafer_frame" type="fixed">
+    <parent link="wafer"/>
+    <child link="wafer_frame"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Test bed: cylinder Ø75 mm, height 50 mm, fixed below base -->
+  <link name="test_bed">
+    <visual>
+      <geometry>
+        <cylinder radius="0.06" length="0.05"/>  <!-- Ø75 mm -->
+      </geometry>
+      <origin xyz="0 0 0"/>
+      <material name="testbed_gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.06" length="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="base_to_test_bed" type="fixed">
+    <parent link="base"/>
+    <child link="test_bed"/>
+    <!-- place test_bed center 25 mm below base so top is flush with base plane -->
+    <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Frame edge anchors (CCW from TOP-RIGHT) -->
+  <link name="wafer_anchor_1"><visual><geometry><sphere radius="0.006"/></geometry><material name="anchor_color"/></visual></link>
+  <joint name="wafer_frame_to_anchor_1" type="fixed">
+    <parent link="wafer_frame"/><child link="wafer_anchor_1"/>
+    <origin xyz="${anchor_off} ${anchor_off} 0.0"/>
+  </joint>
+
+  <link name="wafer_anchor_2"><visual><geometry><sphere radius="0.006"/></geometry><material name="anchor_color"/></visual></link>
+  <joint name="wafer_frame_to_anchor_2" type="fixed">
+    <parent link="wafer_frame"/><child link="wafer_anchor_2"/>
+    <origin xyz="-${anchor_off} ${anchor_off} 0.0"/>
+  </joint>
+
+  <link name="wafer_anchor_3"><visual><geometry><sphere radius="0.006"/></geometry><material name="anchor_color"/></visual></link>
+  <joint name="wafer_frame_to_anchor_3" type="fixed">
+    <parent link="wafer_frame"/><child link="wafer_anchor_3"/>
+    <origin xyz="-${anchor_off} -${anchor_off} 0.0"/>
+  </joint>
+
+  <link name="wafer_anchor_4"><visual><geometry><sphere radius="0.006"/></geometry><material name="anchor_color"/></visual></link>
+  <joint name="wafer_frame_to_anchor_4" type="fixed">
+    <parent link="wafer_frame"/><child link="wafer_anchor_4"/>
+    <origin xyz="${anchor_off} -${anchor_off} 0.0"/>
+  </joint>
+
+  <!-- ros2_control hardware description -->
+  <ros2_control name="WaferStageSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+
+    <joint name="x_slide">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="y_slide">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- ros2_control in Gazebo Classic -->
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>package://wafer_stage_gazebo/config/ros2_control.yaml</parameters>
+    </plugin>
+  </gazebo>
+</robot>

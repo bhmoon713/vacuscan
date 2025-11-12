@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wafer Stage Web UI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Roslib -->
+  <script src="https://cdn.jsdelivr.net/npm/roslib/build/roslib.min.js"></script>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body { margin: 24px; color: #111; background:#fafafa; }
+    h1 { margin: 0 0 12px; font-size: 22px; }
+    .row { display:flex; gap:16px; flex-wrap:wrap; }
+    .card { background:#fff; border:1px solid #ddd; border-radius:12px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+    .w300 { width:300px; }
+    label { display:block; font-size:12px; color:#555; margin-top:6px; }
+    input { width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc; }
+    button { padding:8px 12px; border:0; border-radius:8px; cursor:pointer; background:#2563eb; color:#fff; }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+    .muted { color:#666; font-size:12px; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .nudge { display:grid; grid-template-columns: repeat(3, 70px); gap:8px; justify-items:center; }
+    .nbtn { width:70px; height:34px; background:#0ea5e9; }
+    .ok { color:#059669; }
+    .bad { color:#dc2626; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .logs { max-height: 200px; overflow:auto; font-size:12px; background:#111; color:#d1fae5; padding:10px; border-radius:8px; }
+    .bars { margin-top:10px; display:grid; gap:8px; }
+    .barrow { display:grid; grid-template-columns: 32px 1fr 72px; gap:8px; align-items:center; }
+    .barlabel { font-weight:600; text-align:center; }
+    .barwrap { background:#e5e7eb; border-radius:8px; height:16px; overflow:hidden; }
+    .bar { height:100%; width:0%; background:#22c55e; border-radius:8px; transition: width .2s ease; }
+    .barval { text-align:right; }
+  </style>
+</head>
+<body>
+  <h1>Wafer Stage Web UI</h1>
+  <div class="row">
+    <div class="card w300">
+      <div>
+        <label>ROSBridge URL</label>
+        <input id="ws" value="ws://localhost:9090" />
+      </div>
+      <div style="margin-top:10px; display:flex; gap:8px;">
+        <button id="btnConnect">Connect</button>
+        <div id="connStatus" class="muted">disconnected</div>
+      </div>
+      <hr>
+      <div class="grid2">
+        <div><label>X (m)</label><input id="x" type="number" step="0.001" value="0.050"></div>
+        <div><label>Y (m)</label><input id="y" type="number" step="0.001" value="-0.030"></div>
+        <div><label>Speed (m/s)</label><input id="speed" type="number" step="0.001" value="0.020"></div>
+        <div><label>Tol (m)</label><input id="tol" type="number" step="0.00001" value="0.00005"></div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button id="btnGo">Go to (x,y)</button>
+        <button id="btnStop" style="background:#ef4444;">Stop</button>
+      </div>
+      <div class="muted" style="margin-top:6px;">Calls <span class="mono">/wafer/goto</span> (WaferGoto)</div>
+      <hr>
+      <div>
+        <div class="muted" style="margin-bottom:6px;">Nudge controls (±0.5 mm):</div>
+        <div class="nudge">
+          <div></div>
+          <button class="nbtn" id="nudgeUp">+Y</button>
+          <div></div>
+          <button class="nbtn" id="nudgeLeft">-X</button>
+          <button class="nbtn" id="nudgeCenter">0,0</button>
+          <button class="nbtn" id="nudgeRight">+X</button>
+          <div></div>
+          <button class="nbtn" id="nudgeDown">-Y</button>
+          <div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card w300">
+      <div><strong>Live Pose</strong></div>
+      <div class="mono" style="font-size:14px; margin-top:6px;">
+        x = <span id="px">0.000</span> m<br>
+        y = <span id="py">0.000</span> m
+      </div>
+      <div style="margin-top:10px;">
+        <span class="muted">topic:</span> <span class="mono">/wafer/pose (geometry_msgs/Pose2D)</span>
+      </div>
+      <div style="margin-top:10px;">
+        <span class="muted">cmd topic:</span> <span class="mono">/motor/cmd_velocity (std_msgs/Float32MultiArray)</span>
+      </div>
+    </div>
+
+    <div class="card" style="flex:1; min-width:320px;">
+      <div><strong>Logs</strong></div>
+      <div id="logs" class="logs"></div>
+    </div>
+    <!-- Wire Lengths (L1~L4) -->
+    <div class="card" style="flex:1; min-width:340px;">
+      <div><strong>Wire Lengths</strong> <span class="muted">(mm)</span></div>
+      <div class="bars">
+        <div class="barrow">
+          <div class="barlabel">L1</div>
+          <div class="barwrap"><div id="L1_bar" class="bar"></div></div>
+          <div class="barval mono"><span id="L1_val">0.0</span></div>
+        </div>
+        <div class="barrow">
+          <div class="barlabel">L2</div>
+          <div class="barwrap"><div id="L2_bar" class="bar"></div></div>
+          <div class="barval mono"><span id="L2_val">0.0</span></div>
+        </div>
+        <div class="barrow">
+          <div class="barlabel">L3</div>
+          <div class="barwrap"><div id="L3_bar" class="bar"></div></div>
+          <div class="barval mono"><span id="L3_val">0.0</span></div>
+        </div>
+        <div class="barrow">
+          <div class="barlabel">L4</div>
+          <div class="barwrap"><div id="L4_bar" class="bar"></div></div>
+          <div class="barval mono"><span id="L4_val">0.0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+let ros=null, svcGoto=null, subPose=null, pubCmd=null;
+let lastPose={x:0.0, y:0.0};
+
+function log(msg, ok=true){
+  const el=document.getElementById('logs');
+  const time=new Date().toLocaleTimeString();
+  el.innerHTML = `[${time}] ${ok? '✔':'✖'} ${msg}<br>` + el.innerHTML;
+}
+
+function setConn(connected){
+  const el=document.getElementById('connStatus');
+  el.textContent = connected? 'connected' : 'disconnected';
+  el.className = connected? 'ok' : 'bad';
+  document.getElementById('btnGo').disabled = !connected;
+  document.getElementById('btnStop').disabled = !connected;
+}
+
+document.getElementById('btnConnect').onclick = () => {
+  try {
+    const url = document.getElementById('ws').value.trim();
+    ros = new ROSLIB.Ros({url});
+    setConn(false);
+
+    ros.on('connection', () => {
+      setConn(true);
+      log(`Connected to ${url}`);
+      // service: /wafer/goto
+      svcGoto = new ROSLIB.Service({
+        ros,
+        name: '/wafer/goto',
+        serviceType: 'wafer_stage_interfaces/srv/WaferGoto'
+      });
+      // topic: /wafer/pose
+      subPose = new ROSLIB.Topic({
+        ros,
+        name: '/wafer/pose',
+        messageType: 'geometry_msgs/msg/Pose2D'
+      });
+      subPose.subscribe(msg=>{
+        lastPose = {x: msg.x, y: msg.y};
+        document.getElementById('px').textContent = msg.x.toFixed(3);
+        document.getElementById('py').textContent = msg.y.toFixed(3);
+      });
+      // publisher for /motor/cmd_velocity (optional manual jog)
+      pubCmd = new ROSLIB.Topic({
+        ros,
+        name: '/motor/cmd_velocity',
+        messageType: 'std_msgs/msg/Float32MultiArray'
+      });
+    });
+
+    ros.on('error', (e) => { setConn(false); log('ROS error: '+e, false); });
+    ros.on('close', () => { setConn(false); log('Connection closed', false); });
+
+  } catch (e) {
+    log('Connect exception: '+e, false);
+  }
+};
+
+document.getElementById('btnGo').onclick = () => {
+  if (!svcGoto) return;
+  const x = parseFloat(document.getElementById('x').value);
+  const y = parseFloat(document.getElementById('y').value);
+  const speed = parseFloat(document.getElementById('speed').value);
+  const tol   = parseFloat(document.getElementById('tol').value);
+  const req = new ROSLIB.ServiceRequest({ x, y, speed, tol });
+  svcGoto.callService(req, (res) => {
+    log(`Goto -> success=${res.success} msg="${res.message||''}"`);
+  }, (err) => {
+    log(`Goto ERROR: ${err}`, false);
+  });
+};
+
+// a tiny stop: zero cable velocities
+document.getElementById('btnStop').onclick = () => {
+  if (!pubCmd) return;
+  const msg = new ROSLIB.Message({ data: [0.0,0.0,0.0,0.0] });
+  pubCmd.publish(msg);
+  log('STOP: sent zeros to /motor/cmd_velocity');
+};
+
+// nudge helpers (±0.5 mm)
+const NU = 0.0005;
+document.getElementById('nudgeUp').onclick    = () => document.getElementById('y').value = (+document.getElementById('y').value + NU).toFixed(3);
+document.getElementById('nudgeDown').onclick  = () => document.getElementById('y').value = (+document.getElementById('y').value - NU).toFixed(3);
+document.getElementById('nudgeLeft').onclick  = () => document.getElementById('x').value = (+document.getElementById('x').value - NU).toFixed(3);
+document.getElementById('nudgeRight').onclick = () => document.getElementById('x').value = (+document.getElementById('x').value + NU).toFixed(3);
+document.getElementById('nudgeCenter').onclick= () => { document.getElementById('x').value='0.000'; document.getElementById('y').value='0.000'; };
+</script>
+</body>
+</html>

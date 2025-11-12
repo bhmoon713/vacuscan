@@ -1,0 +1,256 @@
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 70
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /RobotModel1
+        - /RobotModel1/Mass Properties1
+        - /RobotModel1/Description Topic1
+        - /TF1
+        - /TF1/Frames1
+      Splitter Ratio: 0.5
+    Tree Height: 521
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz_common/Selection
+    Name: Selection
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 0.05000000074505806
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 40
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/RobotModel
+      Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /robot_description
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        corner_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        corner_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        corner_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        corner_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        test_bed:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer_anchor_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer_anchor_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer_anchor_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer_anchor_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        x_axis:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Mass Properties:
+        Inertia: false
+        Mass: false
+      Name: RobotModel
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        base:
+          Value: false
+        corner_1:
+          Value: true
+        corner_2:
+          Value: true
+        corner_3:
+          Value: true
+        corner_4:
+          Value: true
+        frame:
+          Value: false
+        test_bed:
+          Value: false
+        wafer:
+          Value: false
+        wafer_anchor_1:
+          Value: true
+        wafer_anchor_2:
+          Value: true
+        wafer_anchor_3:
+          Value: true
+        wafer_anchor_4:
+          Value: true
+        x_axis:
+          Value: false
+      Marker Scale: 0.25
+      Name: TF
+      Show Arrows: false
+      Show Axes: true
+      Show Names: true
+      Tree:
+        base:
+          corner_1:
+            {}
+          corner_2:
+            {}
+          corner_3:
+            {}
+          corner_4:
+            {}
+          test_bed:
+            {}
+          x_axis:
+            wafer:
+              frame:
+                wafer_anchor_1:
+                  {}
+                wafer_anchor_2:
+                  {}
+                wafer_anchor_3:
+                  {}
+                wafer_anchor_4:
+                  {}
+      Update Interval: 0
+      Value: true
+    - Class: rviz_default_plugins/Axes
+      Enabled: true
+      Length: 0.15000000596046448
+      Name: Wafer Axes
+      Radius: 0.004999999888241291
+      Reference Frame: wafer
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        wire_lengths: true
+        wires: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /wafer/wires_markers
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: base
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Angle: 0
+      Class: rviz_default_plugins/TopDownOrtho
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Scale: 843.1614990234375
+      Target Frame: base
+      Value: TopDownOrtho (rviz_default_plugins)
+      X: 0.007216461002826691
+      Y: -0.003873170353472233
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1016
+  Hide Left Dock: false
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000001560000039efc0200000003fb000000100044006900730070006c006100790073010000003d0000028c000000c900fffffffb0000000a0056006900650077007302000005fc000000e000000156000000acfb0000001200530065006c0065006300740069006f006e01000002cf0000010c0000005c00ffffff000005de0000039e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1850
+  X: 70
+  Y: 27

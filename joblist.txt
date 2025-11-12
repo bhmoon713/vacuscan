@@ -1,0 +1,9 @@
+Wafer form display and "click and go" function
+Live Camera view 
+Sensor data zone
+hardware control
+
+vacuum control
+program mode
+add gazebo simulation
+

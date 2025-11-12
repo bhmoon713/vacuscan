@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>wafer_stage_gazebo</name>
+  <version>0.0.1</version>
+  <description>Gazebo simulation for vacuscan wafer stage</description>
+  <maintainer email="you@example.com">you</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>wafer_stage_description</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_ros2_control</depend>
+  <depend>ros2_control</depend>
+  <depend>ros2_controllers</depend>
+  <depend>controller_manager</depend>
+  <depend>joint_state_broadcaster</depend>
+  <depend>position_controllers</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
