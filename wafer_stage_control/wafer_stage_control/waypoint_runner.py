@@ -69,13 +69,30 @@ class WaypointRunner(Node):
         res.message = 'Abort flag set'
         return res
 
+    def declare_or_get(self, name: str, default: float) -> float:
+        """Declare a double param if missing, then return its value as float."""
+        try:
+            # declare once; harmless if already declared in newer rclpy, but guard anyway
+            if not self.has_parameter(name):
+                self.declare_parameter(name, default)
+        except Exception:
+            # some distros throw if already declared — ignore
+            pass
+        p = self.get_parameter(name)
+        if not p or p.value is None:
+            return float(default)
+        return float(p.value)
+
+
     def _on_run(self, req, res):
         try:
-            route_name = req.route  # <-- field name from .srv
-            tol_mm     = req.tol_mm if req.tol_mm > 0 else self.declare_or_get('tol_mm', 30.0)
-            timeout_s  = req.timeout_s if req.timeout_s > 0 else self.declare_or_get('timeout_s', 8.0)
-            pause_s    = req.pause_s if req.pause_s >= 0 else self.declare_or_get('pause_s', 0.2)
-            do_loop    = bool(req.loop)
+            route_name = req.route
+
+            # defaults (zeros in request mean "use defaults")
+            tol_mm    = req.tol_mm    if req.tol_mm    > 0 else self.declare_or_get('tol_mm', 30.0)
+            timeout_s = req.timeout_s if req.timeout_s > 0 else self.declare_or_get('timeout_s', 8.0)
+            pause_s   = req.pause_s   if req.pause_s  >= 0 else self.declare_or_get('pause_s', 0.0)
+            do_loop   = bool(req.loop)
 
             if route_name not in self.routes:
                 res.accepted = False
@@ -83,12 +100,22 @@ class WaypointRunner(Node):
                 self.get_logger().warn(res.message)
                 return res
 
-            pts = self.routes[route_name]
+            # --- NEW: support both list-style and dict-style routes ---
+            r = self.routes[route_name]
+            if isinstance(r, dict):
+                pts = r.get('points', [])
+                # allow per-route defaults if request gave zeros
+                if req.tol_mm    <= 0: tol_mm    = float(r.get('tol_mm',    tol_mm))
+                if req.timeout_s <= 0: timeout_s = float(r.get('timeout_s', timeout_s))
+                if req.pause_s   <  0: pause_s   = float(r.get('pause_s',   pause_s))
+            else:
+                pts = r  # assume list of points
+
             self.get_logger().info(
-                f'Running route "{route_name}" (N={len(pts)}) tol={tol_mm:.1f}mm '
-                f'timeout={timeout_s:.1f}s pause={pause_s:.1f}s loop={do_loop}'
+                f'Running route "{route_name}" (N={len(pts)}) '
+                f'tol={tol_mm:.1f}mm timeout={timeout_s:.1f}s pause={pause_s:.1f}s loop={do_loop}'
             )
-            # launch in thread so service returns immediately
+
             self._stop_flag = False
             self._thread = threading.Thread(
                 target=self._run_route,
@@ -105,6 +132,31 @@ class WaypointRunner(Node):
             res.message  = f'Exception: {e}'
             self.get_logger().error(res.message)
             return res
+
+    def _norm_point(self, p):
+        """
+        Accepts:
+        - {'x': mm, 'y': mm}
+        - {'x_mm': mm, 'y_mm': mm}
+        - {'x_m': m, 'y_m': m}
+        - [x_mm, y_mm] or (x_mm, y_mm)
+        - {'pause_s': seconds}  -> returns ('pause', seconds)
+        Returns: (x_mm, y_mm) or ('pause', seconds) or None if unrecognized.
+        """
+        if isinstance(p, dict):
+            if 'pause_s' in p:
+                return ('pause', float(p['pause_s']))
+            if 'x' in p and 'y' in p:
+                return (float(p['x']), float(p['y']))
+            if 'x_mm' in p and 'y_mm' in p:
+                return (float(p['x_mm']), float(p['y_mm']))
+            if 'x_m' in p and 'y_m' in p:
+                return (float(p['x_m']) * 1000.0, float(p['y_m']) * 1000.0)
+            return None
+        if isinstance(p, (list, tuple)) and len(p) == 2:
+            return (float(p[0]), float(p[1]))
+        return None
+
 
     # ------------------------------------------------------------------
     # Utility: flexible point normalization
@@ -148,47 +200,50 @@ class WaypointRunner(Node):
     # ------------------------------------------------------------------
     # Core route runner
     # ------------------------------------------------------------------
-    def _run_route(self, route_name: str, loop: bool):
-        r = self.routes[route_name]
-        pts = r.get('points', [])
-        tol_mm = float(r.get('tol_mm', 50.0))
-        timeout_s = float(r.get('timeout_s', 10.0))
-        dwell_s = float(r.get('pause_s', 0.0))
+    def _run_route(self, pts, tol_mm, timeout_s, pause_s, do_loop):
+        """
+        Execute a list of waypoints.
+        - pts: list of entries (supports {'x','y'}, {'x_mm','y_mm'}, {'x_m','y_m'}, [x,y], or {'pause_s': seconds})
+        - tol_mm: tolerance in millimeters
+        - timeout_s: max time to reach each waypoint
+        - pause_s: dwell after reaching each waypoint (seconds)
+        - do_loop: repeat forever until abort
+        """
+        try:
+            while rclpy.ok() and not self.abort_flag:
+                for i, p in enumerate(pts):
+                    if self.abort_flag:
+                        break
 
-        self.get_logger().info(
-            f'Running route "{route_name}" (N={len(pts)}) tol={tol_mm}mm timeout={timeout_s}s pause={dwell_s}s loop={loop}'
-        )
+                    parsed = self._norm_point(p)
+                    if parsed is None:
+                        self.get_logger().warn(f'[route] step {i}: unrecognized {p}, skipping.')
+                        continue
 
-        keep_going = True
-        while rclpy.ok() and keep_going and not self.abort_flag:
-            for i, p in enumerate(pts):
-                if self.abort_flag:
+                    # Pause step (inline pause_s in the list)
+                    if isinstance(parsed, tuple) and parsed[0] == 'pause':
+                        _, ps = parsed
+                        self.get_logger().info(f'[route] step {i}: pause {ps}s')
+                        time.sleep(ps)
+                        continue
+
+                    # Motion step
+                    x_mm, y_mm = parsed
+                    ok = self._goto_and_wait(x_mm, y_mm, float(tol_mm), float(timeout_s))
+                    if not ok:
+                        self.get_logger().warn(
+                            f'[route] step {i}: timeout/tolerance not met to ({x_mm:.1f},{y_mm:.1f}) mm'
+                        )
+                    if pause_s and pause_s > 0:
+                        time.sleep(float(pause_s))
+
+                if not do_loop:
                     break
 
-                parsed = self._norm_point(p)
-                if parsed is None:
-                    self.get_logger().warn(f'[{route_name}] step {i}: unrecognized {p}, skipping.')
-                    continue
+            self.get_logger().info('Route finished')
+        except Exception as e:
+            self.get_logger().error(f'_run_route exception: {e}')
 
-                # Pause
-                if isinstance(parsed, tuple) and parsed[0] == 'pause':
-                    _, ps = parsed
-                    self.get_logger().info(f'[{route_name}] step {i}: pause {ps}s')
-                    time.sleep(ps)
-                    continue
-
-                # Motion
-                if isinstance(parsed, tuple) and len(parsed) == 2:
-                    x_mm, y_mm = parsed
-                    ok = self._goto_and_wait(x_mm, y_mm, tol_mm, timeout_s)
-                    if not ok:
-                        self.get_logger().warn(f'[{route_name}] step {i}: timeout/tolerance not met')
-                    if dwell_s > 0:
-                        time.sleep(dwell_s)
-
-            keep_going = bool(loop)
-
-        self.get_logger().info('Route finished')
 
     # ------------------------------------------------------------------
     # Goto + wait until position reached or timeout
