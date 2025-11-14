@@ -31,3 +31,7 @@ ros2 launch wafer_stage_gazebo sim.launch.py
 # CLI waypoints command 
 ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints '{route: demo_square, loop: false}'
 ros2 service call /wafer/abort_waypoints std_srvs/srv/Trigger {}
+
+
+ros2 service call /vacuum/on std_srvs/srv/Trigger "{}"
+ros2 service call /vacuum/off std_srvs/srv/Trigger "{}"

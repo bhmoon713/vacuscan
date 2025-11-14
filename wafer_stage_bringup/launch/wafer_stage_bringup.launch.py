@@ -78,4 +78,18 @@ def generate_launch_description():
             output='screen'
         ),
 
+        Node(
+            package='wafer_stage_control',
+            executable='vacuum_controller',
+            name='vacuum_controller',
+            output='screen'
+        ),
+        
+        Node(
+            package='wafer_stage_control',
+            executable='capture_controller',
+            name='capture_controller',
+            output='screen'
+        ),
+
     ])

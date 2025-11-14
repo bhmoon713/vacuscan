@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
+import math
+import os
+import time
+import yaml
+
 import rclpy
 from rclpy.node import Node
 from threading import Thread, Lock
+
 from std_srvs.srv import Trigger
-from wafer_stage_interfaces.srv import RunWaypoints, WaferGoto
 from geometry_msgs.msg import Pose2D
 from ament_index_python.packages import get_package_share_directory
-import yaml, time, os, math
-import threading
+
+from wafer_stage_interfaces.srv import RunWaypoints, WaferGoto
 
 
 class WaypointRunner(Node):
@@ -29,20 +34,28 @@ class WaypointRunner(Node):
         self.lock = Lock()
         self.pose = Pose2D()
 
-        # Load routes
+        # Load routes from YAML
         self._load_routes()
 
-        # Subscriptions & service clients
+        # Subscriptions
         self.create_subscription(
             Pose2D,
             self.get_parameter('pose_topic').value,
             self._on_pose,
             10
         )
+
+        # Main goto client
         self.goto_cli = self.create_client(
             WaferGoto,
             self.get_parameter('goto_service').value
         )
+
+        # Action service clients (Trigger)
+        self.vacuum_on_cli  = self.create_client(Trigger, '/vacuum/on')
+        self.vacuum_off_cli = self.create_client(Trigger, '/vacuum/off')
+        self.capture_cli    = self.create_client(Trigger, '/wafer/capture')  # Only if capture node exists!
+
 
         # Services
         self.run_srv = self.create_service(
@@ -85,6 +98,9 @@ class WaypointRunner(Node):
         res.message = 'Abort flag set'
         return res
 
+    # ------------------------------------------------------------------
+    # Parameter helper
+    # ------------------------------------------------------------------
     def declare_or_get(self, name: str, default: float) -> float:
         """Declare a double param if missing, then return its value as float."""
         try:
@@ -98,12 +114,14 @@ class WaypointRunner(Node):
             return float(default)
         return float(p.value)
 
+    # ------------------------------------------------------------------
+    # RunWaypoints callback
+    # ------------------------------------------------------------------
     def _on_run(self, req, res):
         try:
             route_name = req.route
 
-            # If a route is already running, you can either reject or allow overlapping.
-            # Here we REJECT to keep behavior simple.
+            # If a route is already running, reject new one
             if self.thread is not None and self.thread.is_alive():
                 msg = 'A route is already running; abort it before starting a new one.'
                 self.get_logger().warn(msg)
@@ -111,7 +129,7 @@ class WaypointRunner(Node):
                 res.message = msg
                 return res
 
-            # --- reset abort flag for new run ---
+            # reset abort flag
             self.abort_flag = False
 
             # defaults (zeros in request mean "use defaults")
@@ -143,7 +161,7 @@ class WaypointRunner(Node):
             )
 
             # Start background thread
-            self.thread = threading.Thread(
+            self.thread = Thread(
                 target=self._run_route,
                 args=(pts, tol_mm, timeout_s, pause_s, do_loop),
                 daemon=True
@@ -234,10 +252,22 @@ class WaypointRunner(Node):
                     # Motion step
                     x_mm, y_mm = parsed
                     ok = self._goto_and_wait(x_mm, y_mm, float(tol_mm), float(timeout_s))
-                    if not ok:
-                        self.get_logger().warn(
-                            f'[route] step {i}: timeout/tolerance not met to ({x_mm:.1f},{y_mm:.1f}) mm'
-                        )
+
+                    # --------------------------------------------------------------------
+                    # FIXED ACTION SEQUENCE AFTER REACHING EACH WAYPOINT
+                    # --------------------------------------------------------------------
+                    if not self.abort_flag and ok:
+                        self.get_logger().info('[action seq] vacuum ON')
+                        self._call_action('vacuum_on')
+
+                        self.get_logger().info('[action seq] capture')
+                        self._call_action('capture')
+
+                        self.get_logger().info('[action seq] vacuum OFF')
+                        self._call_action('vacuum_off')
+                    # --------------------------------------------------------------------
+
+                    # Pause after each waypoint (optional)
                     if pause_s and pause_s > 0 and not self.abort_flag:
                         t0 = time.time()
                         while time.time() - t0 < pause_s and not self.abort_flag:
@@ -249,6 +279,51 @@ class WaypointRunner(Node):
             self.get_logger().info('Route finished')
         except Exception as e:
             self.get_logger().error(f'_run_route exception: {e}')
+
+    # ---------------------------------------------------------
+    # Helper: call simple action services (vacuum_on, capture, vacuum_off)
+    # ---------------------------------------------------------
+    def _call_action(self, action_name: str):
+        """
+        Call one of:
+          - /wafer/vacuum_on
+          - /wafer/vacuum_off
+          - /wafer/capture
+
+        All assumed to be std_srvs/Trigger.
+        """
+        if action_name == 'vacuum_on':
+            client = self.vacuum_on_cli
+        elif action_name == 'vacuum_off':
+            client = self.vacuum_off_cli
+        elif action_name == 'capture':
+            client = self.capture_cli
+        else:
+            self.get_logger().warn(f'[action] Unknown action "{action_name}"')
+            return False
+
+        if not client.wait_for_service(timeout_sec=5.0):
+            self.get_logger().error(f'[action] Service {client.srv_name} not available')
+            return False
+
+        req = Trigger.Request()
+
+        try:
+            future = client.call_async(req)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
+
+            if future.result() is None:
+                self.get_logger().error(f'[action] {action_name} → no response')
+                return False
+
+            ok = future.result().success
+            msg = future.result().message
+            self.get_logger().info(f'[action] {action_name} → success={ok} msg="{msg}"')
+            return ok
+
+        except Exception as e:
+            self.get_logger().error(f'[action] {action_name} exception: {e}')
+            return False
 
     # ------------------------------------------------------------------
     # Goto + wait until position reached or timeout

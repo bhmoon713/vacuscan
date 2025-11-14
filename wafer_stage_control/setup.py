@@ -24,6 +24,8 @@ setup(
             'wafer_wire_visualizer = wafer_stage_control.wafer_wire_visualizer:main',
             'wire_length_publisher = wafer_stage_control.wire_length_publisher:main',
             'waypoint_runner = wafer_stage_control.waypoint_runner:main',
+            'vacuum_controller = wafer_stage_control.vacuum_controller:main',
+            'capture_controller = wafer_stage_control.capture_controller:main',
         ],
     },
 )
