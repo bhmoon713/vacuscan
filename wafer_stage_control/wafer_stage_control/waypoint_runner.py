@@ -257,14 +257,20 @@ class WaypointRunner(Node):
                     # FIXED ACTION SEQUENCE AFTER REACHING EACH WAYPOINT
                     # --------------------------------------------------------------------
                     if not self.abort_flag and ok:
+                        self.get_logger().info('stabilizing ')
+                        time.sleep(2.0)
+
                         self.get_logger().info('[action seq] vacuum ON')
                         self._call_action('vacuum_on')
+                        time.sleep(1.5)
 
                         self.get_logger().info('[action seq] capture')
                         self._call_action('capture')
-
+                        time.sleep(1.5)
+                        
                         self.get_logger().info('[action seq] vacuum OFF')
                         self._call_action('vacuum_off')
+                        time.sleep(1.5)    
                     # --------------------------------------------------------------------
 
                     # Pause after each waypoint (optional)
