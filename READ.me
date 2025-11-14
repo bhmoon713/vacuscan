@@ -1,4 +1,5 @@
 This is manual for vacuscan robot
+# Bring up packages
 
 ros2 launch wafer_stage_bringup wafer_stage_bringup.launch.py
 rviz2 -d ~/ros2_ws/src/wafer_stage_bringup/rviz/wafer_stage.rviz
@@ -13,7 +14,7 @@ ros2 service call /wafer/goto wafer_stage_interfaces/srv/WaferGoto \
 ros2 launch wafer_stage_bringup webui.launch.py
 
 
-# B) rosbridge websocket
+# rosbridge websocket
 source ~/ros2_ws/install/setup.bash
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 
@@ -21,9 +22,12 @@ ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 cd ~/ros2_ws/src/wafer_stage_webui/web
 python3 -m http.server 8080
 
+http://localhost:8080/
+
+# Gazebo simulation 
 ros2 launch wafer_stage_gazebo sim.launch.py 
 
 
-ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints '{route: demo_square, loop: false}'
+# CLI waypoints command 
 ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints '{route: demo_square, loop: false}'
 ros2 service call /wafer/abort_waypoints std_srvs/srv/Trigger {}

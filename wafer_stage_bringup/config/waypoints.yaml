@@ -5,6 +5,15 @@ routes:
     pause_s: 1.2
     points:
       - {x_mm: 0,   y_mm: 0}
+      - {x_mm: -150,  y_mm: 150}
+      - {x_mm: -150,  y_mm: 140}
+      - {x_mm: 150,  y_mm: 140}
+      - {x_mm: 150,  y_mm: 130}
+      - {x_mm: -150,  y_mm: 130}
+      - {x_mm: -150,  y_mm: 120}
+      - {x_mm: 150,  y_mm: 120}
+      - {x_mm: 150,  y_mm: 110}
+      - {x_mm: -150,  y_mm: 110}
       - {x_mm: -150,  y_mm: 100}
       - {x_mm: 150,  y_mm: 100}
       - {x_mm: 150,  y_mm: 90}
@@ -46,6 +55,16 @@ routes:
       - {x_mm: 150,  y_mm: -90}
       - {x_mm: -150,  y_mm: -90}
       - {x_mm: -150,  y_mm: -100}
+      - {x_mm: 150,  y_mm: -100}
+      - {x_mm: 150,  y_mm: -110}
+      - {x_mm: -150,  y_mm: -110}
+      - {x_mm: -150,  y_mm: -120}
+      - {x_mm: 150,  y_mm: -120}
+      - {x_mm: 150,  y_mm: -130}
+      - {x_mm: -150,  y_mm: -130}
+      - {x_mm: -150,  y_mm: -140}
+      - {x_mm: 150,  y_mm: -140}
+      - {x_mm: 150,  y_mm: -150}
       - {pause_s: 1.0}
 
   warming_up:

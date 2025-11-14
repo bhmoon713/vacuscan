@@ -7,7 +7,7 @@ from wafer_stage_interfaces.srv import RunWaypoints, WaferGoto
 from geometry_msgs.msg import Pose2D
 from ament_index_python.packages import get_package_share_directory
 import yaml, time, os, math
-import threading 
+import threading
 
 
 class WaypointRunner(Node):
@@ -33,12 +33,28 @@ class WaypointRunner(Node):
         self._load_routes()
 
         # Subscriptions & service clients
-        self.create_subscription(Pose2D, self.get_parameter('pose_topic').value, self._on_pose, 10)
-        self.goto_cli = self.create_client(WaferGoto, self.get_parameter('goto_service').value)
+        self.create_subscription(
+            Pose2D,
+            self.get_parameter('pose_topic').value,
+            self._on_pose,
+            10
+        )
+        self.goto_cli = self.create_client(
+            WaferGoto,
+            self.get_parameter('goto_service').value
+        )
 
         # Services
-        self.run_srv = self.create_service(RunWaypoints, '/wafer/run_waypoints', self._on_run)
-        self.abort_srv = self.create_service(Trigger, '/wafer/abort_waypoints', self._on_abort)
+        self.run_srv = self.create_service(
+            RunWaypoints,
+            '/wafer/run_waypoints',
+            self._on_run
+        )
+        self.abort_srv = self.create_service(
+            Trigger,
+            '/wafer/abort_waypoints',
+            self._on_abort
+        )
 
         self.get_logger().info(f'Loaded waypoint routes: {list(self.routes.keys())}')
 
@@ -72,7 +88,6 @@ class WaypointRunner(Node):
     def declare_or_get(self, name: str, default: float) -> float:
         """Declare a double param if missing, then return its value as float."""
         try:
-            # declare once; harmless if already declared in newer rclpy, but guard anyway
             if not self.has_parameter(name):
                 self.declare_parameter(name, default)
         except Exception:
@@ -83,10 +98,21 @@ class WaypointRunner(Node):
             return float(default)
         return float(p.value)
 
-
     def _on_run(self, req, res):
         try:
             route_name = req.route
+
+            # If a route is already running, you can either reject or allow overlapping.
+            # Here we REJECT to keep behavior simple.
+            if self.thread is not None and self.thread.is_alive():
+                msg = 'A route is already running; abort it before starting a new one.'
+                self.get_logger().warn(msg)
+                res.accepted = False
+                res.message = msg
+                return res
+
+            # --- reset abort flag for new run ---
+            self.abort_flag = False
 
             # defaults (zeros in request mean "use defaults")
             tol_mm    = req.tol_mm    if req.tol_mm    > 0 else self.declare_or_get('tol_mm', 30.0)
@@ -100,7 +126,7 @@ class WaypointRunner(Node):
                 self.get_logger().warn(res.message)
                 return res
 
-            # --- NEW: support both list-style and dict-style routes ---
+            # Support both list-style and dict-style routes
             r = self.routes[route_name]
             if isinstance(r, dict):
                 pts = r.get('points', [])
@@ -116,13 +142,13 @@ class WaypointRunner(Node):
                 f'tol={tol_mm:.1f}mm timeout={timeout_s:.1f}s pause={pause_s:.1f}s loop={do_loop}'
             )
 
-            self._stop_flag = False
-            self._thread = threading.Thread(
+            # Start background thread
+            self.thread = threading.Thread(
                 target=self._run_route,
                 args=(pts, tol_mm, timeout_s, pause_s, do_loop),
                 daemon=True
             )
-            self._thread.start()
+            self.thread.start()
 
             res.accepted = True
             res.message  = 'Route started'
@@ -133,36 +159,12 @@ class WaypointRunner(Node):
             self.get_logger().error(res.message)
             return res
 
-    def _norm_point(self, p):
-        """
-        Accepts:
-        - {'x': mm, 'y': mm}
-        - {'x_mm': mm, 'y_mm': mm}
-        - {'x_m': m, 'y_m': m}
-        - [x_mm, y_mm] or (x_mm, y_mm)
-        - {'pause_s': seconds}  -> returns ('pause', seconds)
-        Returns: (x_mm, y_mm) or ('pause', seconds) or None if unrecognized.
-        """
-        if isinstance(p, dict):
-            if 'pause_s' in p:
-                return ('pause', float(p['pause_s']))
-            if 'x' in p and 'y' in p:
-                return (float(p['x']), float(p['y']))
-            if 'x_mm' in p and 'y_mm' in p:
-                return (float(p['x_mm']), float(p['y_mm']))
-            if 'x_m' in p and 'y_m' in p:
-                return (float(p['x_m']) * 1000.0, float(p['y_m']) * 1000.0)
-            return None
-        if isinstance(p, (list, tuple)) and len(p) == 2:
-            return (float(p[0]), float(p[1]))
-        return None
-
-
     # ------------------------------------------------------------------
     # Utility: flexible point normalization
     # ------------------------------------------------------------------
     def _norm_point(self, p):
         """Parse a YAML waypoint entry -> ('pause', s) or (x_mm, y_mm)."""
+
         # List or tuple
         if isinstance(p, (list, tuple)) and len(p) == 2:
             try:
@@ -181,7 +183,7 @@ class WaypointRunner(Node):
         if 'x' in p and 'y' in p:
             return float(p['x']), float(p['y'])
 
-        # Wrapped
+        # Wrapped form: { goto: {x_mm:..., y_mm:...} }
         if 'goto' in p and isinstance(p['goto'], dict):
             g = p['goto']
             if 'x_m' in g and 'y_m' in g:
@@ -191,7 +193,7 @@ class WaypointRunner(Node):
             if 'x' in g and 'y' in g:
                 return float(g['x']), float(g['y'])
 
-        # Pause
+        # Pause-only step
         if 'pause_s' in p:
             return ('pause', float(p['pause_s']))
 
@@ -220,11 +222,13 @@ class WaypointRunner(Node):
                         self.get_logger().warn(f'[route] step {i}: unrecognized {p}, skipping.')
                         continue
 
-                    # Pause step (inline pause_s in the list)
+                    # Pause step (inline)
                     if isinstance(parsed, tuple) and parsed[0] == 'pause':
                         _, ps = parsed
                         self.get_logger().info(f'[route] step {i}: pause {ps}s')
-                        time.sleep(ps)
+                        t0 = time.time()
+                        while time.time() - t0 < ps and not self.abort_flag:
+                            time.sleep(0.05)
                         continue
 
                     # Motion step
@@ -234,8 +238,10 @@ class WaypointRunner(Node):
                         self.get_logger().warn(
                             f'[route] step {i}: timeout/tolerance not met to ({x_mm:.1f},{y_mm:.1f}) mm'
                         )
-                    if pause_s and pause_s > 0:
-                        time.sleep(float(pause_s))
+                    if pause_s and pause_s > 0 and not self.abort_flag:
+                        t0 = time.time()
+                        while time.time() - t0 < pause_s and not self.abort_flag:
+                            time.sleep(0.05)
 
                 if not do_loop:
                     break
@@ -243,7 +249,6 @@ class WaypointRunner(Node):
             self.get_logger().info('Route finished')
         except Exception as e:
             self.get_logger().error(f'_run_route exception: {e}')
-
 
     # ------------------------------------------------------------------
     # Goto + wait until position reached or timeout
@@ -253,7 +258,7 @@ class WaypointRunner(Node):
         req.x = x_mm / 1000.0
         req.y = y_mm / 1000.0
 
-        # Call service async, don’t break executor’s Future API
+        # Call service async
         if not self.goto_cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().error('WaferGoto service unavailable!')
             return False

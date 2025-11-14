@@ -192,7 +192,7 @@
         ros, name: '/wafer/run_waypoints', serviceType: 'wafer_stage_interfaces/srv/RunWaypoints'
       });
       stopWpSrv = new ROSLIB.Service({
-        ros, name: '/wafer/stop_waypoints', serviceType: 'std_srvs/srv/Trigger'
+        ros, name: '/wafer/abort_waypoints', serviceType: 'std_srvs/srv/Trigger'        
       });
 
       // Optional routes topic (std_msgs/String with YAML keys)
