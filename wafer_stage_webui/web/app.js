@@ -181,6 +181,16 @@
           redrawBars();
         }
       });
+      // === Action Status Subscriber ===
+      const actionStatusListener = new ROSLIB.Topic({
+        ros: ros,
+        name: '/wafer/action_status',
+        messageType: 'std_msgs/String'
+      });
+
+      actionStatusListener.subscribe((msg) => {
+        addActionLog(msg.data);
+      });
 
       // Goto service
       gotoSrv = new ROSLIB.Service({
@@ -234,6 +244,14 @@
   function disconnect() {
     if (ros) { ros.close(); }
   }
+
+  function addActionLog(text) {
+    const el = document.getElementById("action_log");
+    const ts = new Date().toLocaleTimeString();
+    el.textContent += `[${ts}] ${text}\n`;
+    el.scrollTop = el.scrollHeight;
+  }
+
 
   function callGoto(x_mm, y_mm) {
     if (!gotoSrv) return log('Goto service not ready.');

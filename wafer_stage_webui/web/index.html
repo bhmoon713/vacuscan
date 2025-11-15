@@ -120,46 +120,76 @@
 <!-- Waypoints -->
 <section class="card" style="margin:0 16px 16px;">
   <h2>Waypoints</h2>
-  <div class="controls">
-    <div style="grid-column: span 3;">
-      <label>Route</label>
-      <select id="wpRoute">
-        <option value="calibration">calibration</option>
-        <option value="warming_up">warming_up</option>
-        <option value="scan_E5CA">scan_E5CA</option>
-        <option value="scan_HBM4">scan_HBM4</option>
-      </select>
+
+  <!-- Put controls + action log in same row -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+
+    <!-- LEFT: Waypoint Controls -->
+    <div>
+      <div class="controls">
+
+        <div style="grid-column: span 3;">
+          <label>Route</label>
+          <select id="wpRoute">
+            <option value="calibration">calibration</option>
+            <option value="warming_up">warming_up</option>
+            <option value="scan_E5CA">scan_E5CA</option>
+            <option value="scan_HBM4">scan_HBM4</option>
+          </select>
+        </div>
+
+        <div style="grid-column: span 2;">
+          <label>Tolerance (mm)</label>
+          <input id="wpTol" type="number" step="1" value="50">
+        </div>
+
+        <div style="grid-column: span 2;">
+          <label>Timeout (s)</label>
+          <input id="wpTimeout" type="number" step="0.1" value="10">
+        </div>
+
+        <div style="grid-column: span 2;">
+          <label>Pause (s)</label>
+          <input id="wpPause" type="number" step="0.1" value="0.5">
+        </div>
+
+        <div style="grid-column: span 2;">
+          <label>Loop</label>
+          <select id="wpLoop">
+            <option value="false">off</option>
+            <option value="true">on</option>
+          </select>
+        </div>
+
+        <div style="grid-column: span 1;">
+          <label>&nbsp;</label>
+          <button id="btnRunRoute" class="ok" disabled>Run</button>
+        </div>
+
+        <div style="grid-column: span 1;">
+          <label>&nbsp;</label>
+          <button id="btnStopRoute" class="warn" disabled>Abort</button>
+        </div>
+
+      </div>
     </div>
-    <div style="grid-column: span 2;">
-      <label>Tolerance (mm)</label>
-      <input id="wpTol" type="number" step="1" value="50">
+
+    <!-- RIGHT: Action Log -->
+    <div>
+      <h2 style="margin-top:0;">Action Status</h2>
+      <div style="height: 260px; overflow-y: auto; background:#0b0f14; 
+                  border:1px dashed var(--muted); border-radius:10px; padding:10px;">
+        <pre id="action_log" style="color:#0f0; font-size:14px; margin:0;"></pre>
+      </div>
     </div>
-    <div style="grid-column: span 2;">
-      <label>Timeout (s)</label>
-      <input id="wpTimeout" type="number" step="0.1" value="10">
-    </div>
-    <div style="grid-column: span 2;">
-      <label>Pause (s)</label>
-      <input id="wpPause" type="number" step="0.1" value="0.5">
-    </div>
-    <div style="grid-column: span 2;">
-      <label>Loop</label>
-      <select id="wpLoop">
-        <option value="false">off</option>
-        <option value="true">on</option>
-      </select>
-    </div>
-    <div style="grid-column: span 1;">
-      <label>&nbsp;</label>
-      <button id="btnRunRoute" class="ok" disabled>Run</button>
-    </div>
-    <div style="grid-column: span 1;">
-      <label>&nbsp;</label>
-      <button id="btnStopRoute" class="warn" disabled>Abort</button>
-    </div>
+
   </div>
-  <div class="hint">Services: <code>/wafer/run_waypoints</code> (RunWaypoints), <code>/wafer/abort_waypoints</code> (std_srvs/Trigger).
-    Optional topic: <code>/wafer/waypoint_routes</code> (std_msgs/String) to refresh route names.</div>
+
+  <div class="hint" style="margin-top:10px;">
+    Services: <code>/wafer/run_waypoints</code> (RunWaypoints),
+    <code>/wafer/abort_waypoints</code> (std_srvs/Trigger).  
+    Optional topic: <code>/wafer/waypoint_routes</code> (std_msgs/String) for automatic route refresh.
+  </div>
 </section>
 
 <section class="card" style="margin:0 16px 16px;">

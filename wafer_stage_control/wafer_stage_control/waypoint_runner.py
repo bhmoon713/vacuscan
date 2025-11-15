@@ -13,7 +13,7 @@ from geometry_msgs.msg import Pose2D
 from ament_index_python.packages import get_package_share_directory
 
 from wafer_stage_interfaces.srv import RunWaypoints, WaferGoto
-
+from std_msgs.msg import String
 
 class WaypointRunner(Node):
     def __init__(self):
@@ -69,7 +69,9 @@ class WaypointRunner(Node):
             self._on_abort
         )
 
-        self.get_logger().info(f'Loaded waypoint routes: {list(self.routes.keys())}')
+        self._push_action_log(f'Loaded waypoint routes: {list(self.routes.keys())}')
+        self.pub_action_status = self.create_publisher(String, "/wafer/action_status", 10)
+
 
     # ------------------------------------------------------------------
     # Load waypoints from YAML
@@ -155,7 +157,7 @@ class WaypointRunner(Node):
             else:
                 pts = r  # assume list of points
 
-            self.get_logger().info(
+            self._push_action_log(
                 f'Running route "{route_name}" (N={len(pts)}) '
                 f'tol={tol_mm:.1f}mm timeout={timeout_s:.1f}s pause={pause_s:.1f}s loop={do_loop}'
             )
@@ -243,7 +245,7 @@ class WaypointRunner(Node):
                     # Pause step (inline)
                     if isinstance(parsed, tuple) and parsed[0] == 'pause':
                         _, ps = parsed
-                        self.get_logger().info(f'[route] step {i}: pause {ps}s')
+                        self._push_action_log(f'[route] step {i}: pause {ps}s')
                         t0 = time.time()
                         while time.time() - t0 < ps and not self.abort_flag:
                             time.sleep(0.05)
@@ -257,18 +259,18 @@ class WaypointRunner(Node):
                     # FIXED ACTION SEQUENCE AFTER REACHING EACH WAYPOINT
                     # --------------------------------------------------------------------
                     if not self.abort_flag and ok:
-                        self.get_logger().info('stabilizing ')
+                        self._push_action_log('stabilizing ')
                         time.sleep(2.0)
 
-                        self.get_logger().info('[action seq] vacuum ON')
+                        self._push_action_log("[action seq] vacuum ON")
                         self._call_action('vacuum_on')
                         time.sleep(1.5)
 
-                        self.get_logger().info('[action seq] capture')
+                        self._push_action_log('[action seq] capture')
                         self._call_action('capture')
                         time.sleep(1.5)
                         
-                        self.get_logger().info('[action seq] vacuum OFF')
+                        self._push_action_log('[action seq] vacuum OFF')
                         self._call_action('vacuum_off')
                         time.sleep(1.5)    
                     # --------------------------------------------------------------------
@@ -282,7 +284,7 @@ class WaypointRunner(Node):
                 if not do_loop:
                     break
 
-            self.get_logger().info('Route finished')
+            self._push_action_log('Route finished')
         except Exception as e:
             self.get_logger().error(f'_run_route exception: {e}')
 
@@ -324,7 +326,7 @@ class WaypointRunner(Node):
 
             ok = future.result().success
             msg = future.result().message
-            self.get_logger().info(f'[action] {action_name} → success={ok} msg="{msg}"')
+            self._push_action_log(f'[action] {action_name} → success={ok} msg="{msg}"')
             return ok
 
         except Exception as e:
@@ -359,6 +361,14 @@ class WaypointRunner(Node):
                 return False
             time.sleep(0.02)
         return False
+    
+    def _push_action_log(self, msg: str):
+        """Publish action log to /wafer/action_status and print to console."""
+        self.get_logger().info(msg)
+        try:
+            self.pub_action_status.publish(String(data=msg))
+        except Exception as e:
+            self.get_logger().error(f"Failed to publish action status: {e}")
 
 
 def main():
