@@ -71,7 +71,7 @@ class WaypointRunner(Node):
 
         self._push_action_log(f'Loaded waypoint routes: {list(self.routes.keys())}')
         self.pub_action_status = self.create_publisher(String, "/wafer/action_status", 10)
-
+        self.pub_progress = self.create_publisher(Float32, "/wafer/waypoint_progress", 10)
 
     # ------------------------------------------------------------------
     # Load waypoints from YAML
@@ -280,7 +280,9 @@ class WaypointRunner(Node):
                         t0 = time.time()
                         while time.time() - t0 < pause_s and not self.abort_flag:
                             time.sleep(0.05)
-
+                    # after vacuum/capture/off sequence
+                    progress = float(i + 1) / float(total_pts) * 100.0
+                    self.pub_progress.publish(Float32(data=progress))
                 if not do_loop:
                     break
 

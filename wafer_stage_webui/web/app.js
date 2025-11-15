@@ -62,6 +62,25 @@
   let poseTopic = null, lengthsTopic = null, gotoSrv = null;
   let runWpSrv = null, stopWpSrv = null, routesTopic = null;
 
+
+  // ---------------------------
+  // Route Progress Handling
+  // ---------------------------
+  let totalWaypoints = 0;
+  let currentWaypointIndex = 0;
+
+  function resetProgress() {
+    totalWaypoints = 0;
+    currentWaypointIndex = 0;
+    updateProgressBar(0);
+  }
+
+  function updateProgressBar(percent) {
+    const bar = document.getElementById('route-progress-bar');
+    bar.style.width = percent + "%";
+    bar.textContent = Math.round(percent) + "%";
+  }
+
   function log(msg) {
     const t = new Date().toLocaleTimeString();
     logEl.innerText = `[${t}] ${msg}\n` + logEl.innerText;
@@ -197,6 +216,35 @@
         ros, name: '/wafer/goto', serviceType: 'wafer_stage_interfaces/srv/WaferGoto'
       });
 
+
+      // ---------------------------
+      // Progress Subscriber
+      // ---------------------------
+      const progressSub = new ROSLIB.Topic({
+        ros: ros,
+        name: "/wafer/route_progress",
+        messageType: "std_msgs/Int32"
+      });
+
+      const progressTotalSub = new ROSLIB.Topic({
+        ros: ros,
+        name: "/wafer/route_total",
+        messageType: "std_msgs/Int32"
+      });
+
+      progressTotalSub.subscribe(msg => {
+        totalWaypoints = msg.data;
+      });
+
+      progressSub.subscribe(msg => {
+        currentWaypointIndex = msg.data;
+
+        if (totalWaypoints > 0) {
+          const percent = ((currentWaypointIndex + 1) / totalWaypoints) * 100;
+          updateProgressBar(percent);
+        }
+      });
+
       // Waypoints services
       runWpSrv = new ROSLIB.Service({
         ros, name: '/wafer/run_waypoints', serviceType: 'wafer_stage_interfaces/srv/RunWaypoints'
@@ -280,6 +328,7 @@
       loop: (wpLoop.value === 'true')
     });
     btnRunRoute.disabled = true;
+    resetProgress();
     runWpSrv.callService(req, (res) => {
       btnRunRoute.disabled = false;
       log(`[RUN] accepted=${res.accepted} msg="${res.message||''}"`);

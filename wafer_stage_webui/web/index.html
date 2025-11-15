@@ -176,6 +176,20 @@
 
     <!-- RIGHT: Action Log -->
     <div>
+      <!-- ========================= -->
+      <!-- ROUTE PROGRESS BAR -->
+      <!-- ========================= -->
+      <div class="mb-3">
+        <label class="form-label fw-bold" style="color:#ccc;">Route Progress</label>
+        <div class="progress" style="height: 22px; background:#333;">
+          <div id="route-progress-bar"
+              class="progress-bar progress-bar-striped progress-bar-animated"
+              role="progressbar"
+              style="width: 0%; background:#4caf50;">
+            0%
+          </div>
+        </div>
+      </div>
       <h2 style="margin-top:0;">Action Status</h2>
       <div style="height: 260px; overflow-y: auto; background:#0b0f14; 
                   border:1px dashed var(--muted); border-radius:10px; padding:10px;">
