@@ -13,7 +13,8 @@ from geometry_msgs.msg import Pose2D
 from ament_index_python.packages import get_package_share_directory
 
 from wafer_stage_interfaces.srv import RunWaypoints, WaferGoto
-from std_msgs.msg import String
+from std_msgs.msg import String, Int32   # <--- added Int32
+
 
 class WaypointRunner(Node):
     def __init__(self):
@@ -33,9 +34,22 @@ class WaypointRunner(Node):
         self.abort_flag = False
         self.lock = Lock()
         self.pose = Pose2D()
+        self.total_pts = 0  # <--- for progress bar
+
+        # Publishers (create BEFORE using _push_action_log)
+        self.pub_action_status = self.create_publisher(
+            String, "/wafer/action_status", 10
+        )
+        self.pub_route_progress = self.create_publisher(
+            Int32, "/wafer/route_progress", 10
+        )
+        self.pub_route_total = self.create_publisher(
+            Int32, "/wafer/route_total", 10
+        )
 
         # Load routes from YAML
         self._load_routes()
+        self._push_action_log(f'Loaded waypoint routes: {list(self.routes.keys())}')
 
         # Subscriptions
         self.create_subscription(
@@ -54,8 +68,7 @@ class WaypointRunner(Node):
         # Action service clients (Trigger)
         self.vacuum_on_cli  = self.create_client(Trigger, '/vacuum/on')
         self.vacuum_off_cli = self.create_client(Trigger, '/vacuum/off')
-        self.capture_cli    = self.create_client(Trigger, '/wafer/capture')  # Only if capture node exists!
-
+        self.capture_cli    = self.create_client(Trigger, '/wafer/capture')
 
         # Services
         self.run_srv = self.create_service(
@@ -68,10 +81,6 @@ class WaypointRunner(Node):
             '/wafer/abort_waypoints',
             self._on_abort
         )
-
-        self._push_action_log(f'Loaded waypoint routes: {list(self.routes.keys())}')
-        self.pub_action_status = self.create_publisher(String, "/wafer/action_status", 10)
-        self.pub_progress = self.create_publisher(Float32, "/wafer/waypoint_progress", 10)
 
     # ------------------------------------------------------------------
     # Load waypoints from YAML
@@ -109,7 +118,6 @@ class WaypointRunner(Node):
             if not self.has_parameter(name):
                 self.declare_parameter(name, default)
         except Exception:
-            # some distros throw if already declared — ignore
             pass
         p = self.get_parameter(name)
         if not p or p.value is None:
@@ -150,12 +158,20 @@ class WaypointRunner(Node):
             r = self.routes[route_name]
             if isinstance(r, dict):
                 pts = r.get('points', [])
-                # allow per-route defaults if request gave zeros
                 if req.tol_mm    <= 0: tol_mm    = float(r.get('tol_mm',    tol_mm))
                 if req.timeout_s <= 0: timeout_s = float(r.get('timeout_s', timeout_s))
                 if req.pause_s   <  0: pause_s   = float(r.get('pause_s',   pause_s))
             else:
                 pts = r  # assume list of points
+
+            self.total_pts = len(pts)
+            if self.total_pts <= 0:
+                res.accepted = False
+                res.message = f'Route "{route_name}" has no points.'
+                return res
+
+            # publish total so web UI can compute %
+            self.pub_route_total.publish(Int32(data=self.total_pts))
 
             self._push_action_log(
                 f'Running route "{route_name}" (N={len(pts)}) '
@@ -225,11 +241,6 @@ class WaypointRunner(Node):
     def _run_route(self, pts, tol_mm, timeout_s, pause_s, do_loop):
         """
         Execute a list of waypoints.
-        - pts: list of entries (supports {'x','y'}, {'x_mm','y_mm'}, {'x_m','y_m'}, [x,y], or {'pause_s': seconds})
-        - tol_mm: tolerance in millimeters
-        - timeout_s: max time to reach each waypoint
-        - pause_s: dwell after reaching each waypoint (seconds)
-        - do_loop: repeat forever until abort
         """
         try:
             while rclpy.ok() and not self.abort_flag:
@@ -249,40 +260,44 @@ class WaypointRunner(Node):
                         t0 = time.time()
                         while time.time() - t0 < ps and not self.abort_flag:
                             time.sleep(0.05)
+                        # count this as a step in progress
+                        self.pub_route_progress.publish(
+                            Int32(data=min(i + 1, self.total_pts))
+                        )
                         continue
 
                     # Motion step
                     x_mm, y_mm = parsed
                     ok = self._goto_and_wait(x_mm, y_mm, float(tol_mm), float(timeout_s))
 
-                    # --------------------------------------------------------------------
-                    # FIXED ACTION SEQUENCE AFTER REACHING EACH WAYPOINT
-                    # --------------------------------------------------------------------
+                    # Fixed action sequence after each waypoint
                     if not self.abort_flag and ok:
                         self._push_action_log('stabilizing ')
                         time.sleep(2.0)
 
-                        self._push_action_log("[action seq] vacuum ON")
+                        self._push_action_log('[action seq] vacuum ON')
                         self._call_action('vacuum_on')
                         time.sleep(1.5)
 
                         self._push_action_log('[action seq] capture')
                         self._call_action('capture')
                         time.sleep(1.5)
-                        
+
                         self._push_action_log('[action seq] vacuum OFF')
                         self._call_action('vacuum_off')
-                        time.sleep(1.5)    
-                    # --------------------------------------------------------------------
+                        time.sleep(1.5)
 
                     # Pause after each waypoint (optional)
                     if pause_s and pause_s > 0 and not self.abort_flag:
                         t0 = time.time()
                         while time.time() - t0 < pause_s and not self.abort_flag:
                             time.sleep(0.05)
-                    # after vacuum/capture/off sequence
-                    progress = float(i + 1) / float(total_pts) * 100.0
-                    self.pub_progress.publish(Float32(data=progress))
+
+                    # update progress (1..N)
+                    self.pub_route_progress.publish(
+                        Int32(data=min(i + 1, self.total_pts))
+                    )
+
                 if not do_loop:
                     break
 
@@ -291,17 +306,9 @@ class WaypointRunner(Node):
             self.get_logger().error(f'_run_route exception: {e}')
 
     # ---------------------------------------------------------
-    # Helper: call simple action services (vacuum_on, capture, vacuum_off)
+    # Helper: call simple action services
     # ---------------------------------------------------------
     def _call_action(self, action_name: str):
-        """
-        Call one of:
-          - /wafer/vacuum_on
-          - /wafer/vacuum_off
-          - /wafer/capture
-
-        All assumed to be std_srvs/Trigger.
-        """
         if action_name == 'vacuum_on':
             client = self.vacuum_on_cli
         elif action_name == 'vacuum_off':
@@ -343,7 +350,6 @@ class WaypointRunner(Node):
         req.x = x_mm / 1000.0
         req.y = y_mm / 1000.0
 
-        # Call service async
         if not self.goto_cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().error('WaferGoto service unavailable!')
             return False
@@ -363,9 +369,8 @@ class WaypointRunner(Node):
                 return False
             time.sleep(0.02)
         return False
-    
+
     def _push_action_log(self, msg: str):
-        """Publish action log to /wafer/action_status and print to console."""
         self.get_logger().info(msg)
         try:
             self.pub_action_status.publish(String(data=msg))

@@ -48,6 +48,10 @@
   const btnRunRoute = document.getElementById('btnRunRoute');
   const btnStopRoute = document.getElementById('btnStopRoute');
 
+  const MAX_LOG_LINES = 10;
+  let mainLogLines = [];
+  let actionLogLines = [];
+
   // ---- Bars canvas (keep existing working behaviour) ----
   const bars = document.getElementById('bars');
   const ctx = bars.getContext('2d');
@@ -83,7 +87,12 @@
 
   function log(msg) {
     const t = new Date().toLocaleTimeString();
-    logEl.innerText = `[${t}] ${msg}\n` + logEl.innerText;
+    const line = `[${t}] ${msg}`;
+    mainLogLines.push(line);
+    if (mainLogLines.length > MAX_LOG_LINES) {
+      mainLogLines = mainLogLines.slice(-MAX_LOG_LINES);
+    }
+    logEl.innerText = mainLogLines.join('\n');
   }
 
   function setConnected(state) {
@@ -296,9 +305,15 @@
   function addActionLog(text) {
     const el = document.getElementById("action_log");
     const ts = new Date().toLocaleTimeString();
-    el.textContent += `[${ts}] ${text}\n`;
+    const line = `[${ts}] ${text}`;
+    actionLogLines.push(line);
+    if (actionLogLines.length > MAX_LOG_LINES) {
+      actionLogLines = actionLogLines.slice(-MAX_LOG_LINES);
+    }
+    el.textContent = actionLogLines.join('\n');
     el.scrollTop = el.scrollHeight;
   }
+
 
 
   function callGoto(x_mm, y_mm) {
