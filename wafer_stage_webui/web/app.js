@@ -48,7 +48,7 @@
   const btnRunRoute = document.getElementById('btnRunRoute');
   const btnStopRoute = document.getElementById('btnStopRoute');
 
-  const MAX_LOG_LINES = 10;
+  const MAX_LOG_LINES = 15;
   let mainLogLines = [];
   let actionLogLines = [];
 
@@ -88,12 +88,17 @@
   function log(msg) {
     const t = new Date().toLocaleTimeString();
     const line = `[${t}] ${msg}`;
-    mainLogLines.push(line);
+
+    mainLogLines.unshift(line);
+
     if (mainLogLines.length > MAX_LOG_LINES) {
-      mainLogLines = mainLogLines.slice(-MAX_LOG_LINES);
+      mainLogLines = mainLogLines.slice(0, MAX_LOG_LINES);
     }
+
     logEl.innerText = mainLogLines.join('\n');
+    logEl.scrollTop = 0;
   }
+
 
   function setConnected(state) {
     connected = state;
@@ -306,13 +311,20 @@
     const el = document.getElementById("action_log");
     const ts = new Date().toLocaleTimeString();
     const line = `[${ts}] ${text}`;
-    actionLogLines.push(line);
+
+    // NEWEST FIRST
+    actionLogLines.unshift(line);
+
+    // Keep latest 10 lines only
     if (actionLogLines.length > MAX_LOG_LINES) {
-      actionLogLines = actionLogLines.slice(-MAX_LOG_LINES);
+      actionLogLines = actionLogLines.slice(0, MAX_LOG_LINES);
     }
+
+    // Join with newline
     el.textContent = actionLogLines.join('\n');
-    el.scrollTop = el.scrollHeight;
+    el.scrollTop = 0;   // move view to top (newest)
   }
+
 
 
 
