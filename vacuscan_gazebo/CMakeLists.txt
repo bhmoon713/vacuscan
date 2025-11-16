@@ -32,4 +32,8 @@ install(
     share/${PROJECT_NAME}/
 )
 
+install(PROGRAMS
+  scripts/y_move.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 ament_package()
