@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<robot name="vacuscan_bot">
+
+<material name="blue">
+  <color rgba="0.006 0.151 0.581 1"/>
+</material>
+
+<material name="white">
+  <color rgba="1.0 0.91 0.827 1"/>
+</material>
+
+<material name="green">
+  <color rgba="0.0 0.6 0.2 1"/>
+</material>
+
+<material name="red">
+  <color rgba="0.8 0.1 0.1 1"/>
+</material>
+
+<material name="yellow">
+  <color rgba="1.0 0.85 0.1 1"/>
+</material>
+
+<material name="gray">
+  <color rgba="0.5 0.5 0.5 1"/>
+</material>
+
+<material name="purple">
+  <color rgba="0.5 0.1 0.6 1"/>
+</material>
+
+  <link name="base_link">
+    <visual>
+    <origin rpy="0 0 0" xyz="0 0 0" /> 
+      <geometry>
+        <box size="0.8 1.0 0.1"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+
+<!-- left rail -->
+  <link name="rail_left_link">
+    <visual>
+      <geometry>
+        <box size="0.1 1.0 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+    <joint name="base_link_to_rail_left_link_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0.5 0 0.0" />
+        <parent link="base_link" />
+        <child link="rail_left_link" />
+    </joint>
+
+<!-- left mount -->
+  <link name="mount_left_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.02"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+  </link>
+
+    <joint name="rail_left_link_to_mount_left_link_joint" type="prismatic">
+        <origin rpy="0 0 0" xyz="0 0 0.06" />
+        <parent link="rail_left_link" />
+        <child link="mount_left_link" />
+        <axis xyz="0 1 0"/>
+        <limit effort="100" velocity="0.1" lower="-0.45" upper="0.2"/>
+    </joint>
+
+
+<!-- right rail -->
+  <link name="rail_right_link">
+    <visual>
+      <geometry>
+        <box size="0.1 1.0 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+    <joint name="base_link_to_rail_right_link_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.5 0 0.0" />
+        <parent link="base_link" />
+        <child link="rail_right_link" />
+    </joint>
+
+<!-- right mount -->
+  <link name="mount_right_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.02"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+  </link>
+
+    <joint name="rail_right_link_to_mount_right_link_joint" type="prismatic">
+        <origin rpy="0 0 0" xyz="0 0 0.06" />
+        <parent link="rail_right_link" />
+        <child link="mount_right_link" />
+        <axis xyz="0 1 0"/>
+        <limit effort="100" velocity="0.1" lower="-0.45" upper="0.2"/>
+
+        <!-- 👇 Make right mount copy left mount -->
+        <mimic joint="rail_left_link_to_mount_left_link_joint"
+            multiplier="1.0"
+            offset="0.0"/>            
+    </joint>
+
+
+<!-- center_rail -->
+  <link name="rail_center_link">
+    <visual>
+      <geometry>
+        <box size="1.1 0.1 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+    <joint name="mount_left_link_to_rail_center_link_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.5 0 0.05" />
+        <parent link="mount_left_link" />
+        <child link="rail_center_link" />
+    </joint>
+
+<!-- center mount -->
+  <link name="mount_center_link">
+    <visual>
+      <geometry>
+        <box size="0.2 0.02 0.1"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+  </link>
+
+    <joint name="rail_center_link_to_mount_center_link_joint" type="prismatic">
+        <origin rpy="0 0 0" xyz="0 0.06 0" />
+        <parent link="rail_center_link" />
+        <child link="mount_center_link" />
+        <axis xyz="1 0 0"/>
+        <limit effort="100" velocity="0.1" lower="-0.3" upper="0.3"/>
+    </joint>
+
+<!-- wafer holder -->
+  <link name="wafer_holder_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.4 0.01"/>
+      </geometry>
+      <material name="purple"/>
+    </visual>
+  </link>
+
+    <joint name="mount_center_link_to_wafer_holder_link_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0.2 0" />
+        <parent link="mount_center_link" />
+        <child link="wafer_holder_link" />
+    </joint>
+
+
+
+</robot>

@@ -37,3 +37,6 @@ ros2 service call /vacuum/on std_srvs/srv/Trigger "{}"
 ros2 service call /vacuum/off std_srvs/srv/Trigger "{}"
 
 ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints "{route: scan_HBM4, loop: false}"
+
+usefil CLI
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
