@@ -50,6 +50,9 @@
     </collision>
   </link>
 
+    <gazebo reference="base_link">
+        <material>Gazebo/Blue</material>
+    </gazebo>
 
 <!-- left rail -->
   <link name="rail_left_link">
@@ -75,6 +78,10 @@
         <parent link="base_link" />
         <child link="rail_left_link" />
     </joint>
+
+    <gazebo reference="rail_left_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
 
 <!-- left mount -->
   <link name="mount_left_link">
@@ -128,7 +135,9 @@
         <parent link="base_link" />
         <child link="rail_right_link" />
     </joint>
-
+    <gazebo reference="rail_right_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
 <!-- right mount -->
   <link name="mount_right_link">
     <visual>
@@ -181,11 +190,13 @@
   </link>
 
     <joint name="mount_left_link_to_rail_center_link_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="-0.5 0 0.05" />
+        <origin rpy="0 0 0" xyz="-0.5 0 0.06" />
         <parent link="mount_left_link" />
         <child link="rail_center_link" />
     </joint>
-
+    <gazebo reference="rail_center_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
 <!-- center mount -->
   <link name="mount_center_link">
     <visual>
@@ -239,4 +250,7 @@
         <parent link="mount_center_link" />
         <child link="wafer_holder_link" />
     </joint>
+    <gazebo reference="wafer_holder_link">
+        <material>Gazebo/Yellow</material>
+    </gazebo>
 </robot>

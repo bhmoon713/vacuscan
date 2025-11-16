@@ -49,7 +49,7 @@ rviz2 -d ~/ros2_ws/src/vacuscan_description/rviz/simple.rviz
 ros2 run joint_state_publisher_gui joint_state_publisher_gui
 
 
-Gazebo
+Gazebo (robot_description topic + empty gazebo + spawn vacuscan)
 ros2 launch vacuscan_description urdf_visualize.launch.py 
 ros2 launch vacuscan_gazebo start_world.launch.py
 ros2 launch vacuscan_gazebo spawn_robot_description.launch.py
