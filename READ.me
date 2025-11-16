@@ -26,6 +26,7 @@ http://localhost:8080/
 
 # Gazebo simulation 
 ros2 launch wafer_stage_gazebo sim.launch.py 
+ros2 launch vacuscan_gazebo start_world.launch.py
 
 
 # CLI waypoints command 
@@ -40,3 +41,15 @@ ros2 service call /wafer/run_waypoints wafer_stage_interfaces/srv/RunWaypoints "
 
 usefil CLI
 ros2 run joint_state_publisher_gui joint_state_publisher_gui
+
+
+rviz testing
+ros2 launch vacuscan_description urdf_visualize.launch.py 
+rviz2 -d ~/ros2_ws/src/vacuscan_description/rviz/simple.rviz
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
+
+
+Gazebo
+ros2 launch vacuscan_description urdf_visualize.launch.py 
+ros2 launch vacuscan_gazebo start_world.launch.py
+ros2 launch vacuscan_gazebo spawn_robot_description.launch.py

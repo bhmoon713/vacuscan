@@ -9,7 +9,7 @@ Panels:
         - /LaserScan1/Topic1
         - /Image1/Topic1
         - /RobotModel1
-        - /RobotModel1/Status1
+        - /TF1
       Splitter Ratio: 0.6510263681411743
     Tree Height: 564
   - Class: rviz_common/Selection
@@ -143,7 +143,22 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        mount_center_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         mount_left_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        mount_right_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rail_center_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -154,6 +169,11 @@ Visualization Manager:
           Show Trail: false
           Value: true
         rail_right_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer_holder_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -173,13 +193,21 @@ Visualization Manager:
         All Enabled: true
         base_link:
           Value: true
+        mount_center_link:
+          Value: true
         mount_left_link:
+          Value: true
+        mount_right_link:
+          Value: true
+        rail_center_link:
           Value: true
         rail_left_link:
           Value: true
         rail_right_link:
           Value: true
-      Marker Scale: 1
+        wafer_holder_link:
+          Value: true
+      Marker Scale: 0.699999988079071
       Name: TF
       Show Arrows: true
       Show Axes: true
@@ -188,7 +216,12 @@ Visualization Manager:
         base_link:
           rail_left_link:
             mount_left_link:
-              {}
+              mount_right_link:
+                {}
+              rail_center_link:
+                mount_center_link:
+                  wafer_holder_link:
+                    {}
           rail_right_link:
             {}
       Update Interval: 0
@@ -239,7 +272,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.826822519302368
+      Distance: 1.3542875051498413
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -254,10 +287,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5697960257530212
+      Pitch: 0.6847960352897644
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.2817695140838623
+      Yaw: 2.2367658615112305
     Saved: ~
 Window Geometry:
   Camera:

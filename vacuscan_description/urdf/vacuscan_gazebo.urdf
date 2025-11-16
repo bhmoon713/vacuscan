@@ -149,15 +149,17 @@
     </collision>
   </link>
 
-    <joint name="mount_left_link_to_mount_right_link_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="-1.0 0 0" />
-        <parent link="mount_left_link" />
+    <joint name="rail_right_link_to_mount_right_link_joint" type="prismatic">
+        <origin rpy="0 0 0" xyz="0 0 0.06" />
+        <parent link="rail_right_link" />
         <child link="mount_right_link" />
+        <axis xyz="0 1 0"/>
+        <limit effort="100" velocity="0.1" lower="-0.45" upper="0.2"/>
 
         <!-- 👇 Make right mount copy left mount -->
-        <!-- <mimic joint="rail_left_link_to_mount_left_link_joint"
+        <mimic joint="rail_left_link_to_mount_left_link_joint"
             multiplier="1.0"
-            offset="0.0"/>             -->
+            offset="0.0"/>            
     </joint>
 
 
