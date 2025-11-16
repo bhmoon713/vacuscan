@@ -2,16 +2,30 @@ controller_manager:
   ros__parameters:
     update_rate: 100  # Hz
 
-    joint_trajectory_controller:
+    y_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    x_joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-joint_trajectory_controller:
+y_joint_trajectory_controller:
   ros__parameters:
     joints:
-      - rail_left_link_to_mount_left_link_joint
+      - y_control_joint
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+x_joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - x_control_joint
     interface_name: position
     command_interfaces:
       - position

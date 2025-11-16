@@ -122,16 +122,13 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.1"/>
+      <mass value="0.2"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia
-        ixx="0.00000833" ixy="0.0" ixz="0.0"
-        iyy="0.00000833" iyz="0.0"
-        izz="0.00001667"/>
+      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
     </inertial>
   </link>
 
-  <joint name="rail_left_link_to_mount_left_link_joint" type="prismatic">
+  <joint name="y_control_joint" type="prismatic">
     <origin xyz="0 0 0.06" rpy="0 0 0"/>
     <parent link="rail_left_link"/>
     <child link="mount_left_link"/>
@@ -196,12 +193,9 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.1"/>
+      <mass value="0.2"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia
-        ixx="0.00000833" ixy="0.0" ixz="0.0"
-        iyy="0.00000833" iyz="0.0"
-        izz="0.00001667"/>
+      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
     </inertial>
   </link>
 
@@ -275,7 +269,7 @@
     </inertial>
   </link>
 
-  <joint name="rail_center_link_to_mount_center_link_joint" type="prismatic">
+  <joint name="x_control_joint" type="prismatic">
     <origin xyz="0 0.06 0" rpy="0 0 0"/>
     <parent link="rail_center_link"/>
     <child link="mount_center_link"/>
@@ -328,8 +322,8 @@
         <remapping>~/out:=joint_states</remapping>
       </ros>
       <update_rate>30</update_rate>
-      <joint_name>rail_left_link_to_mount_left_link_joint</joint_name>
-      <joint_name>rail_center_link_to_mount_center_link_joint</joint_name>
+      <joint_name>y_control_joint</joint_name>
+      <joint_name>x_control_joint</joint_name>
     </plugin>
   </gazebo>
 
@@ -338,7 +332,7 @@
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
 
-    <joint name="rail_left_link_to_mount_left_link_joint">
+    <joint name="y_control_joint">
       <command_interface name="position">
         <param name="min">-0.45</param>
         <param name="max">0.4</param>
@@ -347,6 +341,18 @@
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
     </joint>
+
+
+  <joint name="x_control_joint">
+    <command_interface name="position">
+      <param name="min">-0.16</param>
+      <param name="max">0.16</param>
+    </command_interface>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+    <state_interface name="effort"/>
+  </joint>
+
   </ros2_control>
 
   <gazebo>

@@ -33,6 +33,7 @@ install(
 )
 
 install(PROGRAMS
+  scripts/x_move.py
   scripts/y_move.py
   DESTINATION lib/${PROJECT_NAME}
 )

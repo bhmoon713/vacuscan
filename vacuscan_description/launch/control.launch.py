@@ -17,17 +17,24 @@ def generate_launch_description():
         output="screen",
     )
 
-    spawn_controller_traj = Node(
+    spawn_controller_traj_x = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_trajectory_controller"],
+        arguments=["x_joint_trajectory_controller"],
         output="screen",
     )
- 
+    
+    spawn_controller_traj_y = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["y_joint_trajectory_controller"],
+        output="screen",
+    )
     # create and return launch description object
     return LaunchDescription(
         [
             spawn_controller,
-            spawn_controller_traj,
+            spawn_controller_traj_x,
+            spawn_controller_traj_y,
         ]
     )

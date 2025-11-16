@@ -14,14 +14,14 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 class SteeringActionClient(Node):
 
     def __init__(self):
-        super().__init__('moveY_actionclient')
-        self._action_client = ActionClient(self, FollowJointTrajectory, '/y_joint_trajectory_controller/follow_joint_trajectory')
+        super().__init__('moveX_actionclient')
+        self._action_client = ActionClient(self, FollowJointTrajectory, '/x_joint_trajectory_controller/follow_joint_trajectory')
 
     def send_goal(self, position_value):
         goal_msg = FollowJointTrajectory.Goal()
 
         # Fill in data for trajectory
-        joint_names = ["y_control_joint"]
+        joint_names = ["x_control_joint"]
 
         points = []
 
