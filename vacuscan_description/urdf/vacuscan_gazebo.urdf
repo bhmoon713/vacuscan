@@ -1,244 +1,464 @@
 <?xml version="1.0"?>
 <robot name="vacuscan_bot">
 
-<material name="blue">
-  <color rgba="0.006 0.151 0.581 1"/>
-</material>
+  <!-- Materials -->
+  <material name="blue">
+    <color rgba="0.006 0.151 0.581 1"/>
+  </material>
 
-<material name="white">
-  <color rgba="1.0 0.91 0.827 1"/>
-</material>
+  <material name="white">
+    <color rgba="1.0 0.91 0.827 1"/>
+  </material>
 
-<material name="green">
-  <color rgba="0.0 0.6 0.2 1"/>
-</material>
+  <material name="green">
+    <color rgba="0.0 0.6 0.2 1"/>
+  </material>
 
-<material name="red">
-  <color rgba="0.8 0.1 0.1 1"/>
-</material>
+  <material name="red">
+    <color rgba="0.8 0.1 0.1 1"/>
+  </material>
 
-<material name="yellow">
-  <color rgba="1.0 0.85 0.1 1"/>
-</material>
+  <material name="yellow">
+    <color rgba="1.0 0.85 0.1 1"/>
+  </material>
 
-<material name="gray">
-  <color rgba="0.5 0.5 0.5 1"/>
-</material>
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
 
-<material name="purple">
-  <color rgba="0.5 0.1 0.6 1"/>
-</material>
+  <material name="purple">
+    <color rgba="0.5 0.1 0.6 1"/>
+  </material>
 
-<!-- baselinkl -->
+  <!-- ==================== base_link ==================== -->
   <link name="base_link">
     <visual>
-    <origin rpy="0 0 0" xyz="0 0 0" /> 
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
+        <!-- 0.8 x 1.0 x 0.1 (w x d x h) -->
         <box size="0.8 1.0 0.1"/>
       </geometry>
       <material name="blue"/>
     </visual>
-    <inertial>
-      <mass value="1.2"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.8 1.0 0.1"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="1.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- From box inertia formulas -->
+      <inertia
+        ixx="0.0100" ixy="0.0" ixz="0.0"
+        iyy="0.0065" iyz="0.0"
+        izz="0.0133"/>
+    </inertial>
   </link>
 
+  <gazebo reference="base_link">
+    <kp>500000</kp>
+    <kd>100</kd>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
 
-<!-- left rail -->
+  <!-- ==================== left rail ==================== -->
   <link name="rail_left_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
+        <!-- 0.1 x 1.0 x 0.1 -->
         <box size="0.1 1.0 0.1"/>
       </geometry>
+      <material name="red"/>
     </visual>
-    <inertial>
-      <mass value="0.5"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 1.0 0.1"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- 0.1 x 1.0 x 0.1 box -->
+      <inertia
+        ixx="0.00417" ixy="0.0" ixz="0.0"
+        iyy="0.00083" iyz="0.0"
+        izz="0.00417"/>
+    </inertial>
   </link>
 
-    <joint name="base_link_to_rail_left_link_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="0.5 0 0.0" />
-        <parent link="base_link" />
-        <child link="rail_left_link" />
-    </joint>
+  <joint name="base_link_to_rail_left_link_joint" type="fixed">
+    <origin xyz="0.5 0 0.0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="rail_left_link"/>
+  </joint>
 
-<!-- left mount -->
+  <gazebo reference="rail_left_link">
+    <kp>500000</kp>
+    <kd>100</kd>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <!-- ==================== left mount (prismatic) ==================== -->
   <link name="mount_left_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.02"/>
       </geometry>
       <material name="white"/>
     </visual>
-    <inertial>
-      <mass value="0.1"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.02"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
+    </inertial>
   </link>
 
-    <joint name="rail_left_link_to_mount_left_link_joint" type="prismatic">
-        <origin rpy="0 0 0" xyz="0 0 0.06" />
-        <parent link="rail_left_link" />
-        <child link="mount_left_link" />
-        <axis xyz="0 1 0"/>
-        <limit effort="100" velocity="0.1" lower="-0.45" upper="0.2"/>
-    </joint>
+  <joint name="y_control_joint" type="prismatic">
+    <origin xyz="0 0 0.06" rpy="0 0 0"/>
+    <parent link="rail_left_link"/>
+    <child link="mount_left_link"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100" velocity="0.2" lower="-0.45" upper="0.2"/>
+    <dynamics damping="5.0" friction="1.0"/>
+  </joint>
 
-<!-- right rail -->
+  <!-- ==================== right rail ==================== -->
   <link name="rail_right_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- 0.1 x 1.0 x 0.1 -->
+        <box size="0.1 1.0 0.1"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 1.0 0.1"/>
       </geometry>
-    </visual>
+    </collision>
     <inertial>
       <mass value="0.5"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.00417" ixy="0.0" ixz="0.0"
+        iyy="0.00083" iyz="0.0"
+        izz="0.00417"/>
     </inertial>
-    <collision>
-      <geometry>
-        <box size="0.1 1.0 0.1"/>
-      </geometry>
-    </collision>
   </link>
 
-    <joint name="base_link_to_rail_right_link_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="-0.5 0 0.0" />
-        <parent link="base_link" />
-        <child link="rail_right_link" />
-    </joint>
+  <joint name="base_link_to_rail_right_link_joint" type="fixed">
+    <origin xyz="-0.5 0 0.0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="rail_right_link"/>
+  </joint>
 
-<!-- right mount -->
+  <gazebo reference="rail_right_link">
+    <kp>500000</kp>
+    <kd>100</kd>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <!-- ==================== right mount (rigid to left mount) ==================== -->
   <link name="mount_right_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.02"/>
       </geometry>
       <material name="white"/>
     </visual>
-    <inertial>
-      <mass value="0.1"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.02"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
+    </inertial>
   </link>
 
-    <joint name="rail_right_link_to_mount_right_link_joint" type="prismatic">
-        <origin rpy="0 0 0" xyz="0 0 0.06" />
-        <parent link="rail_right_link" />
-        <child link="mount_right_link" />
-        <axis xyz="0 1 0"/>
-        <limit effort="100" velocity="0.1" lower="-0.45" upper="0.2"/>
+  <!-- Right mount is rigidly attached relative to left mount -->
+  <joint name="mount_left_link_to_mount_right_link_joint" type="fixed">
+    <!-- 1.0 m offset in X from left mount -->
+    <origin xyz="-1.0 0 0" rpy="0 0 0"/>
+    <parent link="mount_left_link"/>
+    <child link="mount_right_link"/>
+  </joint>
 
-        <!-- 👇 Make right mount copy left mount -->
-        <mimic joint="rail_left_link_to_mount_left_link_joint"
-            multiplier="1.0"
-            offset="0.0"/>            
-    </joint>
-
-
-<!-- center_rail -->
+  <!-- ==================== center rail ==================== -->
   <link name="rail_center_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
+        <!-- 1.1 x 0.1 x 0.1 -->
         <box size="1.1 0.1 0.1"/>
       </geometry>
+      <material name="red"/>
     </visual>
-    <inertial>
-      <mass value="0.1"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="1.1 0.1 0.1"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.000183" ixy="0.0" ixz="0.0"
+        iyy="0.00092" iyz="0.0"
+        izz="0.00092"/>
+    </inertial>
   </link>
 
-    <joint name="mount_left_link_to_rail_center_link_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="-0.5 0 0.05" />
-        <parent link="mount_left_link" />
-        <child link="rail_center_link" />
-    </joint>
+  <joint name="mount_left_link_to_rail_center_link_joint" type="fixed">
+    <origin xyz="-0.5 0 0.06" rpy="0 0 0"/>
+    <parent link="mount_left_link"/>
+    <child link="rail_center_link"/>
+  </joint>
 
-<!-- center mount -->
+  <gazebo reference="rail_center_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <!-- ==================== center mount (X prismatic) ==================== -->
   <link name="mount_center_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
+        <!-- 0.2 x 0.02 x 0.1 -->
         <box size="0.2 0.02 0.1"/>
       </geometry>
       <material name="white"/>
     </visual>
-    <inertial>
-      <mass value="0.1"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.2 0.02 0.1"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.000017" ixy="0.0" ixz="0.0"
+        iyy="0.00017" iyz="0.0"
+        izz="0.000153"/>
+    </inertial>
   </link>
 
-    <joint name="rail_center_link_to_mount_center_link_joint" type="prismatic">
-        <origin rpy="0 0 0" xyz="0 0.06 0" />
-        <parent link="rail_center_link" />
-        <child link="mount_center_link" />
-        <axis xyz="1 0 0"/>
-        <limit effort="100" velocity="0.1" lower="-0.16" upper="0.16"/>
-    </joint>
+  <joint name="x_control_joint" type="prismatic">
+    <origin xyz="0 0.06 0" rpy="0 0 0"/>
+    <parent link="rail_center_link"/>
+    <child link="mount_center_link"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="100" velocity="0.2" lower="-0.16" upper="0.16"/>
+    <dynamics damping="5.0" friction="1.0"/>
+  </joint>
 
-<!-- wafer holder -->
+  <!-- ==================== wafer holder ==================== -->
   <link name="wafer_holder_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
+        <!-- 0.4 x 0.4 x 0.01 -->
         <box size="0.4 0.4 0.01"/>
       </geometry>
       <material name="yellow"/>
     </visual>
-    <inertial>
-      <mass value="0.1"/>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.0003333333333333334" ixy="0" ixz="0" iyy="0.0003333333333333334" iyz="0" izz="0.0003333333333333334"/>
-    </inertial>
     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.4 0.4 0.01"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.00017" ixy="0.0" ixz="0.0"
+        iyy="0.00017" iyz="0.0"
+        izz="0.00533"/>
+    </inertial>
   </link>
 
-    <joint name="mount_center_link_to_wafer_holder_link_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="0 0.2 -0.045" />
-        <parent link="mount_center_link" />
-        <child link="wafer_holder_link" />
+  <joint name="mount_center_link_to_wafer_holder_link_joint" type="fixed">
+    <origin xyz="0 0.2 -0.045" rpy="0 0 0"/>
+    <parent link="mount_center_link"/>
+    <child link="wafer_holder_link"/>
+  </joint>
+
+  <gazebo reference="wafer_holder_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+
+  <!-- wide angle RGB CAMERA -->
+  <!-- <link name="rgb_camera_link_frame">
+  </link>
+
+  <joint name="rgb_camera_link_frame_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0.0 0.0 1.05"/>
+      <parent link="base_link" />
+      <child link="rgb_camera_link_frame" />
+      <axis xyz="0 0 0"/>
+  </joint>
+
+    <gazebo reference="rgb_camera_link_frame">
+        <sensor name="camera" type="wideanglecamera">
+          <camera>
+            <horizontal_fov>6.283</horizontal_fov>
+            <image>
+              <width>320</width>
+              <height>240</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+            <lens>
+              <type>custom</type>
+              <custom_function>
+                <c1>1.05</c1>
+                <c2>4</c2>
+                <f>1.0</f>
+                <fun>tan</fun>
+              </custom_function>
+              <scale_to_hfov>true</scale_to_hfov>
+              <cutoff_angle>3.1415</cutoff_angle>
+              <env_texture_size>512</env_texture_size>
+            </lens>
+            <always_on>1</always_on>
+            <update_rate>30</update_rate>
+          </camera>
+          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+            <cameraName>rgb_camera</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>rgb_camera_link_frame</frameName>
+            <hackBaseline>0.07</hackBaseline>
+          </plugin>
+        </sensor>
+    </gazebo> -->
+
+
+
+  <!-- *********************** CAMERA SETUP *********************************  -->
+  <!-- Each sensor must be attached to a link.                              --> 
+  <joint name="camera_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="camera_link"/>
+  <origin xyz="0.0 0.0 1.0" rpy="0 1.57 0"/>
+  </joint>
+  <link name="camera_link"/>
+
+
+  <!-- <gazebo reference="camera_link">
+    <sensor name="camera" type="camera">
+        <update_rate>30.0</update_rate>
+        <always_on>1</always_on>
+        <visualize>true</visualize>          
+        <camera name="camera">
+            <horizontal_fov>1.3962634</horizontal_fov>
+            <image>
+                <width>480</width>
+                <height>360</height>
+                <format>R8G8B8</format>
+            </image>
+            <clip>
+                <near>0.01</near>
+                <far>20</far>
+            </clip>
+            <distortion>
+                <k1>0.0</k1>
+                <k2>0.0</k2>
+                <k3>0.0</k3>
+                <p1>0.0</p1>
+                <p2>0.0</p2>
+                <center>0.5 0.5</center>
+            </distortion>
+        </camera>
+        <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+          <ros>
+              <namespace>/vacuscan</namespace>
+              <remapping>~/image_raw:=camera/normal_image</remapping>
+              <remapping>~/camera_info:=camera/camera_info</remapping>
+          </ros>
+          <camera_name>camera_low</camera_name>
+          <frame_name>camera_link</frame_name>
+        </plugin>
+    </sensor>
+  </gazebo> -->
+
+
+  <!-- ==================== joint_state + ros2_control (unchanged) ==================== -->
+
+  <gazebo>
+    <plugin name="vacuscan_bot_joint_state" filename="libgazebo_ros_joint_state_publisher.so">
+      <ros>
+        <remapping>~/out:=joint_states</remapping>
+      </ros>
+      <update_rate>30</update_rate>
+      <joint_name>y_control_joint</joint_name>
+      <joint_name>x_control_joint</joint_name>
+    </plugin>
+  </gazebo>
+
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+
+    <joint name="y_control_joint">
+      <command_interface name="position">
+        <param name="min">-0.45</param>
+        <param name="max">0.4</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
     </joint>
+
+
+  <joint name="x_control_joint">
+    <command_interface name="position">
+      <param name="min">-0.16</param>
+      <param name="max">0.16</param>
+    </command_interface>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+    <state_interface name="effort"/>
+  </joint>
+
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>$(find vacuscan_description)/config/controller_position.yaml</parameters>
+      <robot_param_node>/vacuscan_bot_state_publisher_node</robot_param_node>
+    </plugin>
+  </gazebo>
+
 </robot>
