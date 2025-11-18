@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>vacuscan_bringup</name>
+  <version>0.0.1</version>
+  <description>Bringup (Gazebo + RViz + optional control/webui) for vacuscan stage</description>
+
+  <maintainer email="you@example.com">you</maintainer>
+  <license>Apache-2.0</license>
+
+  <!-- Build tools -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Launch + ROS2 -->
+  <depend>rclcpp</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+
+  <!-- Robot + sim -->
+  <depend>robot_state_publisher</depend>
+  <depend>gazebo_ros</depend>
+  <depend>rviz2</depend>
+
+  <!-- Your own packages -->
+  <depend>vacuscan_description</depend>
+  <depend>vacuscan_gazebo</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -1,0 +1,12 @@
+Visualization Manager:
+  Class: ""
+  Enabled: true
+  Name: root
+  Displays:
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+    - Class: rviz_default_plugins/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Robot Description: robot_description

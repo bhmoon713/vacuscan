@@ -124,7 +124,9 @@
     <inertial>
       <mass value="0.2"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
+      <inertia ixx="0.000033"  ixy="0.0" ixz="0.0"
+      iyy="0.000033"  iyz="0.0"
+      izz="0.000167"/>
     </inertial>
   </link>
 
@@ -195,7 +197,9 @@
     <inertial>
       <mass value="0.2"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
+      <inertia ixx="0.000033"  ixy="0.0" ixz="0.0"
+      iyy="0.000033"  iyz="0.0"
+      izz="0.000167"/>
     </inertial>
   </link>
 
@@ -445,7 +449,7 @@
           <update_rate>100.0</update_rate>
           <plugin name="laser" filename="libgazebo_ros_ray_sensor.so">
             <ros>
-              <namespace>/box_bot</namespace>
+              <namespace>/vacuscan</namespace>
               <remapping>~/out:=laser_scan</remapping>
             </ros>
             <output_type>sensor_msgs/LaserScan</output_type>

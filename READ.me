@@ -57,5 +57,30 @@ ros2 launch vacuscan_description control.launch.py
 ros2 run rqt_image_view rqt_image_view
 
 
-ros2 run vacuscan_gazebo y_move.py -1.5   (-0.45 ~ 0.2)
-ros2 run vacuscan_gazebo x_move.py -1.5   (-0.16 ~ 0.16)
+ros2 run vacuscan_gazebo y_move.py -0.45   (-0.45 ~ 0.2)
+ros2 run vacuscan_gazebo x_move.py -0.16   (-0.16 ~ 0.16)
+
+bring up All
+ros2 launch vacuscan_bringup vacuscan_bringup.launch.py
+Gazebo simulation
+
+✔ world
+✔ Gazebo plugins
+✔ robot spawning
+
+Robot description
+
+✔ URDF loaded via xacro
+✔ TF tree published
+
+Controls
+
+✔ joint_state_broadcaster
+✔ x and y controllers
+
+Visualization
+
+✔ option to run RViz
+
+pkill -f gzserver
+pkill -f gzclient
