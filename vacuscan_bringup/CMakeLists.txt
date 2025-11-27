@@ -5,7 +5,7 @@ find_package(ament_cmake REQUIRED)
 
 # We only install launch + rviz files (no code)
 install(
-  DIRECTORY launch rviz
+  DIRECTORY launch rviz config
   DESTINATION share/${PROJECT_NAME}
 )
 

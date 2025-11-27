@@ -22,7 +22,7 @@ def generate_launch_description():
         [bringup_share, 'rviz', 'simple.rviz']  # we'll create a simple file
     )
 
-    waypoint_share = get_package_share_directory('wafer_stage_bringup')
+    waypoint_share = get_package_share_directory('vacuscan_bringup')
     waypoints_file = os.path.join(waypoint_share, 'config', 'waypoints.yaml')
 
     rviz = Node(

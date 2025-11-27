@@ -1,22 +1,4 @@
 (() => {
-  // ---- Geometry (must match URDF / RViz script) ----
-  const corner = 0.34; // base half-size (m)
-  const a = 0.152;     // wafer frame anchor offset (m)
-  // Corners CCW from TOP-RIGHT: 1..4
-  const C = [
-    [ +corner, +corner ],  // corner_1
-    [ -corner, +corner ],  // corner_2
-    [ -corner, -corner ],  // corner_3
-    [ +corner, -corner ],  // corner_4
-  ];
-  // Wafer anchors CCW from TOP-RIGHT: 1..4
-  const A = [
-    [ +a, +a ],  // anchor_1
-    [ -a, +a ],  // anchor_2
-    [ -a, -a ],  // anchor_3
-    [ +a, -a ],  // anchor_4
-  ];
-
   // ---- UI refs ----
   const wsUrl = document.getElementById('wsUrl');
   const btnConnect = document.getElementById('btnConnect');
@@ -48,24 +30,20 @@
   const btnRunRoute = document.getElementById('btnRunRoute');
   const btnStopRoute = document.getElementById('btnStopRoute');
 
+  // XY canvas
+  const xyCanvas = document.getElementById('xyCanvas');
+  const xyCtx = xyCanvas.getContext('2d');
+
   const MAX_LOG_LINES = 15;
   let mainLogLines = [];
   let actionLogLines = [];
 
-  // ---- Bars canvas (keep existing working behaviour) ----
-  const bars = document.getElementById('bars');
-  const ctx = bars.getContext('2d');
-  const maxMM = 500; // chart scale
-  let L = [0,0,0,0]; // lengths in mm
-
-  function um(x){ return Math.round(x*1e6); }
-
   let ros = null;
   let connected = false;
-  let pose = {x:0, y:0};  // meters
-  let poseTopic = null, lengthsTopic = null, gotoSrv = null;
+  let pose = { x: 0, y: 0 };  // meters
+  let poseTopic = null;
+  let gotoSrv = null;
   let runWpSrv = null, stopWpSrv = null, routesTopic = null;
-
 
   // ---------------------------
   // Route Progress Handling
@@ -81,16 +59,19 @@
 
   function updateProgressBar(percent) {
     const bar = document.getElementById('route-progress-bar');
+    if (!bar) return;
     bar.style.width = percent + "%";
     bar.textContent = Math.round(percent) + "%";
   }
+
+  function um(x) { return Math.round(x * 1e6); }
 
   function log(msg) {
     const t = new Date().toLocaleTimeString();
     const line = `[${t}] ${msg}`;
 
+    // newest first
     mainLogLines.unshift(line);
-
     if (mainLogLines.length > MAX_LOG_LINES) {
       mainLogLines = mainLogLines.slice(0, MAX_LOG_LINES);
     }
@@ -99,15 +80,15 @@
     logEl.scrollTop = 0;
   }
 
-
   function setConnected(state) {
     connected = state;
     connState.textContent = state ? 'connected' : 'disconnected';
+    connState.classList.toggle('ok', state);
     connState.style.borderColor = state ? 'transparent' : '#30363d';
     connState.style.background = state ? 'var(--ok)' : 'var(--card)';
     btnDisconnect.disabled = !state;
     btnGoto.disabled = !state;
-    [jogXm,jogXp,jogYm,jogYp,btnHome].forEach(b => b.disabled = !state);
+    [jogXm, jogXp, jogYm, jogYp, btnHome].forEach(b => b.disabled = !state);
     btnRunRoute.disabled = !state;
     btnStopRoute.disabled = !state;
   }
@@ -117,76 +98,123 @@
     return (x_mm >= min && x_mm <= max && y_mm >= min && y_mm <= max);
   }
 
-  function redrawBars() {
+  // ---------------------------
+  // XY Stage View drawing
+  // ---------------------------
+  function resizeXYCanvas() {
     const dpr = window.devicePixelRatio || 1;
-    const W = bars.clientWidth * dpr, H = bars.clientHeight * dpr;
-    if (bars.width !== W || bars.height !== H) { bars.width = W; bars.height = H; }
-    ctx.clearRect(0,0,W,H);
-
-    const pad = 20*dpr;
-    const w = (W - pad*2);
-    const h = (H - pad*2);
-
-    // axis
-    ctx.strokeStyle = '#30363d';
-    ctx.lineWidth = 1*dpr;
-    ctx.beginPath(); ctx.moveTo(pad, H-pad); ctx.lineTo(W-pad, H-pad); ctx.stroke();
-
-    const labels = ['L1','L2','L3','L4'];
-    const n = 4;
-    const gap = 14*dpr;
-    const barW = (w - gap*(n-1)) / n;
-    const scale = h / maxMM;
-
-    for (let i=0;i<n;i++){
-      const val = Math.max(0, Math.min(maxMM, L[i]));
-      const x = pad + i*(barW+gap);
-      const bh = val * scale;
-      const y = H - pad - bh;
-
-      ctx.fillStyle = '#58a6ff';
-      ctx.fillRect(x, y, barW, bh);
-
-      ctx.fillStyle = '#9da7b3';
-      ctx.font = `${12*dpr}px ui-sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillText(labels[i], x+barW/2, H - pad + 14*dpr);
-
-      ctx.fillStyle = '#e6edf3';
-      ctx.font = `${12*dpr}px ui-sans-serif`;
-      ctx.fillText(val.toFixed(1), x+barW/2, y-6*dpr);
+    const W = xyCanvas.clientWidth * dpr;
+    const H = xyCanvas.clientHeight * dpr;
+    if (xyCanvas.width !== W || xyCanvas.height !== H) {
+      xyCanvas.width = W;
+      xyCanvas.height = H;
     }
-
-    ctx.fillStyle = '#9da7b3';
-    ctx.textAlign = 'left';
-    ctx.fillText(`${maxMM} mm`, pad+4*dpr, pad+10*dpr);
+    drawXY();
   }
 
-  function computeLengthsFromPose() {
-    const wa = [pose.x, pose.y]; // m
-    const out = [];
-    for(let i=0;i<4;i++){
-      const start = C[i];
-      const end = [ wa[0] + A[i][0], wa[1] + A[i][1] ];
-      const dx = end[0]-start[0], dy = end[1]-start[1];
-      const len_m = Math.hypot(dx,dy);
-      out.push(len_m*1000.0); // to mm
-    }
-    L = out;
-    redrawBars();
+  function drawXY() {
+    const ctx = xyCtx;
+    const W = xyCanvas.width;
+    const H = xyCanvas.height;
+    if (W === 0 || H === 0) return;
+
+    // clear
+    ctx.clearRect(0, 0, W, H);
+
+    const dpr = window.devicePixelRatio || 1;
+    const pad = 20 * dpr;
+    const min = parseFloat(limMin.value);
+    const max = parseFloat(limMax.value);
+    const range = max - min || 1.0;
+
+    // background
+    ctx.fillStyle = '#05070b';
+    ctx.fillRect(0, 0, W, H);
+
+    // axes at center
+    const centerX = W / 2;
+    const centerY = H / 2;
+    ctx.strokeStyle = '#30363d';
+    ctx.lineWidth = 1 * dpr;
+    ctx.beginPath();
+    // X axis
+    ctx.moveTo(pad, centerY);
+    ctx.lineTo(W - pad, centerY);
+    // Y axis
+    ctx.moveTo(centerX, pad);
+    ctx.lineTo(centerX, H - pad);
+    ctx.stroke();
+
+    // soft-limit square (mapped from [min,max] x [min,max])
+    const size = Math.min(W - 2 * pad, H - 2 * pad);
+    const squareLeft = centerX - size / 2;
+    const squareTop = centerY - size / 2;
+
+    ctx.strokeStyle = '#58a6ff';
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.strokeRect(squareLeft, squareTop, size, size);
+
+    // label min/max
+    ctx.fillStyle = '#9da7b3';
+    ctx.font = `${10 * dpr}px ui-sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText(`${min} mm`, squareLeft + 4 * dpr, squareTop - 4 * dpr);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${max} mm`, squareLeft + size - 4 * dpr, squareTop - 4 * dpr);
+
+    // draw current pose
+    const x_mm = pose.x * 1000.0;
+    const y_mm = pose.y * 1000.0;
+
+    // normalize to [0,1]
+    const nx = (x_mm - min) / range;
+    const ny = (y_mm - min) / range;
+
+    const px = squareLeft + nx * size;
+    const py = squareTop + (1 - ny) * size; // invert y so +Y is up
+
+    // crosshair
+    ctx.strokeStyle = '#3fb950';
+    ctx.lineWidth = 1 * dpr;
+    ctx.beginPath();
+    ctx.moveTo(px, squareTop);
+    ctx.lineTo(px, squareTop + size);
+    ctx.moveTo(squareLeft, py);
+    ctx.lineTo(squareLeft + size, py);
+    ctx.stroke();
+
+    // dot
+    ctx.fillStyle = '#3fb950';
+    ctx.beginPath();
+    ctx.arc(px, py, 4 * dpr, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // text near dot
+    ctx.fillStyle = '#e6edf3';
+    ctx.textAlign = 'left';
+    ctx.fillText(
+      `(${x_mm.toFixed(2)}, ${y_mm.toFixed(2)}) mm`,
+      px + 6 * dpr,
+      py - 6 * dpr
+    );
   }
 
   function updatePoseKpis() {
-    kpiX.textContent = (pose.x*1000).toFixed(3);
-    kpiY.textContent = (pose.y*1000).toFixed(3);
+    kpiX.textContent = (pose.x * 1000).toFixed(3);
+    kpiY.textContent = (pose.y * 1000).toFixed(3);
     kpiXum.textContent = um(pose.x);
     kpiYum.textContent = um(pose.y);
+    drawXY();
   }
 
+  // ---------------------------
+  // ROS connection
+  // ---------------------------
   function connect() {
-    if (ros) try { ros.close(); } catch(e){}
+    if (ros) try { ros.close(); } catch (e) { }
     ros = new ROSLIB.Ros({ url: wsUrl.value.trim() });
-    connState.textContent = 'connecting...'; connState.style.background = '#8b949e';
+    connState.textContent = 'connecting...';
+    connState.style.background = '#8b949e';
     btnConnect.disabled = true;
 
     ros.on('connection', () => {
@@ -194,65 +222,56 @@
       btnConnect.disabled = false;
       log(`Connected to ${wsUrl.value}`);
 
-      // Pose
+      // Pose (pure XY joint control)
       poseTopic = new ROSLIB.Topic({
-        ros, name: '/wafer/pose', messageType: 'geometry_msgs/msg/Pose2D', throttle_rate: 50
+        ros,
+        name: '/vacuscan/pose',
+        messageType: 'geometry_msgs/msg/Pose2D',
+        throttle_rate: 50
       });
       poseTopic.subscribe(msg => {
-        pose.x = msg.x; pose.y = msg.y; // meters
+        pose.x = msg.x;
+        pose.y = msg.y;
         updatePoseKpis();
-        if (!lengthsTopic) computeLengthsFromPose();
       });
 
-      // Wire lengths (meters)
-      lengthsTopic = new ROSLIB.Topic({
-        ros, name: '/wafer/wire_lengths', messageType: 'std_msgs/msg/Float32MultiArray'
-      });
-      lengthsTopic.subscribe(msg => {
-        if (msg.data && msg.data.length >= 4) {
-          L = msg.data.slice(0,4).map(v => v*1000.0); // m -> mm
-          redrawBars();
-        }
-      });
-      // === Action Status Subscriber ===
+      // Action status
       const actionStatusListener = new ROSLIB.Topic({
         ros: ros,
-        name: '/wafer/action_status',
-        messageType: 'std_msgs/String'
+        name: '/vacuscan/action_status',
+        messageType: 'std_msgs/msg/String'
       });
-
       actionStatusListener.subscribe((msg) => {
         addActionLog(msg.data);
       });
 
-      // Goto service
+      // Goto service (reuse WaferGoto srv definition)
       gotoSrv = new ROSLIB.Service({
-        ros, name: '/wafer/goto', serviceType: 'wafer_stage_interfaces/srv/WaferGoto'
+        ros,
+        name: '/vacuscan/goto',
+        serviceType: 'wafer_stage_interfaces/srv/WaferGoto'
       });
 
-
-      // ---------------------------
-      // Progress Subscriber
-      // ---------------------------
-      const progressSub = new ROSLIB.Topic({
-        ros: ros,
-        name: "/wafer/route_progress",
-        messageType: "std_msgs/Int32"
-      });
-
+      // Progress topics
       const progressTotalSub = new ROSLIB.Topic({
         ros: ros,
-        name: "/wafer/route_total",
-        messageType: "std_msgs/Int32"
+        name: "/vacuscan/route_total",
+        messageType: "std_msgs/msg/Int32"
       });
-
       progressTotalSub.subscribe(msg => {
         totalWaypoints = msg.data;
+        if (totalWaypoints === 0) {
+          updateProgressBar(0);
+        }
       });
 
+      const progressSub = new ROSLIB.Topic({
+        ros: ros,
+        name: "/vacuscan/route_progress",
+        messageType: "std_msgs/msg/Int32"
+      });
       progressSub.subscribe(msg => {
         currentWaypointIndex = msg.data;
-
         if (totalWaypoints > 0) {
           const percent = ((currentWaypointIndex + 1) / totalWaypoints) * 100;
           updateProgressBar(percent);
@@ -261,26 +280,40 @@
 
       // Waypoints services
       runWpSrv = new ROSLIB.Service({
-        ros, name: '/wafer/run_waypoints', serviceType: 'wafer_stage_interfaces/srv/RunWaypoints'
+        ros,
+        name: '/vacuscan/run_waypoints',
+        serviceType: 'wafer_stage_interfaces/srv/RunWaypoints'
       });
       stopWpSrv = new ROSLIB.Service({
-        ros, name: '/wafer/abort_waypoints', serviceType: 'std_srvs/srv/Trigger'        
+        ros,
+        name: '/vacuscan/abort_waypoints',
+        serviceType: 'std_srvs/srv/Trigger'
       });
 
-      // Optional routes topic (std_msgs/String with YAML keys)
+      // (Optional) waypoint routes from YAML or JSON string
       routesTopic = new ROSLIB.Topic({
-        ros, name: '/wafer/waypoint_routes', messageType: 'std_msgs/msg/String', throttle_rate: 1000
+        ros,
+        name: '/vacuscan/waypoint_routes',
+        messageType: 'std_msgs/msg/String',
+        throttle_rate: 1000
       });
       routesTopic.subscribe(msg => {
         try {
-          // expect a simple YAML dict like: {demo_square: [...], center_cross: [...]}
-          const keys = Object.keys((window.jsyaml ? window.jsyaml.load(msg.data) : JSON.parse(msg.data)));
+          const dataStr = msg.data;
+          let parsed;
+          if (window.jsyaml) {
+            parsed = window.jsyaml.load(dataStr);
+          } else {
+            parsed = JSON.parse(dataStr);
+          }
+          const keys = Object.keys(parsed || {});
           if (keys.length) {
-            wpRoute.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+            wpRoute.innerHTML =
+              keys.map(k => `<option value="${k}">${k}</option>`).join('');
             log(`Routes updated: ${keys.join(', ')}`);
           }
-        } catch(_e) {
-          // silently ignore if not parseable; your node may publish another format
+        } catch (err) {
+          log(`Failed to parse waypoint_routes: ${err}`);
         }
       });
     });
@@ -295,11 +328,11 @@
       setConnected(false);
       btnConnect.disabled = false;
       log('Disconnected');
-      try { poseTopic && poseTopic.unsubscribe(); } catch(e){}
-      try { lengthsTopic && lengthsTopic.unsubscribe(); } catch(e){}
-      try { routesTopic && routesTopic.unsubscribe(); } catch(e){}
-      poseTopic = lengthsTopic = routesTopic = null;
+      try { poseTopic && poseTopic.unsubscribe(); } catch (e) { }
+      try { routesTopic && routesTopic.unsubscribe(); } catch (e) { }
+      poseTopic = routesTopic = null;
       gotoSrv = runWpSrv = stopWpSrv = null;
+      resetProgress();
     });
   }
 
@@ -312,33 +345,33 @@
     const ts = new Date().toLocaleTimeString();
     const line = `[${ts}] ${text}`;
 
-    // NEWEST FIRST
+    // newest first
     actionLogLines.unshift(line);
-
-    // Keep latest 10 lines only
     if (actionLogLines.length > MAX_LOG_LINES) {
       actionLogLines = actionLogLines.slice(0, MAX_LOG_LINES);
     }
 
-    // Join with newline
     el.textContent = actionLogLines.join('\n');
-    el.scrollTop = 0;   // move view to top (newest)
+    el.scrollTop = 0;
   }
 
-
-
-
+  // ---------------------------
+  // Service calls
+  // ---------------------------
   function callGoto(x_mm, y_mm) {
     if (!gotoSrv) return log('Goto service not ready.');
     if (!inLimits(x_mm, y_mm)) {
       log(`Blocked by soft limits: (${x_mm}, ${y_mm}) mm`);
       return;
     }
-    const req = new ROSLIB.ServiceRequest({ x: x_mm/1000.0, y: y_mm/1000.0 });
+    const req = new ROSLIB.ServiceRequest({
+      x: x_mm / 1000.0,
+      y: y_mm / 1000.0
+    });
     btnGoto.disabled = true;
     gotoSrv.callService(req, (res) => {
       btnGoto.disabled = false;
-      log(`[GOTO] success=${res.success} msg="${res.message||''}"`);
+      log(`[GOTO] success=${res.success} msg="${res.message || ''}"`);
     }, (err) => {
       btnGoto.disabled = false;
       log(`[GOTO] error: ${err}`);
@@ -358,7 +391,7 @@
     resetProgress();
     runWpSrv.callService(req, (res) => {
       btnRunRoute.disabled = false;
-      log(`[RUN] accepted=${res.accepted} msg="${res.message||''}"`);
+      log(`[RUN] accepted=${res.accepted} msg="${res.message || ''}"`);
     }, (err) => {
       btnRunRoute.disabled = false;
       log(`[RUN] error: ${err}`);
@@ -370,39 +403,49 @@
     btnStopRoute.disabled = true;
     stopWpSrv.callService(new ROSLIB.ServiceRequest({}), (res) => {
       btnStopRoute.disabled = false;
-      log(`[STOP] success=${res.success} msg="${res.message||''}"`);
+      log(`[STOP] success=${res.success} msg="${res.message || ''}"`);
     }, (err) => {
       btnStopRoute.disabled = false;
       log(`[STOP] error: ${err}`);
     });
   }
 
-  // ---- Wire up UI ----
-  document.getElementById('btnConnect').addEventListener('click', connect);
-  document.getElementById('btnDisconnect').addEventListener('click', disconnect);
-  document.getElementById('btnGoto').addEventListener('click', () => {
-    const x = parseFloat(gotoX.value), y = parseFloat(gotoY.value);
-    callGoto(x,y);
+  // ---------------------------
+  // UI wiring
+  // ---------------------------
+  btnConnect.addEventListener('click', connect);
+  btnDisconnect.addEventListener('click', disconnect);
+
+  btnGoto.addEventListener('click', () => {
+    const x = parseFloat(gotoX.value);
+    const y = parseFloat(gotoY.value);
+    callGoto(x, y);
   });
-  document.getElementById('btnHome').addEventListener('click', () => callGoto(0,0));
+
+  btnHome.addEventListener('click', () => callGoto(0, 0));
 
   function jog(dx_mm, dy_mm) {
-    const x = (pose.x*1000) + dx_mm;
-    const y = (pose.y*1000) + dy_mm;
-    callGoto(x,y);
+    const x = (pose.x * 1000) + dx_mm;
+    const y = (pose.y * 1000) + dy_mm;
+    callGoto(x, y);
     gotoX.value = x.toFixed(3);
     gotoY.value = y.toFixed(3);
   }
-  document.getElementById('jogXm').addEventListener('click', () => jog(-parseFloat(jogStep.value), 0));
-  document.getElementById('jogXp').addEventListener('click', () => jog(+parseFloat(jogStep.value), 0));
-  document.getElementById('jogYm').addEventListener('click', () => jog(0, -parseFloat(jogStep.value)));
-  document.getElementById('jogYp').addEventListener('click', () => jog(0, +parseFloat(jogStep.value)));
 
-  // Waypoints
+  jogXm.addEventListener('click', () => jog(-parseFloat(jogStep.value), 0));
+  jogXp.addEventListener('click', () => jog(+parseFloat(jogStep.value), 0));
+  jogYm.addEventListener('click', () => jog(0, -parseFloat(jogStep.value)));
+  jogYp.addEventListener('click', () => jog(0, +parseFloat(jogStep.value)));
+
   btnRunRoute.addEventListener('click', callRunRoute);
   btnStopRoute.addEventListener('click', callStopRoute);
 
+  // Keep XY view in sync when limits change
+  limMin.addEventListener('change', drawXY);
+  limMax.addEventListener('change', drawXY);
+  window.addEventListener('resize', resizeXYCanvas);
+
   // First paint
-  redrawBars();
-  log('Ready. Set your rosbridge URL and click Connect.');
+  resizeXYCanvas();
+  log('Ready. Set your rosbridge URL and click Connect (Vacuscan XY).');
 })();
