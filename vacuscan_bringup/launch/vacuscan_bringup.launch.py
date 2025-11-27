@@ -22,6 +22,9 @@ def generate_launch_description():
         [bringup_share, 'rviz', 'simple.rviz']  # we'll create a simple file
     )
 
+    waypoint_share = get_package_share_directory('wafer_stage_bringup')
+    waypoints_file = os.path.join(waypoint_share, 'config', 'waypoints.yaml')
+
     rviz = Node(
         package='rviz2',
         executable='rviz2',
@@ -30,7 +33,33 @@ def generate_launch_description():
         output='screen'
     )
 
+    waypoint_runner = Node(
+        package='wafer_stage_control',
+        executable='waypoint_runner',
+        name='waypoint_runner',
+        parameters=[{'waypoints_file': waypoints_file}],
+        output='screen'
+    )
+
+    vacuum_controller = Node(
+        package='wafer_stage_control',
+        executable='vacuum_controller',
+        name='vacuum_controller',
+        output='screen'
+    )
+        
+    capture_controller = Node(
+            package='wafer_stage_control',
+            executable='capture_controller',
+            name='capture_controller',
+            output='screen'
+    )
+    
+
     return LaunchDescription([
         gazebo_launch,
         rviz,
+        waypoint_runner,
+        vacuum_controller, 
+        capture_controller,
     ])

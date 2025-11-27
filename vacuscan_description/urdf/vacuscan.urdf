@@ -406,14 +406,69 @@
             </camera>
             <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
             <ros>
-                <remapping>~/image_raw:=/image_raw</remapping>
-                <remapping>~/camera_info:=/camera_info</remapping>
+                <remapping>~/image_raw:=camera/image_raw</remapping>
+                <remapping>~/camera_info:=camera/camera_info</remapping>
             </ros>
             <camera_name>camera_low</camera_name>
             <frame_name>camera_link</frame_name>
             </plugin>
         </sensor>
     </gazebo>
+
+
+    <!-- *********************** CAMERA2 SETUP *********************************  -->
+    <!-- Each sensor must be attached to a link. --> 
+    <joint name="camera2_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="camera2_link"/>
+      <!-- x y z (meters), r p y (radians) -->
+      <origin xyz="-0.8 0.0 0.8" rpy="0 0.785 0"/>
+    </joint>
+
+    <link name="camera2_link"/>
+
+    <gazebo reference="camera2_link">
+      <sensor name="camera2" type="camera">
+        <update_rate>30.0</update_rate>
+        <always_on>1</always_on>
+        <visualize>true</visualize>
+
+        <camera name="camera2">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>480</width>
+            <height>360</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.01</near>
+            <far>20</far>
+          </clip>
+          <distortion>
+            <k1>0.0</k1>
+            <k2>0.0</k2>
+            <k3>0.0</k3>
+            <p1>0.0</p1>
+            <p2>0.0</p2>
+            <center>0.5 0.5</center>
+          </distortion>
+        </camera>
+
+        <plugin filename="libgazebo_ros_camera.so" name="camera2_controller">
+          <ros>
+            <!-- optional namespace
+            <namespace>/vacuscan</namespace>
+            -->
+            <!-- Remap default ~/image_raw and ~/camera_info to unique topics -->
+            <remapping>~/image_raw:=/camera2/image_raw</remapping>
+            <remapping>~/camera_info:=/camera2/camera_info</remapping>
+          </ros>
+          <camera_name>camera_low2</camera_name>
+          <frame_name>camera2_link</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+
 
 
     <!-- *********************** Laser scanner *********************************  -->
@@ -426,7 +481,7 @@
     <link name="laser_link"/>
 
 
-      <!-- Sensors -->
+    <!-- laser Sensors -->
     <gazebo reference="laser_link">
       <sensor name="sensor_ray" type="ray">
           <pose>0 0 0 0 0 0</pose>
@@ -435,8 +490,8 @@
               <horizontal>
                 <samples>200</samples>
                 <resolution>1.0</resolution>
-                <min_angle>-1.87</min_angle>
-                <max_angle>-1.27</max_angle>
+                <min_angle>-2.02</min_angle>
+                <max_angle>-1.12</max_angle>
               </horizontal>
             </scan>
             <range>
@@ -453,10 +508,8 @@
               <remapping>~/out:=laser_scan</remapping>
             </ros>
             <output_type>sensor_msgs/LaserScan</output_type>
+            <frame_name>laser_link</frame_name>
           </plugin>
         </sensor>
     </gazebo>
-
-
-
 </robot>

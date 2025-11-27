@@ -60,9 +60,16 @@ ros2 run rqt_image_view rqt_image_view
 ros2 run vacuscan_gazebo y_move.py -0.45   (-0.45 ~ 0.2)
 ros2 run vacuscan_gazebo x_move.py -0.16   (-0.16 ~ 0.16)
 
-bring up All
+bring up all
 ros2 launch vacuscan_bringup vacuscan_bringup.launch.py
 Gazebo simulation
+
+# rosbridge websocket
+source ~/ros2_ws/install/setup.bash
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+
+cd ~/ros2_ws/src/vacuscan_webui/web
+python3 -m http.server 8080
 
 ✔ world
 ✔ Gazebo plugins

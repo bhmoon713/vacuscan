@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wafer Stage Web UI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/roslib/build/roslib.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.min.css">
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body { margin: 24px; color: #111; background:#fafafa; }
+    h1 { margin: 0 0 12px; font-size: 22px; }
+    .row { display:flex; gap:16px; flex-wrap:wrap; }
+    .card { background:#fff; border:1px solid #ddd; border-radius:12px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+    .w300 { width:300px; }
+    label { display:block; font-size:12px; color:#555; margin-top:6px; }
+    input { width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc; }
+    button { padding:8px 12px; border:0; border-radius:8px; cursor:pointer; background:#2563eb; color:#fff; }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+    .muted { color:#666; font-size:12px; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .nudge { display:grid; grid-template-columns: repeat(3, 70px); gap:8px; justify-items:center; }
+    .nbtn { width:70px; height:34px; background:#0ea5e9; }
+    .ok { color:#059669; }
+    .bad { color:#dc2626; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .logs { max-height: 220px; overflow:auto; font-size:12px; background:#111; color:#d1fae5; padding:10px; border-radius:8px; }
+
+    /* Bars (L1~L4) */
+    .bars { margin-top:10px; display:grid; gap:8px; }
+    .barrow { display:grid; grid-template-columns: 32px 1fr 72px; gap:8px; align-items:center; }
+    .barlabel { font-weight:600; text-align:center; }
+    .barwrap { background:#e5e7eb; border-radius:8px; height:16px; overflow:hidden; }
+    .bar { height:100%; width:0%; background:#22c55e; border-radius:8px; transition: width .2s ease; }
+    .barval { text-align:right; }
+  </style>
+</head>
+
+<body>
+  <h1>Wafer Stage Web UI</h1>
+  <div class="row">
+    <!-- Control Card -->
+    <div class="card w300">
+      <label>ROSBridge URL</label>
+      <input id="ws" value="ws://localhost:9090" />
+      <div style="margin-top:10px; display:flex; gap:8px;">
+        <button id="btnConnect">Connect</button>
+        <div id="connStatus" class="muted">disconnected</div>
+      </div>
+      <hr>
+      <div class="grid2">
+        <div><label>X (m)</label><input id="x" type="number" step="0.001" value="0.050"></div>
+        <div><label>Y (m)</label><input id="y" type="number" step="0.001" value="-0.030"></div>
+        <div><label>Speed (m/s)</label><input id="speed" type="number" step="0.001" value="0.020"></div>
+        <div><label>Tol (m)</label><input id="tol" type="number" step="0.00001" value="0.00005"></div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button id="btnGo">Go to (x,y)</button>
+        <button id="btnStop" style="background:#ef4444;">Stop</button>
+      </div>
+      <div class="muted" style="margin-top:6px;">Calls <span class="mono">/wafer/goto</span></div>
+      <hr>
+      <div>
+        <div class="muted" style="margin-bottom:6px;">Nudge controls (±0.5 mm):</div>
+        <div class="nudge">
+          <div></div>
+          <button class="nbtn" id="nudgeUp">+Y</button>
+          <div></div>
+          <button class="nbtn" id="nudgeLeft">-X</button>
+          <button class="nbtn" id="nudgeCenter">0,0</button>
+          <button class="nbtn" id="nudgeRight">+X</button>
+          <div></div>
+          <button class="nbtn" id="nudgeDown">-Y</button>
+          <div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Pose -->
+    <div class="card w300">
+      <div><strong>Live Pose</strong></div>
+      <div class="mono" style="font-size:14px; margin-top:6px;">
+        x = <span id="px">0.000</span> m<br>
+        y = <span id="py">0.000</span> m
+      </div>
+      <div style="margin-top:10px;">
+        <span class="muted">topic:</span> <span class="mono">/wafer/pose</span>
+      </div>
+      <div style="margin-top:10px;">
+        <span class="muted">cmd topic:</span> <span class="mono">/motor/cmd_velocity</span>
+      </div>
+    </div>
+
+    <!-- Wire Length Bars -->
+    <div class="card" style="flex:1; min-width:340px;">
+      <div><strong>Wire Lengths</strong> <span class="muted">(mm)</span></div>
+      <div class="bars">
+        <div class="barrow"><div class="barlabel">L1</div><div class="barwrap"><div id="L1_bar" class="bar"></div></div><div class="barval mono"><span id="L1_val">0.0</span></div></div>
+        <div class="barrow"><div class="barlabel">L2</div><div class="barwrap"><div id="L2_bar" class="bar"></div></div><div class="barval mono"><span id="L2_val">0.0</span></div></div>
+        <div class="barrow"><div class="barlabel">L3</div><div class="barwrap"><div id="L3_bar" class="bar"></div></div><div class="barval mono"><span id="L3_val">0.0</span></div></div>
+        <div class="barrow"><div class="barlabel">L4</div><div class="barwrap"><div id="L4_bar" class="bar"></div></div><div class="barval mono"><span id="L4_val">0.0</span></div></div>
+      </div>
+      <div class="muted" style="margin-top:8px;">Bars auto-scale to the longest wire.</div>
+    </div>
+
+    <!-- Logs -->
+    <div class="card" style="flex:1; min-width:320px;">
+      <div><strong>Logs</strong></div>
+      <div id="logs" class="logs"></div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

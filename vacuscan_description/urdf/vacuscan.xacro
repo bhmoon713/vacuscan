@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<robot name="vacuscan_bot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_box_bot">
+
 
   <!-- Materials -->
   <material name="blue">
@@ -124,7 +125,9 @@
     <inertial>
       <mass value="0.2"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
+      <inertia ixx="0.000033"  ixy="0.0" ixz="0.0"
+      iyy="0.000033"  iyz="0.0"
+      izz="0.000167"/>
     </inertial>
   </link>
 
@@ -195,7 +198,9 @@
     <inertial>
       <mass value="0.2"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.000033"  iyy="0.000033"  izz="0.000167"/>
+      <inertia ixx="0.000033"  ixy="0.0" ixz="0.0"
+      iyy="0.000033"  iyz="0.0"
+      izz="0.000167"/>
     </inertial>
   </link>
 
@@ -314,105 +319,6 @@
     <material>Gazebo/Yellow</material>
   </gazebo>
 
-
-  <!-- wide angle RGB CAMERA -->
-  <!-- <link name="rgb_camera_link_frame">
-  </link>
-
-  <joint name="rgb_camera_link_frame_joint" type="fixed">
-      <origin rpy="0 0 0" xyz="0.0 0.0 1.05"/>
-      <parent link="base_link" />
-      <child link="rgb_camera_link_frame" />
-      <axis xyz="0 0 0"/>
-  </joint>
-
-    <gazebo reference="rgb_camera_link_frame">
-        <sensor name="camera" type="wideanglecamera">
-          <camera>
-            <horizontal_fov>6.283</horizontal_fov>
-            <image>
-              <width>320</width>
-              <height>240</height>
-            </image>
-            <clip>
-              <near>0.1</near>
-              <far>100</far>
-            </clip>
-            <lens>
-              <type>custom</type>
-              <custom_function>
-                <c1>1.05</c1>
-                <c2>4</c2>
-                <f>1.0</f>
-                <fun>tan</fun>
-              </custom_function>
-              <scale_to_hfov>true</scale_to_hfov>
-              <cutoff_angle>3.1415</cutoff_angle>
-              <env_texture_size>512</env_texture_size>
-            </lens>
-            <always_on>1</always_on>
-            <update_rate>30</update_rate>
-          </camera>
-          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-            <cameraName>rgb_camera</cameraName>
-            <imageTopicName>image_raw</imageTopicName>
-            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-            <frameName>rgb_camera_link_frame</frameName>
-            <hackBaseline>0.07</hackBaseline>
-          </plugin>
-        </sensor>
-    </gazebo> -->
-
-
-
-  <!-- *********************** CAMERA SETUP *********************************  -->
-  <!-- Each sensor must be attached to a link.                              --> 
-  <joint name="camera_joint" type="fixed">
-  <parent link="base_link"/>
-  <child link="camera_link"/>
-  <origin xyz="0.0 0.0 1.0" rpy="0 1.57 0"/>
-  </joint>
-  <link name="camera_link"/>
-
-
-  <!-- <gazebo reference="camera_link">
-    <sensor name="camera" type="camera">
-        <update_rate>30.0</update_rate>
-        <always_on>1</always_on>
-        <visualize>true</visualize>          
-        <camera name="camera">
-            <horizontal_fov>1.3962634</horizontal_fov>
-            <image>
-                <width>480</width>
-                <height>360</height>
-                <format>R8G8B8</format>
-            </image>
-            <clip>
-                <near>0.01</near>
-                <far>20</far>
-            </clip>
-            <distortion>
-                <k1>0.0</k1>
-                <k2>0.0</k2>
-                <k3>0.0</k3>
-                <p1>0.0</p1>
-                <p2>0.0</p2>
-                <center>0.5 0.5</center>
-            </distortion>
-        </camera>
-        <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
-          <ros>
-              <namespace>/vacuscan</namespace>
-              <remapping>~/image_raw:=camera/normal_image</remapping>
-              <remapping>~/camera_info:=camera/camera_info</remapping>
-          </ros>
-          <camera_name>camera_low</camera_name>
-          <frame_name>camera_link</frame_name>
-        </plugin>
-    </sensor>
-  </gazebo> -->
-
-
   <!-- ==================== joint_state + ros2_control (unchanged) ==================== -->
 
   <gazebo>
@@ -434,7 +340,7 @@
     <joint name="y_control_joint">
       <command_interface name="position">
         <param name="min">-0.45</param>
-        <param name="max">0.4</param>
+        <param name="max">0.2</param>
       </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -456,9 +362,155 @@
 
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <!-- Keep your existing controller YAML path -->
       <parameters>$(find vacuscan_description)/config/controller_position.yaml</parameters>
       <robot_param_node>/vacuscan_bot_state_publisher_node</robot_param_node>
     </plugin>
   </gazebo>
 
+    
+    <!-- *********************** CAMERA SETUP *********************************  -->
+    <!-- Each sensor must be attached to a link.                              --> 
+    <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.0 0.0 1.2" rpy="0 1.57 0"/>
+    </joint>
+    <link name="camera_link"/>
+
+
+    <gazebo reference="camera_link">
+        <sensor name="camera" type="camera">
+            <update_rate>30.0</update_rate>
+            <always_on>1</always_on>
+            <visualize>true</visualize>        
+            <camera name="camera">
+                <horizontal_fov>1.3962634</horizontal_fov>
+                <image>
+                    <width>480</width>
+                    <height>360</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <!-- distance described in meters -->
+                    <near>0.01</near>
+                    <far>20</far>
+                </clip>
+                <distortion>
+                    <k1>0.0</k1>
+                    <k2>0.0</k2>
+                    <k3>0.0</k3>
+                    <p1>0.0</p1>
+                    <p2>0.0</p2>
+                    <center>0.5 0.5</center>
+                </distortion>
+            </camera>
+            <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+            <ros>
+                <remapping>~/image_raw:=camera/image_raw</remapping>
+                <remapping>~/camera_info:=camera/camera_info</remapping>
+            </ros>
+            <camera_name>camera_low</camera_name>
+            <frame_name>camera_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+
+    <!-- *********************** CAMERA2 SETUP *********************************  -->
+    <!-- Each sensor must be attached to a link. --> 
+    <joint name="camera2_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="camera2_link"/>
+      <!-- x y z (meters), r p y (radians) -->
+      <origin xyz="-0.8 0.0 0.8" rpy="0 0.785 0"/>
+    </joint>
+
+    <link name="camera2_link"/>
+
+    <gazebo reference="camera2_link">
+      <sensor name="camera2" type="camera">
+        <update_rate>30.0</update_rate>
+        <always_on>1</always_on>
+        <visualize>true</visualize>
+
+        <camera name="camera2">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>480</width>
+            <height>360</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.01</near>
+            <far>20</far>
+          </clip>
+          <distortion>
+            <k1>0.0</k1>
+            <k2>0.0</k2>
+            <k3>0.0</k3>
+            <p1>0.0</p1>
+            <p2>0.0</p2>
+            <center>0.5 0.5</center>
+          </distortion>
+        </camera>
+
+        <plugin filename="libgazebo_ros_camera.so" name="camera2_controller">
+          <ros>
+            <!-- optional namespace
+            <namespace>/vacuscan</namespace>
+            -->
+            <!-- Remap default ~/image_raw and ~/camera_info to unique topics -->
+            <remapping>~/image_raw:=/camera2/image_raw</remapping>
+            <remapping>~/camera_info:=/camera2/camera_info</remapping>
+          </ros>
+          <camera_name>camera_low2</camera_name>
+          <frame_name>camera2_link</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+
+
+    <!-- *********************** Laser scanner *********************************  -->
+    <!-- Each sensor must be attached to a link.                              --> 
+    <joint name="laser_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser_link"/>
+    <origin xyz="0.0 0.0 1.5" rpy="1.57 0 0"/>
+    </joint>
+    <link name="laser_link"/>
+
+
+    <!-- laser Sensors -->
+    <gazebo reference="laser_link">
+      <sensor name="sensor_ray" type="ray">
+          <pose>0 0 0 0 0 0</pose>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>200</samples>
+                <resolution>1.0</resolution>
+                <min_angle>-2.02</min_angle>
+                <max_angle>-1.12</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.1</min>
+              <max>5.0</max>
+            </range>
+          </ray>
+          <always_on>true</always_on>
+          <visualize>true</visualize>
+          <update_rate>100.0</update_rate>
+          <plugin name="laser" filename="libgazebo_ros_ray_sensor.so">
+            <ros>
+              <namespace>/vacuscan</namespace>
+              <remapping>~/out:=laser_scan</remapping>
+            </ros>
+            <output_type>sensor_msgs/LaserScan</output_type>
+            <frame_name>laser_link</frame_name>
+          </plugin>
+        </sensor>
+    </gazebo>
 </robot>
