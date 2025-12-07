@@ -373,7 +373,7 @@
     <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_link"/>
-    <origin xyz="0.0 0.0 1.2" rpy="0 1.57 0"/>
+    <origin xyz="0.0 0.25 1.2" rpy="0 1.57 0"/>
     </joint>
     <link name="camera_link"/>
 
@@ -422,7 +422,7 @@
       <parent link="base_link"/>
       <child link="camera2_link"/>
       <!-- x y z (meters), r p y (radians) -->
-      <origin xyz="-0.8 0.0 0.8" rpy="0 0.785 0"/>
+      <origin xyz="-0.8 0.25 0.8" rpy="0 0.785 0"/>
     </joint>
 
     <link name="camera2_link"/>
@@ -476,7 +476,7 @@
     <joint name="laser_joint" type="fixed">
     <parent link="base_link"/>
     <child link="laser_link"/>
-    <origin xyz="0.0 0.0 1.5" rpy="1.57 0 0"/>
+    <origin xyz="0.0 0.25 1.5" rpy="1.57 0 0"/>
     </joint>
     <link name="laser_link"/>
 
