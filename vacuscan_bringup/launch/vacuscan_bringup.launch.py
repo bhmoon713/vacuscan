@@ -54,7 +54,19 @@ def generate_launch_description():
             name='capture_controller',
             output='screen'
     )
-    
+
+    wafer_controller = Node(
+            package='wafer_stage_control',
+            executable='wafer_controller',
+            name='wafer_controller',
+            output='screen'
+    )
+    wafer_joint_broadcaster = Node(
+            package='wafer_stage_control',
+            executable='wafer_joint_broadcaster',
+            name='wafer_joint_broadcaster',
+            output='screen'
+    )    
 
     return LaunchDescription([
         gazebo_launch,
@@ -62,4 +74,6 @@ def generate_launch_description():
         waypoint_runner,
         vacuum_controller, 
         capture_controller,
+        wafer_controller,
+        wafer_joint_broadcaster,
     ])
