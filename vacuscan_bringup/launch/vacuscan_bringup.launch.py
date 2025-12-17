@@ -34,7 +34,7 @@ def generate_launch_description():
     )
 
     waypoint_runner = Node(
-        package='wafer_stage_control',
+        package='vacuscan_control',
         executable='waypoint_runner',
         name='waypoint_runner',
         parameters=[{'waypoints_file': waypoints_file}],
@@ -42,27 +42,27 @@ def generate_launch_description():
     )
 
     vacuum_controller = Node(
-        package='wafer_stage_control',
+        package='vacuscan_control',
         executable='vacuum_controller',
         name='vacuum_controller',
         output='screen'
     )
         
     capture_controller = Node(
-            package='wafer_stage_control',
+            package='vacuscan_control',
             executable='capture_controller',
             name='capture_controller',
             output='screen'
     )
 
     wafer_controller = Node(
-            package='wafer_stage_control',
+            package='vacuscan_control',
             executable='wafer_controller',
             name='wafer_controller',
             output='screen'
     )
     wafer_joint_broadcaster = Node(
-            package='wafer_stage_control',
+            package='vacuscan_control',
             executable='wafer_joint_broadcaster',
             name='wafer_joint_broadcaster',
             output='screen'

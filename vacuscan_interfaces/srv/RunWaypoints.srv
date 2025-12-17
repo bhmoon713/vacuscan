@@ -1,0 +1,10 @@
+# Request
+string route
+float64 tol_mm
+float64 timeout_s
+float64 pause_s
+bool loop
+---
+# Response
+bool accepted
+string message

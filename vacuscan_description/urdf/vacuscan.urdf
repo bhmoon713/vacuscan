@@ -131,7 +131,7 @@
   </link>
 
   <joint name="y_control_joint" type="prismatic">
-    <origin xyz="0 -0.20 0.045" rpy="0 0 0"/>
+    <origin xyz="0 -0.18 0.045" rpy="0 0 0"/>
     <parent link="rail_left_link"/>
     <child link="mount_left_link"/>
     <axis xyz="0 1 0"/>
@@ -554,7 +554,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.15" length="0.01"/>
+        <cylinder radius="0.15" length="0.001"/>
       </geometry>
       <material name="white"/>
     </visual>
@@ -562,7 +562,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.15" length="0.01"/>
+        <cylinder radius="0.15" length="0.001"/>
       </geometry>
     </collision>
 
@@ -581,7 +581,7 @@
   </link>
 
   <joint name="wafer_holder_link_to_wafer_link" type="fixed">
-    <origin xyz="0 0 0.01" rpy="0 0 0"/>
+    <origin xyz="0 0 0.0055" rpy="0 0 0"/>
     <parent link="wafer_holder_link"/>
     <child link="wafer_link"/>
   </joint>

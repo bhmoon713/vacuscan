@@ -1,0 +1,394 @@
+#!/usr/bin/env python3
+import math
+import os
+import time
+import yaml
+
+import rclpy
+from rclpy.node import Node
+from threading import Thread, Lock
+
+from std_srvs.srv import Trigger
+from geometry_msgs.msg import Pose2D
+from ament_index_python.packages import get_package_share_directory
+
+from vacuscan_interfaces.srv import RunWaypoints, WaferGoto
+from std_msgs.msg import String, Int32   # <--- added Int32
+
+
+class WaypointRunner(Node):
+    def __init__(self):
+        super().__init__('waypoint_runner')
+
+        # Parameters
+        bringup_share = get_package_share_directory('wafer_stage_bringup')
+        default_file = os.path.join(bringup_share, 'config', 'waypoints.yaml')
+        self.declare_parameter('waypoints_file', default_file)
+        self.declare_parameter('pose_topic', '/wafer/pose')
+        self.declare_parameter('goto_service', '/wafer/goto')
+
+        # Internal state
+        self.routes = {}
+        self.current_route = None
+        self.thread = None
+        self.abort_flag = False
+        self.lock = Lock()
+        self.pose = Pose2D()
+        self.total_pts = 0  # <--- for progress bar
+
+        # Publishers (create BEFORE using _push_action_log)
+        self.pub_action_status = self.create_publisher(
+            String, "/wafer/action_status", 10
+        )
+        self.pub_route_progress = self.create_publisher(
+            Int32, "/wafer/route_progress", 10
+        )
+        self.pub_route_total = self.create_publisher(
+            Int32, "/wafer/route_total", 10
+        )
+
+        # Load routes from YAML
+        self._load_routes()
+        self._push_action_log(f'Loaded waypoint routes: {list(self.routes.keys())}')
+
+        # Subscriptions
+        self.create_subscription(
+            Pose2D,
+            self.get_parameter('pose_topic').value,
+            self._on_pose,
+            10
+        )
+
+        # Main goto client
+        self.goto_cli = self.create_client(
+            WaferGoto,
+            self.get_parameter('goto_service').value
+        )
+
+        # Action service clients (Trigger)
+        self.vacuum_on_cli  = self.create_client(Trigger, '/vacuum/on')
+        self.vacuum_off_cli = self.create_client(Trigger, '/vacuum/off')
+        self.capture_cli    = self.create_client(Trigger, '/wafer/capture')
+
+        # Services
+        self.run_srv = self.create_service(
+            RunWaypoints,
+            '/wafer/run_waypoints',
+            self._on_run
+        )
+        self.abort_srv = self.create_service(
+            Trigger,
+            '/wafer/abort_waypoints',
+            self._on_abort
+        )
+
+    # ------------------------------------------------------------------
+    # Load waypoints from YAML
+    # ------------------------------------------------------------------
+    def _load_routes(self):
+        path = self.get_parameter('waypoints_file').value
+        try:
+            with open(path, 'r') as f:
+                data = yaml.safe_load(f)
+            self.routes = data.get('routes', {})
+        except Exception as e:
+            self.get_logger().error(f'Failed to load waypoints YAML: {e}')
+            self.routes = {}
+
+    # ------------------------------------------------------------------
+    # Subscribers / Callbacks
+    # ------------------------------------------------------------------
+    def _on_pose(self, msg: Pose2D):
+        with self.lock:
+            self.pose = msg
+
+    def _on_abort(self, req, res):
+        self.get_logger().warn('Abort requested')
+        self.abort_flag = True
+        res.success = True
+        res.message = 'Abort flag set'
+        return res
+
+    # ------------------------------------------------------------------
+    # Parameter helper
+    # ------------------------------------------------------------------
+    def declare_or_get(self, name: str, default: float) -> float:
+        """Declare a double param if missing, then return its value as float."""
+        try:
+            if not self.has_parameter(name):
+                self.declare_parameter(name, default)
+        except Exception:
+            pass
+        p = self.get_parameter(name)
+        if not p or p.value is None:
+            return float(default)
+        return float(p.value)
+
+    # ------------------------------------------------------------------
+    # RunWaypoints callback
+    # ------------------------------------------------------------------
+    def _on_run(self, req, res):
+        try:
+            route_name = req.route
+
+            # If a route is already running, reject new one
+            if self.thread is not None and self.thread.is_alive():
+                msg = 'A route is already running; abort it before starting a new one.'
+                self.get_logger().warn(msg)
+                res.accepted = False
+                res.message = msg
+                return res
+
+            # reset abort flag
+            self.abort_flag = False
+
+            # defaults (zeros in request mean "use defaults")
+            tol_mm    = req.tol_mm    if req.tol_mm    > 0 else self.declare_or_get('tol_mm', 30.0)
+            timeout_s = req.timeout_s if req.timeout_s > 0 else self.declare_or_get('timeout_s', 8.0)
+            pause_s   = req.pause_s   if req.pause_s  >= 0 else self.declare_or_get('pause_s', 0.0)
+            do_loop   = bool(req.loop)
+
+            if route_name not in self.routes:
+                res.accepted = False
+                res.message  = f'Unknown route "{route_name}". Options: {list(self.routes.keys())}'
+                self.get_logger().warn(res.message)
+                return res
+
+            # Support both list-style and dict-style routes
+            r = self.routes[route_name]
+            if isinstance(r, dict):
+                pts = r.get('points', [])
+                if req.tol_mm    <= 0: tol_mm    = float(r.get('tol_mm',    tol_mm))
+                if req.timeout_s <= 0: timeout_s = float(r.get('timeout_s', timeout_s))
+                if req.pause_s   <  0: pause_s   = float(r.get('pause_s',   pause_s))
+            else:
+                pts = r  # assume list of points
+
+            self.total_pts = len(pts)
+            if self.total_pts <= 0:
+                res.accepted = False
+                res.message = f'Route "{route_name}" has no points.'
+                return res
+
+            # publish total so web UI can compute %
+            self.pub_route_total.publish(Int32(data=self.total_pts))
+
+            self._push_action_log(
+                f'Running route "{route_name}" (N={len(pts)}) '
+                f'tol={tol_mm:.1f}mm timeout={timeout_s:.1f}s pause={pause_s:.1f}s loop={do_loop}'
+            )
+
+            # Start background thread
+            self.thread = Thread(
+                target=self._run_route,
+                args=(pts, tol_mm, timeout_s, pause_s, do_loop),
+                daemon=True
+            )
+            self.thread.start()
+
+            res.accepted = True
+            res.message  = 'Route started'
+            return res
+        except Exception as e:
+            res.accepted = False
+            res.message  = f'Exception: {e}'
+            self.get_logger().error(res.message)
+            return res
+
+    # ------------------------------------------------------------------
+    # Utility: flexible point normalization
+    # ------------------------------------------------------------------
+    def _norm_point(self, p):
+        """Parse a YAML waypoint entry -> ('pause', s) or (x_mm, y_mm)."""
+
+        # List or tuple
+        if isinstance(p, (list, tuple)) and len(p) == 2:
+            try:
+                return float(p[0]), float(p[1])
+            except Exception:
+                return None
+
+        if not isinstance(p, dict):
+            return None
+
+        # Direct forms
+        if 'x_m' in p and 'y_m' in p:
+            return float(p['x_m']) * 1000.0, float(p['y_m']) * 1000.0
+        if 'x_mm' in p and 'y_mm' in p:
+            return float(p['x_mm']), float(p['y_mm'])
+        if 'x' in p and 'y' in p:
+            return float(p['x']), float(p['y'])
+
+        # Wrapped form: { goto: {x_mm:..., y_mm:...} }
+        if 'goto' in p and isinstance(p['goto'], dict):
+            g = p['goto']
+            if 'x_m' in g and 'y_m' in g:
+                return float(g['x_m']) * 1000.0, float(g['y_m']) * 1000.0
+            if 'x_mm' in g and 'y_mm' in g:
+                return float(g['x_mm']), float(g['y_mm'])
+            if 'x' in g and 'y' in g:
+                return float(g['x']), float(g['y'])
+
+        # Pause-only step
+        if 'pause_s' in p:
+            return ('pause', float(p['pause_s']))
+
+        return None
+
+    # ------------------------------------------------------------------
+    # Core route runner
+    # ------------------------------------------------------------------
+    def _run_route(self, pts, tol_mm, timeout_s, pause_s, do_loop):
+        """
+        Execute a list of waypoints.
+        """
+        try:
+            while rclpy.ok() and not self.abort_flag:
+                for i, p in enumerate(pts):
+                    if self.abort_flag:
+                        break
+
+                    parsed = self._norm_point(p)
+                    if parsed is None:
+                        self.get_logger().warn(f'[route] step {i}: unrecognized {p}, skipping.')
+                        continue
+
+                    # Pause step (inline)
+                    if isinstance(parsed, tuple) and parsed[0] == 'pause':
+                        _, ps = parsed
+                        self._push_action_log(f'[route] step {i}: pause {ps}s')
+                        t0 = time.time()
+                        while time.time() - t0 < ps and not self.abort_flag:
+                            time.sleep(0.05)
+                        # count this as a step in progress
+                        self.pub_route_progress.publish(
+                            Int32(data=min(i + 1, self.total_pts))
+                        )
+                        continue
+
+                    # Motion step
+                    x_mm, y_mm = parsed
+                    ok = self._goto_and_wait(x_mm, y_mm, float(tol_mm), float(timeout_s))
+
+                    # Fixed action sequence after each waypoint
+                    if not self.abort_flag and ok:
+                        self._push_action_log('stabilizing ')
+                        time.sleep(2.0)
+
+                        self._push_action_log('[action seq] vacuum ON')
+                        self._call_action('vacuum_on')
+                        time.sleep(1.5)
+
+                        self._push_action_log('[action seq] capture')
+                        self._call_action('capture')
+                        time.sleep(1.5)
+
+                        self._push_action_log('[action seq] vacuum OFF')
+                        self._call_action('vacuum_off')
+                        time.sleep(1.5)
+
+                    # Pause after each waypoint (optional)
+                    if pause_s and pause_s > 0 and not self.abort_flag:
+                        t0 = time.time()
+                        while time.time() - t0 < pause_s and not self.abort_flag:
+                            time.sleep(0.05)
+
+                    # update progress (1..N)
+                    self.pub_route_progress.publish(
+                        Int32(data=min(i + 1, self.total_pts))
+                    )
+
+                if not do_loop:
+                    break
+
+            self._push_action_log('Route finished')
+        except Exception as e:
+            self.get_logger().error(f'_run_route exception: {e}')
+
+    # ---------------------------------------------------------
+    # Helper: call simple action services
+    # ---------------------------------------------------------
+    def _call_action(self, action_name: str):
+        if action_name == 'vacuum_on':
+            client = self.vacuum_on_cli
+        elif action_name == 'vacuum_off':
+            client = self.vacuum_off_cli
+        elif action_name == 'capture':
+            client = self.capture_cli
+        else:
+            self.get_logger().warn(f'[action] Unknown action "{action_name}"')
+            return False
+
+        if not client.wait_for_service(timeout_sec=5.0):
+            self.get_logger().error(f'[action] Service {client.srv_name} not available')
+            return False
+
+        req = Trigger.Request()
+
+        try:
+            future = client.call_async(req)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
+
+            if future.result() is None:
+                self.get_logger().error(f'[action] {action_name} → no response')
+                return False
+
+            ok = future.result().success
+            msg = future.result().message
+            self._push_action_log(f'[action] {action_name} → success={ok} msg="{msg}"')
+            return ok
+
+        except Exception as e:
+            self.get_logger().error(f'[action] {action_name} exception: {e}')
+            return False
+
+    # ------------------------------------------------------------------
+    # Goto + wait until position reached or timeout
+    # ------------------------------------------------------------------
+    def _goto_and_wait(self, x_mm: float, y_mm: float, tol_mm: float, timeout_s: float) -> bool:
+        req = WaferGoto.Request()
+        req.x = x_mm / 1000.0
+        req.y = y_mm / 1000.0
+
+        if not self.goto_cli.wait_for_service(timeout_sec=1.0):
+            self.get_logger().error('WaferGoto service unavailable!')
+            return False
+
+        fut = self.goto_cli.call_async(req)
+
+        t0 = time.time()
+        while rclpy.ok():
+            if self.abort_flag:
+                return False
+            with self.lock:
+                dx_mm = (self.pose.x * 1000.0) - x_mm
+                dy_mm = (self.pose.y * 1000.0) - y_mm
+            if math.hypot(dx_mm, dy_mm) <= tol_mm:
+                return True
+            if time.time() - t0 > timeout_s:
+                return False
+            time.sleep(0.02)
+        return False
+
+    def _push_action_log(self, msg: str):
+        self.get_logger().info(msg)
+        try:
+            self.pub_action_status.publish(String(data=msg))
+        except Exception as e:
+            self.get_logger().error(f"Failed to publish action status: {e}")
+
+
+def main():
+    rclpy.init()
+    node = WaypointRunner()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
