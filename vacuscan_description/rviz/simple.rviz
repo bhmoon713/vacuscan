@@ -118,7 +118,6 @@ Visualization Manager:
         Value: /camera/image_raw
       Value: false
       Visibility:
-        "": true
         Grid: true
         Image: true
         LaserScan: true
@@ -126,7 +125,7 @@ Visualization Manager:
         TF: true
         Value: true
       Zoom Factor: 1
-    - Alpha: 0.699999988079071
+    - Alpha: 1
       Class: rviz_default_plugins/RobotModel
       Collision Enabled: false
       Description File: ""
@@ -176,6 +175,26 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        post_1_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        post_2_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        post_3_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        post_4_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         rail_center_link:
           Alpha: 1
           Show Axes: false
@@ -191,7 +210,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        upper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         wafer_holder_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wafer_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -240,7 +269,7 @@ Visualization Manager:
       Position Transformer: XYZ
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.0024999999441206455
       Style: Flat Squares
       Topic:
         Depth: 5
@@ -312,16 +341,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 3.0586342811584473
+      Distance: 0.441180020570755
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.5349507927894592
-        Y: 0.2319716364145279
-        Z: 0.6690443754196167
+        X: -0.49515998363494873
+        Y: 0.22770284116268158
+        Z: 0.686869204044342
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false

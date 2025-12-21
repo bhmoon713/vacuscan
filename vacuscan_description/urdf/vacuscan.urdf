@@ -756,7 +756,7 @@
     <joint name="laser_joint" type="fixed">
     <parent link="base_link"/>
     <child link="laser_link"/>
-    <origin xyz="0.0 0.05 1.5" rpy="1.57 0 0"/>
+    <origin xyz="0.0 0.05 0.2" rpy="1.57 0 0"/>
     </joint>
     <link name="laser_link"/>
 
@@ -769,14 +769,14 @@
             <scan>
               <horizontal>
                 <samples>200</samples>
-                <resolution>1.0</resolution>
-                <min_angle>-2.02</min_angle>
-                <max_angle>-1.12</max_angle>
+                <resolution>1</resolution>
+                <min_angle>-1.8</min_angle>
+                <max_angle>-1.34</max_angle>
               </horizontal>
             </scan>
             <range>
-              <min>0.1</min>
-              <max>5.0</max>
+              <min>0.01</min>
+              <max>0.3</max>
             </range>
           </ray>
           <always_on>true</always_on>
