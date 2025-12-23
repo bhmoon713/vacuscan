@@ -58,11 +58,11 @@
   <section class="card">
     <h2>Motion</h2>
     <div class="controls" style="margin-bottom:10px;">
-      <div style="grid-column: span 3;">
+      <div style="grid-column: span 2;">
         <label>Go to X (mm)</label>
         <input id="gotoX" type="number" step="0.1" value="0">
       </div>
-      <div style="grid-column: span 3;">
+      <div style="grid-column: span 2;">
         <label>Go to Y (mm)</label>
         <input id="gotoY" type="number" step="0.1" value="0">
       </div>
@@ -70,7 +70,7 @@
         <label>&nbsp;</label>
         <button id="btnGoto" disabled>Go to</button>
       </div>
-      <div style="grid-column: span 2;">
+      <div style="grid-column: span 1;">
         <label>Jog step</label>
         <select id="jogStep">
           <option value="1">1 mm</option>
@@ -105,17 +105,6 @@
     <div class="hint">
       Service: <code>/wafer/goto</code> (WaferGoto).  
       Subscribed: <code>/wafer/pose</code> (geometry_msgs/msg/Pose2D).
-    </div>
-  </section>
-
-  <!-- Wire Length Bars (optional) -->
-  <section class="card">
-    <h2>Wire Lengths (L1–L4)</h2>
-    <canvas id="bars"></canvas>
-    <div class="flex" style="gap:12px; margin-top:8px; flex-wrap:wrap;">
-      <span class="tag">From /vacuscan/wire_lengths</span>
-      <span class="tag">Units: mm</span>
-      <span class="tag">Scale max: 500 mm</span>
     </div>
   </section>
 </div>

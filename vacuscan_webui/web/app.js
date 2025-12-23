@@ -71,11 +71,14 @@
   }
 
   // ------------- Wire-length chart canvas ------------------
+  // If the UI section is removed, keep the rest of the app working by
+  // making the chart logic optional.
   const bars = document.getElementById("bars");
-  const ctx = bars.getContext("2d");
+  const ctx = bars ? bars.getContext("2d") : null;
   let L = [0,0,0,0];
 
   function redrawBars() {
+    if (!bars || !ctx) return;
     const dpr = window.devicePixelRatio || 1;
     const W = bars.clientWidth * dpr;
     const H = bars.clientHeight * dpr;
@@ -122,6 +125,7 @@
   }
 
   function computeLengthsFromPose() {
+    if (!bars || !ctx) return;
     const wx = pose.x; 
     const wy = pose.y;
     const out = [];

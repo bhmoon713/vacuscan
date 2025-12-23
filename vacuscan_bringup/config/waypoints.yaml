@@ -4,897 +4,2232 @@ routes:
     timeout_s: 8.0
     pause_s: 1.2
     points:
-    - x_mm: 0.0
-      y_mm: 0.0
-    - x_mm: -30.0
-      y_mm: 132.0
-    - x_mm: -20.0
-      y_mm: 132.0
-    - x_mm: -10.0
-      y_mm: 132.0
-    - x_mm: 0.0
-      y_mm: 132.0
-    - x_mm: 10.0
-      y_mm: 132.0
-    - x_mm: 20.0
-      y_mm: 132.0
-    - x_mm: 30.0
-      y_mm: 132.0
-    - x_mm: 60.0
-      y_mm: 120.0
-    - x_mm: 50.0
-      y_mm: 120.0
-    - x_mm: 40.0
-      y_mm: 120.0
-    - x_mm: 30.0
-      y_mm: 120.0
-    - x_mm: 20.0
-      y_mm: 120.0
-    - x_mm: 10.0
-      y_mm: 120.0
-    - x_mm: 0.0
-      y_mm: 120.0
-    - x_mm: -10.0
-      y_mm: 120.0
-    - x_mm: -20.0
-      y_mm: 120.0
-    - x_mm: -30.0
-      y_mm: 120.0
-    - x_mm: -40.0
-      y_mm: 120.0
-    - x_mm: -50.0
-      y_mm: 120.0
-    - x_mm: -60.0
-      y_mm: 120.0
-    - x_mm: -70.0
-      y_mm: 108.0
-    - x_mm: -60.0
-      y_mm: 108.0
-    - x_mm: -50.0
-      y_mm: 108.0
-    - x_mm: -40.0
-      y_mm: 108.0
-    - x_mm: -30.0
-      y_mm: 108.0
-    - x_mm: -20.0
-      y_mm: 108.0
-    - x_mm: -10.0
-      y_mm: 108.0
-    - x_mm: 0.0
-      y_mm: 108.0
-    - x_mm: 10.0
-      y_mm: 108.0
-    - x_mm: 20.0
-      y_mm: 108.0
-    - x_mm: 30.0
-      y_mm: 108.0
-    - x_mm: 40.0
-      y_mm: 108.0
-    - x_mm: 50.0
-      y_mm: 108.0
-    - x_mm: 60.0
-      y_mm: 108.0
-    - x_mm: 70.0
-      y_mm: 108.0
-    - x_mm: 90.0
-      y_mm: 96.0
-    - x_mm: 80.0
-      y_mm: 96.0
-    - x_mm: 70.0
-      y_mm: 96.0
-    - x_mm: 60.0
-      y_mm: 96.0
-    - x_mm: 50.0
-      y_mm: 96.0
-    - x_mm: 40.0
-      y_mm: 96.0
-    - x_mm: 30.0
-      y_mm: 96.0
-    - x_mm: 20.0
-      y_mm: 96.0
-    - x_mm: 10.0
-      y_mm: 96.0
-    - x_mm: 0.0
-      y_mm: 96.0
-    - x_mm: -10.0
-      y_mm: 96.0
-    - x_mm: -20.0
-      y_mm: 96.0
-    - x_mm: -30.0
-      y_mm: 96.0
-    - x_mm: -40.0
-      y_mm: 96.0
-    - x_mm: -50.0
-      y_mm: 96.0
-    - x_mm: -60.0
-      y_mm: 96.0
-    - x_mm: -70.0
-      y_mm: 96.0
-    - x_mm: -80.0
-      y_mm: 96.0
-    - x_mm: -90.0
-      y_mm: 96.0
-    - x_mm: -100.0
-      y_mm: 84.0
-    - x_mm: -90.0
-      y_mm: 84.0
-    - x_mm: -80.0
-      y_mm: 84.0
-    - x_mm: -70.0
-      y_mm: 84.0
-    - x_mm: -60.0
-      y_mm: 84.0
-    - x_mm: -50.0
-      y_mm: 84.0
-    - x_mm: -40.0
-      y_mm: 84.0
-    - x_mm: -30.0
-      y_mm: 84.0
-    - x_mm: -20.0
-      y_mm: 84.0
-    - x_mm: -10.0
-      y_mm: 84.0
-    - x_mm: 0.0
-      y_mm: 84.0
-    - x_mm: 10.0
-      y_mm: 84.0
-    - x_mm: 20.0
-      y_mm: 84.0
-    - x_mm: 30.0
-      y_mm: 84.0
-    - x_mm: 40.0
-      y_mm: 84.0
-    - x_mm: 50.0
-      y_mm: 84.0
-    - x_mm: 60.0
-      y_mm: 84.0
-    - x_mm: 70.0
-      y_mm: 84.0
-    - x_mm: 80.0
-      y_mm: 84.0
-    - x_mm: 90.0
-      y_mm: 84.0
-    - x_mm: 100.0
-      y_mm: 84.0
-    - x_mm: 100.0
-      y_mm: 72.0
-    - x_mm: 90.0
-      y_mm: 72.0
-    - x_mm: 80.0
-      y_mm: 72.0
-    - x_mm: 70.0
-      y_mm: 72.0
-    - x_mm: 60.0
-      y_mm: 72.0
-    - x_mm: 50.0
-      y_mm: 72.0
-    - x_mm: 40.0
-      y_mm: 72.0
-    - x_mm: 30.0
-      y_mm: 72.0
-    - x_mm: 20.0
-      y_mm: 72.0
-    - x_mm: 10.0
-      y_mm: 72.0
-    - x_mm: 0.0
-      y_mm: 72.0
-    - x_mm: -10.0
-      y_mm: 72.0
-    - x_mm: -20.0
-      y_mm: 72.0
-    - x_mm: -30.0
-      y_mm: 72.0
-    - x_mm: -40.0
-      y_mm: 72.0
-    - x_mm: -50.0
-      y_mm: 72.0
-    - x_mm: -60.0
-      y_mm: 72.0
-    - x_mm: -70.0
-      y_mm: 72.0
-    - x_mm: -80.0
-      y_mm: 72.0
-    - x_mm: -90.0
-      y_mm: 72.0
-    - x_mm: -100.0
-      y_mm: 72.0
-    - x_mm: -110.0
-      y_mm: 60.0
-    - x_mm: -100.0
-      y_mm: 60.0
-    - x_mm: -90.0
-      y_mm: 60.0
-    - x_mm: -80.0
-      y_mm: 60.0
-    - x_mm: -70.0
-      y_mm: 60.0
-    - x_mm: -60.0
-      y_mm: 60.0
-    - x_mm: -50.0
-      y_mm: 60.0
-    - x_mm: -40.0
-      y_mm: 60.0
-    - x_mm: -30.0
-      y_mm: 60.0
-    - x_mm: -20.0
-      y_mm: 60.0
-    - x_mm: -10.0
-      y_mm: 60.0
-    - x_mm: 0.0
-      y_mm: 60.0
-    - x_mm: 10.0
-      y_mm: 60.0
-    - x_mm: 20.0
-      y_mm: 60.0
-    - x_mm: 30.0
-      y_mm: 60.0
-    - x_mm: 40.0
-      y_mm: 60.0
-    - x_mm: 50.0
-      y_mm: 60.0
-    - x_mm: 60.0
-      y_mm: 60.0
-    - x_mm: 70.0
-      y_mm: 60.0
-    - x_mm: 80.0
-      y_mm: 60.0
-    - x_mm: 90.0
-      y_mm: 60.0
-    - x_mm: 100.0
-      y_mm: 60.0
-    - x_mm: 110.0
-      y_mm: 60.0
-    - x_mm: 110.0
-      y_mm: 48.0
-    - x_mm: 100.0
-      y_mm: 48.0
-    - x_mm: 90.0
-      y_mm: 48.0
-    - x_mm: 80.0
-      y_mm: 48.0
-    - x_mm: 70.0
-      y_mm: 48.0
-    - x_mm: 60.0
-      y_mm: 48.0
-    - x_mm: 50.0
-      y_mm: 48.0
-    - x_mm: 40.0
-      y_mm: 48.0
-    - x_mm: 30.0
-      y_mm: 48.0
-    - x_mm: 20.0
-      y_mm: 48.0
-    - x_mm: 10.0
-      y_mm: 48.0
-    - x_mm: 0.0
-      y_mm: 48.0
-    - x_mm: -10.0
-      y_mm: 48.0
-    - x_mm: -20.0
-      y_mm: 48.0
-    - x_mm: -30.0
-      y_mm: 48.0
-    - x_mm: -50.0
-      y_mm: 48.0
-    - x_mm: -60.0
-      y_mm: 48.0
-    - x_mm: -70.0
-      y_mm: 48.0
-    - x_mm: -80.0
-      y_mm: 48.0
-    - x_mm: -90.0
-      y_mm: 48.0
-    - x_mm: -100.0
-      y_mm: 48.0
-    - x_mm: -110.0
-      y_mm: 48.0
-    - x_mm: -120.0
-      y_mm: 36.0
-    - x_mm: -110.0
-      y_mm: 36.0
-    - x_mm: -100.0
-      y_mm: 36.0
-    - x_mm: -90.0
-      y_mm: 36.0
-    - x_mm: -80.0
-      y_mm: 36.0
-    - x_mm: -70.0
-      y_mm: 36.0
-    - x_mm: -60.0
-      y_mm: 36.0
-    - x_mm: -50.0
-      y_mm: 36.0
-    - x_mm: -40.0
-      y_mm: 36.0
-    - x_mm: -30.0
-      y_mm: 36.0
-    - x_mm: -20.0
-      y_mm: 36.0
-    - x_mm: -10.0
-      y_mm: 36.0
-    - x_mm: 0.0
-      y_mm: 36.0
-    - x_mm: 10.0
-      y_mm: 36.0
-    - x_mm: 20.0
-      y_mm: 36.0
-    - x_mm: 30.0
-      y_mm: 36.0
-    - x_mm: 40.0
-      y_mm: 36.0
-    - x_mm: 50.0
-      y_mm: 36.0
-    - x_mm: 60.0
-      y_mm: 36.0
-    - x_mm: 70.0
-      y_mm: 36.0
-    - x_mm: 80.0
-      y_mm: 36.0
-    - x_mm: 90.0
-      y_mm: 36.0
-    - x_mm: 100.0
-      y_mm: 36.0
-    - x_mm: 110.0
-      y_mm: 36.0
-    - x_mm: 120.0
-      y_mm: 36.0
-    - x_mm: 120.0
-      y_mm: 24.0
-    - x_mm: 110.0
-      y_mm: 24.0
-    - x_mm: 100.0
-      y_mm: 24.0
-    - x_mm: 90.0
-      y_mm: 24.0
-    - x_mm: 80.0
-      y_mm: 24.0
-    - x_mm: 70.0
-      y_mm: 24.0
-    - x_mm: 60.0
-      y_mm: 24.0
-    - x_mm: 50.0
-      y_mm: 24.0
-    - x_mm: 40.0
-      y_mm: 24.0
-    - x_mm: 30.0
-      y_mm: 24.0
-    - x_mm: 10.0
-      y_mm: 24.0
-    - x_mm: 0.0
-      y_mm: 24.0
-    - x_mm: -10.0
-      y_mm: 24.0
-    - x_mm: -20.0
-      y_mm: 24.0
-    - x_mm: -30.0
-      y_mm: 24.0
-    - x_mm: -40.0
-      y_mm: 24.0
-    - x_mm: -50.0
-      y_mm: 24.0
-    - x_mm: -60.0
-      y_mm: 24.0
-    - x_mm: -70.0
-      y_mm: 24.0
-    - x_mm: -80.0
-      y_mm: 24.0
-    - x_mm: -90.0
-      y_mm: 24.0
-    - x_mm: -100.0
-      y_mm: 24.0
-    - x_mm: -110.0
-      y_mm: 24.0
-    - x_mm: -120.0
-      y_mm: 24.0
-    - x_mm: -120.0
-      y_mm: 12.0
-    - x_mm: -110.0
-      y_mm: 12.0
-    - x_mm: -100.0
-      y_mm: 12.0
-    - x_mm: -90.0
-      y_mm: 12.0
-    - x_mm: -80.0
-      y_mm: 12.0
-    - x_mm: -70.0
-      y_mm: 12.0
-    - x_mm: -50.0
-      y_mm: 12.0
-    - x_mm: -40.0
-      y_mm: 12.0
-    - x_mm: -30.0
-      y_mm: 12.0
-    - x_mm: -20.0
-      y_mm: 12.0
-    - x_mm: -10.0
-      y_mm: 12.0
-    - x_mm: 0.0
-      y_mm: 12.0
-    - x_mm: 10.0
-      y_mm: 12.0
-    - x_mm: 20.0
-      y_mm: 12.0
-    - x_mm: 30.0
-      y_mm: 12.0
-    - x_mm: 40.0
-      y_mm: 12.0
-    - x_mm: 50.0
-      y_mm: 12.0
-    - x_mm: 60.0
-      y_mm: 12.0
-    - x_mm: 70.0
-      y_mm: 12.0
-    - x_mm: 80.0
-      y_mm: 12.0
-    - x_mm: 100.0
-      y_mm: 12.0
-    - x_mm: 110.0
-      y_mm: 12.0
-    - x_mm: 120.0
-      y_mm: 12.0
-    - x_mm: 120.0
-      y_mm: 0.0
-    - x_mm: 110.0
-      y_mm: 0.0
-    - x_mm: 100.0
-      y_mm: 0.0
-    - x_mm: 90.0
-      y_mm: 0.0
-    - x_mm: 80.0
-      y_mm: 0.0
-    - x_mm: 70.0
-      y_mm: 0.0
-    - x_mm: 60.0
-      y_mm: 0.0
-    - x_mm: 50.0
-      y_mm: 0.0
-    - x_mm: 40.0
-      y_mm: 0.0
-    - x_mm: 30.0
-      y_mm: 0.0
-    - x_mm: 20.0
-      y_mm: 0.0
-    - x_mm: 10.0
-      y_mm: 0.0
-    - x_mm: 0.0
-      y_mm: 0.0
-    - x_mm: -10.0
-      y_mm: 0.0
-    - x_mm: -20.0
-      y_mm: 0.0
-    - x_mm: -30.0
-      y_mm: 0.0
-    - x_mm: -40.0
-      y_mm: 0.0
-    - x_mm: -50.0
-      y_mm: 0.0
-    - x_mm: -60.0
-      y_mm: 0.0
-    - x_mm: -70.0
-      y_mm: 0.0
-    - x_mm: -80.0
-      y_mm: 0.0
-    - x_mm: -90.0
-      y_mm: 0.0
-    - x_mm: -100.0
-      y_mm: 0.0
-    - x_mm: -110.0
-      y_mm: 0.0
-    - x_mm: -120.0
-      y_mm: 0.0
-    - x_mm: -120.0
-      y_mm: -12.0
-    - x_mm: -110.0
-      y_mm: -12.0
-    - x_mm: -100.0
-      y_mm: -12.0
-    - x_mm: -90.0
-      y_mm: -12.0
-    - x_mm: -80.0
-      y_mm: -12.0
-    - x_mm: -70.0
-      y_mm: -12.0
-    - x_mm: -60.0
-      y_mm: -12.0
-    - x_mm: -50.0
-      y_mm: -12.0
-    - x_mm: -40.0
-      y_mm: -12.0
-    - x_mm: -30.0
-      y_mm: -12.0
-    - x_mm: -20.0
-      y_mm: -12.0
-    - x_mm: -10.0
-      y_mm: -12.0
-    - x_mm: 0.0
-      y_mm: -12.0
-    - x_mm: 10.0
-      y_mm: -12.0
-    - x_mm: 20.0
-      y_mm: -12.0
-    - x_mm: 30.0
-      y_mm: -12.0
-    - x_mm: 50.0
-      y_mm: -12.0
-    - x_mm: 60.0
-      y_mm: -12.0
-    - x_mm: 70.0
-      y_mm: -12.0
-    - x_mm: 80.0
-      y_mm: -12.0
-    - x_mm: 90.0
-      y_mm: -12.0
-    - x_mm: 100.0
-      y_mm: -12.0
-    - x_mm: 110.0
-      y_mm: -12.0
-    - x_mm: 120.0
-      y_mm: -12.0
-    - x_mm: 120.0
-      y_mm: -24.0
-    - x_mm: 110.0
-      y_mm: -24.0
-    - x_mm: 100.0
-      y_mm: -24.0
-    - x_mm: 90.0
-      y_mm: -24.0
-    - x_mm: 80.0
-      y_mm: -24.0
-    - x_mm: 70.0
-      y_mm: -24.0
-    - x_mm: 60.0
-      y_mm: -24.0
-    - x_mm: 50.0
-      y_mm: -24.0
-    - x_mm: 40.0
-      y_mm: -24.0
-    - x_mm: 30.0
-      y_mm: -24.0
-    - x_mm: 20.0
-      y_mm: -24.0
-    - x_mm: 10.0
-      y_mm: -24.0
-    - x_mm: 0.0
-      y_mm: -24.0
-    - x_mm: -10.0
-      y_mm: -24.0
-    - x_mm: -20.0
-      y_mm: -24.0
-    - x_mm: -30.0
-      y_mm: -24.0
-    - x_mm: -40.0
-      y_mm: -24.0
-    - x_mm: -50.0
-      y_mm: -24.0
-    - x_mm: -60.0
-      y_mm: -24.0
-    - x_mm: -70.0
-      y_mm: -24.0
-    - x_mm: -80.0
-      y_mm: -24.0
-    - x_mm: -90.0
-      y_mm: -24.0
-    - x_mm: -100.0
-      y_mm: -24.0
-    - x_mm: -110.0
-      y_mm: -24.0
-    - x_mm: -120.0
-      y_mm: -24.0
-    - x_mm: -120.0
-      y_mm: -36.0
-    - x_mm: -110.0
-      y_mm: -36.0
-    - x_mm: -100.0
-      y_mm: -36.0
-    - x_mm: -90.0
-      y_mm: -36.0
-    - x_mm: -80.0
-      y_mm: -36.0
-    - x_mm: -70.0
-      y_mm: -36.0
-    - x_mm: -60.0
-      y_mm: -36.0
-    - x_mm: -50.0
-      y_mm: -36.0
-    - x_mm: -40.0
-      y_mm: -36.0
-    - x_mm: -30.0
-      y_mm: -36.0
-    - x_mm: -20.0
-      y_mm: -36.0
-    - x_mm: -10.0
-      y_mm: -36.0
-    - x_mm: 0.0
-      y_mm: -36.0
-    - x_mm: 10.0
-      y_mm: -36.0
-    - x_mm: 20.0
-      y_mm: -36.0
-    - x_mm: 30.0
-      y_mm: -36.0
-    - x_mm: 40.0
-      y_mm: -36.0
-    - x_mm: 50.0
-      y_mm: -36.0
-    - x_mm: 60.0
-      y_mm: -36.0
-    - x_mm: 70.0
-      y_mm: -36.0
-    - x_mm: 80.0
-      y_mm: -36.0
-    - x_mm: 90.0
-      y_mm: -36.0
-    - x_mm: 100.0
-      y_mm: -36.0
-    - x_mm: 110.0
-      y_mm: -36.0
-    - x_mm: 120.0
-      y_mm: -36.0
-    - x_mm: 110.0
-      y_mm: -48.0
-    - x_mm: 100.0
-      y_mm: -48.0
-    - x_mm: 90.0
-      y_mm: -48.0
-    - x_mm: 80.0
-      y_mm: -48.0
-    - x_mm: 70.0
-      y_mm: -48.0
-    - x_mm: 60.0
-      y_mm: -48.0
-    - x_mm: 50.0
-      y_mm: -48.0
-    - x_mm: 40.0
-      y_mm: -48.0
-    - x_mm: 30.0
-      y_mm: -48.0
-    - x_mm: 20.0
-      y_mm: -48.0
-    - x_mm: 10.0
-      y_mm: -48.0
-    - x_mm: 0.0
-      y_mm: -48.0
-    - x_mm: -10.0
-      y_mm: -48.0
-    - x_mm: -20.0
-      y_mm: -48.0
-    - x_mm: -30.0
-      y_mm: -48.0
-    - x_mm: -40.0
-      y_mm: -48.0
-    - x_mm: -50.0
-      y_mm: -48.0
-    - x_mm: -60.0
-      y_mm: -48.0
-    - x_mm: -70.0
-      y_mm: -48.0
-    - x_mm: -80.0
-      y_mm: -48.0
-    - x_mm: -90.0
-      y_mm: -48.0
-    - x_mm: -100.0
-      y_mm: -48.0
-    - x_mm: -110.0
-      y_mm: -48.0
-    - x_mm: -110.0
-      y_mm: -60.0
-    - x_mm: -100.0
-      y_mm: -60.0
-    - x_mm: -90.0
-      y_mm: -60.0
-    - x_mm: -80.0
-      y_mm: -60.0
-    - x_mm: -70.0
-      y_mm: -60.0
-    - x_mm: -60.0
-      y_mm: -60.0
-    - x_mm: -50.0
-      y_mm: -60.0
-    - x_mm: -40.0
-      y_mm: -60.0
-    - x_mm: -30.0
-      y_mm: -60.0
-    - x_mm: -20.0
-      y_mm: -60.0
-    - x_mm: -10.0
-      y_mm: -60.0
-    - x_mm: 0.0
-      y_mm: -60.0
-    - x_mm: 20.0
-      y_mm: -60.0
-    - x_mm: 30.0
-      y_mm: -60.0
-    - x_mm: 40.0
-      y_mm: -60.0
-    - x_mm: 50.0
-      y_mm: -60.0
-    - x_mm: 60.0
-      y_mm: -60.0
-    - x_mm: 70.0
-      y_mm: -60.0
-    - x_mm: 80.0
-      y_mm: -60.0
-    - x_mm: 90.0
-      y_mm: -60.0
-    - x_mm: 100.0
-      y_mm: -60.0
-    - x_mm: 110.0
-      y_mm: -60.0
-    - x_mm: 100.0
-      y_mm: -72.0
-    - x_mm: 90.0
-      y_mm: -72.0
-    - x_mm: 80.0
-      y_mm: -72.0
-    - x_mm: 70.0
-      y_mm: -72.0
-    - x_mm: 60.0
-      y_mm: -72.0
-    - x_mm: 50.0
-      y_mm: -72.0
-    - x_mm: 40.0
-      y_mm: -72.0
-    - x_mm: 30.0
-      y_mm: -72.0
-    - x_mm: 20.0
-      y_mm: -72.0
-    - x_mm: 10.0
-      y_mm: -72.0
-    - x_mm: 0.0
-      y_mm: -72.0
-    - x_mm: -10.0
-      y_mm: -72.0
-    - x_mm: -20.0
-      y_mm: -72.0
-    - x_mm: -30.0
-      y_mm: -72.0
-    - x_mm: -40.0
-      y_mm: -72.0
-    - x_mm: -50.0
-      y_mm: -72.0
-    - x_mm: -60.0
-      y_mm: -72.0
-    - x_mm: -70.0
-      y_mm: -72.0
-    - x_mm: -80.0
-      y_mm: -72.0
-    - x_mm: -90.0
-      y_mm: -72.0
-    - x_mm: -100.0
-      y_mm: -72.0
-    - x_mm: -90.0
-      y_mm: -84.0
-    - x_mm: -80.0
-      y_mm: -84.0
-    - x_mm: -70.0
-      y_mm: -84.0
-    - x_mm: -60.0
-      y_mm: -84.0
-    - x_mm: -50.0
-      y_mm: -84.0
-    - x_mm: -40.0
-      y_mm: -84.0
-    - x_mm: -30.0
-      y_mm: -84.0
-    - x_mm: -20.0
-      y_mm: -84.0
-    - x_mm: -10.0
-      y_mm: -84.0
-    - x_mm: 0.0
-      y_mm: -84.0
-    - x_mm: 10.0
-      y_mm: -84.0
-    - x_mm: 20.0
-      y_mm: -84.0
-    - x_mm: 30.0
-      y_mm: -84.0
-    - x_mm: 40.0
-      y_mm: -84.0
-    - x_mm: 50.0
-      y_mm: -84.0
-    - x_mm: 60.0
-      y_mm: -84.0
-    - x_mm: 70.0
-      y_mm: -84.0
-    - x_mm: 80.0
-      y_mm: -84.0
-    - x_mm: 90.0
-      y_mm: -84.0
-    - x_mm: 80.0
-      y_mm: -96.0
-    - x_mm: 70.0
-      y_mm: -96.0
-    - x_mm: 60.0
-      y_mm: -96.0
-    - x_mm: 50.0
-      y_mm: -96.0
-    - x_mm: 40.0
-      y_mm: -96.0
-    - x_mm: 30.0
-      y_mm: -96.0
-    - x_mm: 20.0
-      y_mm: -96.0
-    - x_mm: 10.0
-      y_mm: -96.0
-    - x_mm: 0.0
-      y_mm: -96.0
-    - x_mm: -10.0
-      y_mm: -96.0
-    - x_mm: -20.0
-      y_mm: -96.0
-    - x_mm: -30.0
-      y_mm: -96.0
-    - x_mm: -40.0
-      y_mm: -96.0
-    - x_mm: -50.0
-      y_mm: -96.0
-    - x_mm: -60.0
-      y_mm: -96.0
-    - x_mm: -70.0
-      y_mm: -96.0
-    - x_mm: -80.0
-      y_mm: -96.0
-    - x_mm: -70.0
-      y_mm: -108.0
-    - x_mm: -60.0
-      y_mm: -108.0
-    - x_mm: -50.0
-      y_mm: -108.0
-    - x_mm: -40.0
-      y_mm: -108.0
-    - x_mm: -30.0
-      y_mm: -108.0
-    - x_mm: -20.0
-      y_mm: -108.0
-    - x_mm: -10.0
-      y_mm: -108.0
-    - x_mm: 0.0
-      y_mm: -108.0
-    - x_mm: 10.0
-      y_mm: -108.0
-    - x_mm: 20.0
-      y_mm: -108.0
-    - x_mm: 30.0
-      y_mm: -108.0
-    - x_mm: 40.0
-      y_mm: -108.0
-    - x_mm: 50.0
-      y_mm: -108.0
-    - x_mm: 60.0
-      y_mm: -108.0
-    - x_mm: 70.0
-      y_mm: -108.0
-    - x_mm: 50.0
-      y_mm: -120.0
-    - x_mm: 40.0
-      y_mm: -120.0
-    - x_mm: 30.0
-      y_mm: -120.0
-    - x_mm: 20.0
-      y_mm: -120.0
-    - x_mm: 10.0
-      y_mm: -120.0
-    - x_mm: 0.0
-      y_mm: -120.0
-    - x_mm: -10.0
-      y_mm: -120.0
-    - x_mm: -20.0
-      y_mm: -120.0
-    - x_mm: -30.0
-      y_mm: -120.0
-    - x_mm: -40.0
-      y_mm: -120.0
-    - x_mm: -50.0
-      y_mm: -120.0
-    - x_mm: -20.0
-      y_mm: -132.0
-    - x_mm: -10.0
-      y_mm: -132.0
-    - x_mm: 0.0
-      y_mm: -132.0
-    - x_mm: 10.0
-      y_mm: -132.0
-    - x_mm: 20.0
-      y_mm: -132.0
-    - x_mm: 0.0
-      y_mm: 0.0
+    - x_mm: 1.4
+      y_mm: 1.8
+    - x_mm: -28.5
+      y_mm: 133.6
+      row: 0
+      col: 9
+      idx: 0
+    - x_mm: -18.5
+      y_mm: 133.6
+      row: 0
+      col: 10
+      idx: 1
+    - x_mm: -8.5
+      y_mm: 133.6
+      row: 0
+      col: 11
+      idx: 2
+    - x_mm: 1.5
+      y_mm: 133.6
+      row: 0
+      col: 12
+      idx: 3
+    - x_mm: 11.5
+      y_mm: 133.6
+      row: 0
+      col: 13
+      idx: 4
+    - x_mm: 21.5
+      y_mm: 133.6
+      row: 0
+      col: 14
+      idx: 5
+    - x_mm: 31.5
+      y_mm: 133.6
+      row: 0
+      col: 15
+      idx: 6
+    - x_mm: 61.5
+      y_mm: 121.6
+      row: 1
+      col: 18
+      idx: 7
+    - x_mm: 51.5
+      y_mm: 121.6
+      row: 1
+      col: 17
+      idx: 8
+    - x_mm: 41.5
+      y_mm: 121.6
+      row: 1
+      col: 16
+      idx: 9
+    - x_mm: 31.5
+      y_mm: 121.6
+      row: 1
+      col: 15
+      idx: 10
+    - x_mm: 21.5
+      y_mm: 121.6
+      row: 1
+      col: 14
+      idx: 11
+    - x_mm: 11.5
+      y_mm: 121.6
+      row: 1
+      col: 13
+      idx: 12
+    - x_mm: 1.5
+      y_mm: 121.6
+      row: 1
+      col: 12
+      idx: 13
+    - x_mm: -8.5
+      y_mm: 121.6
+      row: 1
+      col: 11
+      idx: 14
+    - x_mm: -18.5
+      y_mm: 121.6
+      row: 1
+      col: 10
+      idx: 15
+    - x_mm: -28.5
+      y_mm: 121.6
+      row: 1
+      col: 9
+      idx: 16
+    - x_mm: -38.5
+      y_mm: 121.6
+      row: 1
+      col: 8
+      idx: 17
+    - x_mm: -48.5
+      y_mm: 121.6
+      row: 1
+      col: 7
+      idx: 18
+    - x_mm: -58.5
+      y_mm: 121.6
+      row: 1
+      col: 6
+      idx: 19
+    - x_mm: -68.5
+      y_mm: 109.6
+      row: 2
+      col: 5
+      idx: 20
+    - x_mm: -58.5
+      y_mm: 109.6
+      row: 2
+      col: 6
+      idx: 21
+    - x_mm: -48.5
+      y_mm: 109.6
+      row: 2
+      col: 7
+      idx: 22
+    - x_mm: -38.5
+      y_mm: 109.6
+      row: 2
+      col: 8
+      idx: 23
+    - x_mm: -28.5
+      y_mm: 109.6
+      row: 2
+      col: 9
+      idx: 24
+    - x_mm: -18.5
+      y_mm: 109.6
+      row: 2
+      col: 10
+      idx: 25
+    - x_mm: -8.5
+      y_mm: 109.6
+      row: 2
+      col: 11
+      idx: 26
+    - x_mm: 1.5
+      y_mm: 109.6
+      row: 2
+      col: 12
+      idx: 27
+    - x_mm: 11.5
+      y_mm: 109.6
+      row: 2
+      col: 13
+      idx: 28
+    - x_mm: 21.5
+      y_mm: 109.6
+      row: 2
+      col: 14
+      idx: 29
+    - x_mm: 31.5
+      y_mm: 109.6
+      row: 2
+      col: 15
+      idx: 30
+    - x_mm: 41.5
+      y_mm: 109.6
+      row: 2
+      col: 16
+      idx: 31
+    - x_mm: 51.5
+      y_mm: 109.6
+      row: 2
+      col: 17
+      idx: 32
+    - x_mm: 61.5
+      y_mm: 109.6
+      row: 2
+      col: 18
+      idx: 33
+    - x_mm: 71.5
+      y_mm: 109.6
+      row: 2
+      col: 19
+      idx: 34
+    - x_mm: 91.5
+      y_mm: 97.6
+      row: 3
+      col: 21
+      idx: 35
+    - x_mm: 81.5
+      y_mm: 97.6
+      row: 3
+      col: 20
+      idx: 36
+    - x_mm: 71.5
+      y_mm: 97.6
+      row: 3
+      col: 19
+      idx: 37
+    - x_mm: 61.5
+      y_mm: 97.6
+      row: 3
+      col: 18
+      idx: 38
+    - x_mm: 51.5
+      y_mm: 97.6
+      row: 3
+      col: 17
+      idx: 39
+    - x_mm: 41.5
+      y_mm: 97.6
+      row: 3
+      col: 16
+      idx: 40
+    - x_mm: 31.5
+      y_mm: 97.6
+      row: 3
+      col: 15
+      idx: 41
+    - x_mm: 21.5
+      y_mm: 97.6
+      row: 3
+      col: 14
+      idx: 42
+    - x_mm: 11.5
+      y_mm: 97.6
+      row: 3
+      col: 13
+      idx: 43
+    - x_mm: 1.5
+      y_mm: 97.6
+      row: 3
+      col: 12
+      idx: 44
+    - x_mm: -8.5
+      y_mm: 97.6
+      row: 3
+      col: 11
+      idx: 45
+    - x_mm: -18.5
+      y_mm: 97.6
+      row: 3
+      col: 10
+      idx: 46
+    - x_mm: -28.5
+      y_mm: 97.6
+      row: 3
+      col: 9
+      idx: 47
+    - x_mm: -38.5
+      y_mm: 97.6
+      row: 3
+      col: 8
+      idx: 48
+    - x_mm: -48.5
+      y_mm: 97.6
+      row: 3
+      col: 7
+      idx: 49
+    - x_mm: -58.5
+      y_mm: 97.6
+      row: 3
+      col: 6
+      idx: 50
+    - x_mm: -68.5
+      y_mm: 97.6
+      row: 3
+      col: 5
+      idx: 51
+    - x_mm: -78.5
+      y_mm: 97.6
+      row: 3
+      col: 4
+      idx: 52
+    - x_mm: -88.5
+      y_mm: 97.6
+      row: 3
+      col: 3
+      idx: 53
+    - x_mm: -98.5
+      y_mm: 85.6
+      row: 4
+      col: 2
+      idx: 54
+    - x_mm: -88.5
+      y_mm: 85.6
+      row: 4
+      col: 3
+      idx: 55
+    - x_mm: -78.5
+      y_mm: 85.6
+      row: 4
+      col: 4
+      idx: 56
+    - x_mm: -68.5
+      y_mm: 85.6
+      row: 4
+      col: 5
+      idx: 57
+    - x_mm: -58.5
+      y_mm: 85.6
+      row: 4
+      col: 6
+      idx: 58
+    - x_mm: -48.5
+      y_mm: 85.6
+      row: 4
+      col: 7
+      idx: 59
+    - x_mm: -38.5
+      y_mm: 85.6
+      row: 4
+      col: 8
+      idx: 60
+    - x_mm: -28.5
+      y_mm: 85.6
+      row: 4
+      col: 9
+      idx: 61
+    - x_mm: -18.5
+      y_mm: 85.6
+      row: 4
+      col: 10
+      idx: 62
+    - x_mm: -8.5
+      y_mm: 85.6
+      row: 4
+      col: 11
+      idx: 63
+    - x_mm: 1.5
+      y_mm: 85.6
+      row: 4
+      col: 12
+      idx: 64
+    - x_mm: 11.5
+      y_mm: 85.6
+      row: 4
+      col: 13
+      idx: 65
+    - x_mm: 21.5
+      y_mm: 85.6
+      row: 4
+      col: 14
+      idx: 66
+    - x_mm: 31.5
+      y_mm: 85.6
+      row: 4
+      col: 15
+      idx: 67
+    - x_mm: 41.5
+      y_mm: 85.6
+      row: 4
+      col: 16
+      idx: 68
+    - x_mm: 51.5
+      y_mm: 85.6
+      row: 4
+      col: 17
+      idx: 69
+    - x_mm: 61.5
+      y_mm: 85.6
+      row: 4
+      col: 18
+      idx: 70
+    - x_mm: 71.5
+      y_mm: 85.6
+      row: 4
+      col: 19
+      idx: 71
+    - x_mm: 81.5
+      y_mm: 85.6
+      row: 4
+      col: 20
+      idx: 72
+    - x_mm: 91.5
+      y_mm: 85.6
+      row: 4
+      col: 21
+      idx: 73
+    - x_mm: 101.5
+      y_mm: 85.6
+      row: 4
+      col: 22
+      idx: 74
+    - x_mm: 101.5
+      y_mm: 73.6
+      row: 5
+      col: 22
+      idx: 75
+    - x_mm: 91.5
+      y_mm: 73.6
+      row: 5
+      col: 21
+      idx: 76
+    - x_mm: 81.5
+      y_mm: 73.6
+      row: 5
+      col: 20
+      idx: 77
+    - x_mm: 71.5
+      y_mm: 73.6
+      row: 5
+      col: 19
+      idx: 78
+    - x_mm: 61.5
+      y_mm: 73.6
+      row: 5
+      col: 18
+      idx: 79
+    - x_mm: 51.5
+      y_mm: 73.6
+      row: 5
+      col: 17
+      idx: 80
+    - x_mm: 41.5
+      y_mm: 73.6
+      row: 5
+      col: 16
+      idx: 81
+    - x_mm: 31.5
+      y_mm: 73.6
+      row: 5
+      col: 15
+      idx: 82
+    - x_mm: 21.5
+      y_mm: 73.6
+      row: 5
+      col: 14
+      idx: 83
+    - x_mm: 11.5
+      y_mm: 73.6
+      row: 5
+      col: 13
+      idx: 84
+    - x_mm: 1.5
+      y_mm: 73.6
+      row: 5
+      col: 12
+      idx: 85
+    - x_mm: -8.5
+      y_mm: 73.6
+      row: 5
+      col: 11
+      idx: 86
+    - x_mm: -18.5
+      y_mm: 73.6
+      row: 5
+      col: 10
+      idx: 87
+    - x_mm: -28.5
+      y_mm: 73.6
+      row: 5
+      col: 9
+      idx: 88
+    - x_mm: -38.5
+      y_mm: 73.6
+      row: 5
+      col: 8
+      idx: 89
+    - x_mm: -48.5
+      y_mm: 73.6
+      row: 5
+      col: 7
+      idx: 90
+    - x_mm: -58.5
+      y_mm: 73.6
+      row: 5
+      col: 6
+      idx: 91
+    - x_mm: -68.5
+      y_mm: 73.6
+      row: 5
+      col: 5
+      idx: 92
+    - x_mm: -78.5
+      y_mm: 73.6
+      row: 5
+      col: 4
+      idx: 93
+    - x_mm: -88.5
+      y_mm: 73.6
+      row: 5
+      col: 3
+      idx: 94
+    - x_mm: -98.5
+      y_mm: 73.6
+      row: 5
+      col: 2
+      idx: 95
+    - x_mm: -108.5
+      y_mm: 61.6
+      row: 6
+      col: 1
+      idx: 96
+    - x_mm: -98.5
+      y_mm: 61.6
+      row: 6
+      col: 2
+      idx: 97
+    - x_mm: -88.5
+      y_mm: 61.6
+      row: 6
+      col: 3
+      idx: 98
+    - x_mm: -78.5
+      y_mm: 61.6
+      row: 6
+      col: 4
+      idx: 99
+    - x_mm: -68.5
+      y_mm: 61.6
+      row: 6
+      col: 5
+      idx: 100
+    - x_mm: -58.5
+      y_mm: 61.6
+      row: 6
+      col: 6
+      idx: 101
+    - x_mm: -48.5
+      y_mm: 61.6
+      row: 6
+      col: 7
+      idx: 102
+    - x_mm: -38.5
+      y_mm: 61.6
+      row: 6
+      col: 8
+      idx: 103
+    - x_mm: -28.5
+      y_mm: 61.6
+      row: 6
+      col: 9
+      idx: 104
+    - x_mm: -18.5
+      y_mm: 61.6
+      row: 6
+      col: 10
+      idx: 105
+    - x_mm: -8.5
+      y_mm: 61.6
+      row: 6
+      col: 11
+      idx: 106
+    - x_mm: 1.5
+      y_mm: 61.6
+      row: 6
+      col: 12
+      idx: 107
+    - x_mm: 11.5
+      y_mm: 61.6
+      row: 6
+      col: 13
+      idx: 108
+    - x_mm: 21.5
+      y_mm: 61.6
+      row: 6
+      col: 14
+      idx: 109
+    - x_mm: 31.5
+      y_mm: 61.6
+      row: 6
+      col: 15
+      idx: 110
+    - x_mm: 41.5
+      y_mm: 61.6
+      row: 6
+      col: 16
+      idx: 111
+    - x_mm: 51.5
+      y_mm: 61.6
+      row: 6
+      col: 17
+      idx: 112
+    - x_mm: 61.5
+      y_mm: 61.6
+      row: 6
+      col: 18
+      idx: 113
+    - x_mm: 71.5
+      y_mm: 61.6
+      row: 6
+      col: 19
+      idx: 114
+    - x_mm: 81.5
+      y_mm: 61.6
+      row: 6
+      col: 20
+      idx: 115
+    - x_mm: 91.5
+      y_mm: 61.6
+      row: 6
+      col: 21
+      idx: 116
+    - x_mm: 101.5
+      y_mm: 61.6
+      row: 6
+      col: 22
+      idx: 117
+    - x_mm: 111.5
+      y_mm: 61.6
+      row: 6
+      col: 23
+      idx: 118
+    - x_mm: 111.5
+      y_mm: 49.6
+      row: 7
+      col: 23
+      idx: 119
+    - x_mm: 101.5
+      y_mm: 49.6
+      row: 7
+      col: 22
+      idx: 120
+    - x_mm: 91.5
+      y_mm: 49.6
+      row: 7
+      col: 21
+      idx: 121
+    - x_mm: 81.5
+      y_mm: 49.6
+      row: 7
+      col: 20
+      idx: 122
+    - x_mm: 71.5
+      y_mm: 49.6
+      row: 7
+      col: 19
+      idx: 123
+    - x_mm: 61.5
+      y_mm: 49.6
+      row: 7
+      col: 18
+      idx: 124
+    - x_mm: 51.5
+      y_mm: 49.6
+      row: 7
+      col: 17
+      idx: 125
+    - x_mm: 41.5
+      y_mm: 49.6
+      row: 7
+      col: 16
+      idx: 126
+    - x_mm: 31.5
+      y_mm: 49.6
+      row: 7
+      col: 15
+      idx: 127
+    - x_mm: 21.5
+      y_mm: 49.6
+      row: 7
+      col: 14
+      idx: 128
+    - x_mm: 11.5
+      y_mm: 49.6
+      row: 7
+      col: 13
+      idx: 129
+    - x_mm: 1.5
+      y_mm: 49.6
+      row: 7
+      col: 12
+      idx: 130
+    - x_mm: -8.5
+      y_mm: 49.6
+      row: 7
+      col: 11
+      idx: 131
+    - x_mm: -18.5
+      y_mm: 49.6
+      row: 7
+      col: 10
+      idx: 132
+    - x_mm: -28.5
+      y_mm: 49.6
+      row: 7
+      col: 9
+      idx: 133
+    - x_mm: -48.5
+      y_mm: 49.6
+      row: 7
+      col: 7
+      idx: 134
+    - x_mm: -58.5
+      y_mm: 49.6
+      row: 7
+      col: 6
+      idx: 135
+    - x_mm: -68.5
+      y_mm: 49.6
+      row: 7
+      col: 5
+      idx: 136
+    - x_mm: -78.5
+      y_mm: 49.6
+      row: 7
+      col: 4
+      idx: 137
+    - x_mm: -88.5
+      y_mm: 49.6
+      row: 7
+      col: 3
+      idx: 138
+    - x_mm: -98.5
+      y_mm: 49.6
+      row: 7
+      col: 2
+      idx: 139
+    - x_mm: -108.5
+      y_mm: 49.6
+      row: 7
+      col: 1
+      idx: 140
+    - x_mm: -118.5
+      y_mm: 37.6
+      row: 8
+      col: 0
+      idx: 141
+    - x_mm: -108.5
+      y_mm: 37.6
+      row: 8
+      col: 1
+      idx: 142
+    - x_mm: -98.5
+      y_mm: 37.6
+      row: 8
+      col: 2
+      idx: 143
+    - x_mm: -88.5
+      y_mm: 37.6
+      row: 8
+      col: 3
+      idx: 144
+    - x_mm: -78.5
+      y_mm: 37.6
+      row: 8
+      col: 4
+      idx: 145
+    - x_mm: -68.5
+      y_mm: 37.6
+      row: 8
+      col: 5
+      idx: 146
+    - x_mm: -58.5
+      y_mm: 37.6
+      row: 8
+      col: 6
+      idx: 147
+    - x_mm: -48.5
+      y_mm: 37.6
+      row: 8
+      col: 7
+      idx: 148
+    - x_mm: -38.5
+      y_mm: 37.6
+      row: 8
+      col: 8
+      idx: 149
+    - x_mm: -28.5
+      y_mm: 37.6
+      row: 8
+      col: 9
+      idx: 150
+    - x_mm: -18.5
+      y_mm: 37.6
+      row: 8
+      col: 10
+      idx: 151
+    - x_mm: -8.5
+      y_mm: 37.6
+      row: 8
+      col: 11
+      idx: 152
+    - x_mm: 1.5
+      y_mm: 37.6
+      row: 8
+      col: 12
+      idx: 153
+    - x_mm: 11.5
+      y_mm: 37.6
+      row: 8
+      col: 13
+      idx: 154
+    - x_mm: 21.5
+      y_mm: 37.6
+      row: 8
+      col: 14
+      idx: 155
+    - x_mm: 31.5
+      y_mm: 37.6
+      row: 8
+      col: 15
+      idx: 156
+    - x_mm: 41.5
+      y_mm: 37.6
+      row: 8
+      col: 16
+      idx: 157
+    - x_mm: 51.5
+      y_mm: 37.6
+      row: 8
+      col: 17
+      idx: 158
+    - x_mm: 61.5
+      y_mm: 37.6
+      row: 8
+      col: 18
+      idx: 159
+    - x_mm: 71.5
+      y_mm: 37.6
+      row: 8
+      col: 19
+      idx: 160
+    - x_mm: 81.5
+      y_mm: 37.6
+      row: 8
+      col: 20
+      idx: 161
+    - x_mm: 91.5
+      y_mm: 37.6
+      row: 8
+      col: 21
+      idx: 162
+    - x_mm: 101.5
+      y_mm: 37.6
+      row: 8
+      col: 22
+      idx: 163
+    - x_mm: 111.5
+      y_mm: 37.6
+      row: 8
+      col: 23
+      idx: 164
+    - x_mm: 121.5
+      y_mm: 37.6
+      row: 8
+      col: 24
+      idx: 165
+    - x_mm: 121.5
+      y_mm: 25.6
+      row: 9
+      col: 24
+      idx: 166
+    - x_mm: 111.5
+      y_mm: 25.6
+      row: 9
+      col: 23
+      idx: 167
+    - x_mm: 101.5
+      y_mm: 25.6
+      row: 9
+      col: 22
+      idx: 168
+    - x_mm: 91.5
+      y_mm: 25.6
+      row: 9
+      col: 21
+      idx: 169
+    - x_mm: 81.5
+      y_mm: 25.6
+      row: 9
+      col: 20
+      idx: 170
+    - x_mm: 71.5
+      y_mm: 25.6
+      row: 9
+      col: 19
+      idx: 171
+    - x_mm: 61.5
+      y_mm: 25.6
+      row: 9
+      col: 18
+      idx: 172
+    - x_mm: 51.5
+      y_mm: 25.6
+      row: 9
+      col: 17
+      idx: 173
+    - x_mm: 41.5
+      y_mm: 25.6
+      row: 9
+      col: 16
+      idx: 174
+    - x_mm: 31.5
+      y_mm: 25.6
+      row: 9
+      col: 15
+      idx: 175
+    - x_mm: 11.5
+      y_mm: 25.6
+      row: 9
+      col: 13
+      idx: 176
+    - x_mm: 1.5
+      y_mm: 25.6
+      row: 9
+      col: 12
+      idx: 177
+    - x_mm: -8.5
+      y_mm: 25.6
+      row: 9
+      col: 11
+      idx: 178
+    - x_mm: -18.5
+      y_mm: 25.6
+      row: 9
+      col: 10
+      idx: 179
+    - x_mm: -28.5
+      y_mm: 25.6
+      row: 9
+      col: 9
+      idx: 180
+    - x_mm: -38.5
+      y_mm: 25.6
+      row: 9
+      col: 8
+      idx: 181
+    - x_mm: -48.5
+      y_mm: 25.6
+      row: 9
+      col: 7
+      idx: 182
+    - x_mm: -58.5
+      y_mm: 25.6
+      row: 9
+      col: 6
+      idx: 183
+    - x_mm: -68.5
+      y_mm: 25.6
+      row: 9
+      col: 5
+      idx: 184
+    - x_mm: -78.5
+      y_mm: 25.6
+      row: 9
+      col: 4
+      idx: 185
+    - x_mm: -88.5
+      y_mm: 25.6
+      row: 9
+      col: 3
+      idx: 186
+    - x_mm: -98.5
+      y_mm: 25.6
+      row: 9
+      col: 2
+      idx: 187
+    - x_mm: -108.5
+      y_mm: 25.6
+      row: 9
+      col: 1
+      idx: 188
+    - x_mm: -118.5
+      y_mm: 25.6
+      row: 9
+      col: 0
+      idx: 189
+    - x_mm: -118.5
+      y_mm: 13.6
+      row: 10
+      col: 0
+      idx: 190
+    - x_mm: -108.5
+      y_mm: 13.6
+      row: 10
+      col: 1
+      idx: 191
+    - x_mm: -98.5
+      y_mm: 13.6
+      row: 10
+      col: 2
+      idx: 192
+    - x_mm: -88.5
+      y_mm: 13.6
+      row: 10
+      col: 3
+      idx: 193
+    - x_mm: -78.5
+      y_mm: 13.6
+      row: 10
+      col: 4
+      idx: 194
+    - x_mm: -68.5
+      y_mm: 13.6
+      row: 10
+      col: 5
+      idx: 195
+    - x_mm: -48.5
+      y_mm: 13.6
+      row: 10
+      col: 7
+      idx: 196
+    - x_mm: -38.5
+      y_mm: 13.6
+      row: 10
+      col: 8
+      idx: 197
+    - x_mm: -28.5
+      y_mm: 13.6
+      row: 10
+      col: 9
+      idx: 198
+    - x_mm: -18.5
+      y_mm: 13.6
+      row: 10
+      col: 10
+      idx: 199
+    - x_mm: -8.5
+      y_mm: 13.6
+      row: 10
+      col: 11
+      idx: 200
+    - x_mm: 1.5
+      y_mm: 13.6
+      row: 10
+      col: 12
+      idx: 201
+    - x_mm: 11.5
+      y_mm: 13.6
+      row: 10
+      col: 13
+      idx: 202
+    - x_mm: 21.5
+      y_mm: 13.6
+      row: 10
+      col: 14
+      idx: 203
+    - x_mm: 31.5
+      y_mm: 13.6
+      row: 10
+      col: 15
+      idx: 204
+    - x_mm: 41.5
+      y_mm: 13.6
+      row: 10
+      col: 16
+      idx: 205
+    - x_mm: 51.5
+      y_mm: 13.6
+      row: 10
+      col: 17
+      idx: 206
+    - x_mm: 61.5
+      y_mm: 13.6
+      row: 10
+      col: 18
+      idx: 207
+    - x_mm: 71.5
+      y_mm: 13.6
+      row: 10
+      col: 19
+      idx: 208
+    - x_mm: 81.5
+      y_mm: 13.6
+      row: 10
+      col: 20
+      idx: 209
+    - x_mm: 101.5
+      y_mm: 13.6
+      row: 10
+      col: 22
+      idx: 210
+    - x_mm: 111.5
+      y_mm: 13.6
+      row: 10
+      col: 23
+      idx: 211
+    - x_mm: 121.5
+      y_mm: 13.6
+      row: 10
+      col: 24
+      idx: 212
+    - x_mm: 121.5
+      y_mm: 1.6
+      row: 11
+      col: 24
+      idx: 213
+    - x_mm: 111.5
+      y_mm: 1.6
+      row: 11
+      col: 23
+      idx: 214
+    - x_mm: 101.5
+      y_mm: 1.6
+      row: 11
+      col: 22
+      idx: 215
+    - x_mm: 91.5
+      y_mm: 1.6
+      row: 11
+      col: 21
+      idx: 216
+    - x_mm: 81.5
+      y_mm: 1.6
+      row: 11
+      col: 20
+      idx: 217
+    - x_mm: 71.5
+      y_mm: 1.6
+      row: 11
+      col: 19
+      idx: 218
+    - x_mm: 61.5
+      y_mm: 1.6
+      row: 11
+      col: 18
+      idx: 219
+    - x_mm: 51.5
+      y_mm: 1.6
+      row: 11
+      col: 17
+      idx: 220
+    - x_mm: 41.5
+      y_mm: 1.6
+      row: 11
+      col: 16
+      idx: 221
+    - x_mm: 31.5
+      y_mm: 1.6
+      row: 11
+      col: 15
+      idx: 222
+    - x_mm: 21.5
+      y_mm: 1.6
+      row: 11
+      col: 14
+      idx: 223
+    - x_mm: 11.5
+      y_mm: 1.6
+      row: 11
+      col: 13
+      idx: 224
+    - x_mm: 1.5
+      y_mm: 1.6
+      row: 11
+      col: 12
+      idx: 225
+    - x_mm: -8.5
+      y_mm: 1.6
+      row: 11
+      col: 11
+      idx: 226
+    - x_mm: -18.5
+      y_mm: 1.6
+      row: 11
+      col: 10
+      idx: 227
+    - x_mm: -28.5
+      y_mm: 1.6
+      row: 11
+      col: 9
+      idx: 228
+    - x_mm: -38.5
+      y_mm: 1.6
+      row: 11
+      col: 8
+      idx: 229
+    - x_mm: -48.5
+      y_mm: 1.6
+      row: 11
+      col: 7
+      idx: 230
+    - x_mm: -58.5
+      y_mm: 1.6
+      row: 11
+      col: 6
+      idx: 231
+    - x_mm: -68.5
+      y_mm: 1.6
+      row: 11
+      col: 5
+      idx: 232
+    - x_mm: -78.5
+      y_mm: 1.6
+      row: 11
+      col: 4
+      idx: 233
+    - x_mm: -88.5
+      y_mm: 1.6
+      row: 11
+      col: 3
+      idx: 234
+    - x_mm: -98.5
+      y_mm: 1.6
+      row: 11
+      col: 2
+      idx: 235
+    - x_mm: -108.5
+      y_mm: 1.6
+      row: 11
+      col: 1
+      idx: 236
+    - x_mm: -118.5
+      y_mm: 1.6
+      row: 11
+      col: 0
+      idx: 237
+    - x_mm: -118.5
+      y_mm: -10.4
+      row: 12
+      col: 0
+      idx: 238
+    - x_mm: -108.5
+      y_mm: -10.4
+      row: 12
+      col: 1
+      idx: 239
+    - x_mm: -98.5
+      y_mm: -10.4
+      row: 12
+      col: 2
+      idx: 240
+    - x_mm: -88.5
+      y_mm: -10.4
+      row: 12
+      col: 3
+      idx: 241
+    - x_mm: -78.5
+      y_mm: -10.4
+      row: 12
+      col: 4
+      idx: 242
+    - x_mm: -68.5
+      y_mm: -10.4
+      row: 12
+      col: 5
+      idx: 243
+    - x_mm: -58.5
+      y_mm: -10.4
+      row: 12
+      col: 6
+      idx: 244
+    - x_mm: -48.5
+      y_mm: -10.4
+      row: 12
+      col: 7
+      idx: 245
+    - x_mm: -38.5
+      y_mm: -10.4
+      row: 12
+      col: 8
+      idx: 246
+    - x_mm: -28.5
+      y_mm: -10.4
+      row: 12
+      col: 9
+      idx: 247
+    - x_mm: -18.5
+      y_mm: -10.4
+      row: 12
+      col: 10
+      idx: 248
+    - x_mm: -8.5
+      y_mm: -10.4
+      row: 12
+      col: 11
+      idx: 249
+    - x_mm: 1.5
+      y_mm: -10.4
+      row: 12
+      col: 12
+      idx: 250
+    - x_mm: 11.5
+      y_mm: -10.4
+      row: 12
+      col: 13
+      idx: 251
+    - x_mm: 21.5
+      y_mm: -10.4
+      row: 12
+      col: 14
+      idx: 252
+    - x_mm: 31.5
+      y_mm: -10.4
+      row: 12
+      col: 15
+      idx: 253
+    - x_mm: 51.5
+      y_mm: -10.4
+      row: 12
+      col: 17
+      idx: 254
+    - x_mm: 61.5
+      y_mm: -10.4
+      row: 12
+      col: 18
+      idx: 255
+    - x_mm: 71.5
+      y_mm: -10.4
+      row: 12
+      col: 19
+      idx: 256
+    - x_mm: 81.5
+      y_mm: -10.4
+      row: 12
+      col: 20
+      idx: 257
+    - x_mm: 91.5
+      y_mm: -10.4
+      row: 12
+      col: 21
+      idx: 258
+    - x_mm: 101.5
+      y_mm: -10.4
+      row: 12
+      col: 22
+      idx: 259
+    - x_mm: 111.5
+      y_mm: -10.4
+      row: 12
+      col: 23
+      idx: 260
+    - x_mm: 121.5
+      y_mm: -10.4
+      row: 12
+      col: 24
+      idx: 261
+    - x_mm: 121.5
+      y_mm: -22.4
+      row: 13
+      col: 24
+      idx: 262
+    - x_mm: 111.5
+      y_mm: -22.4
+      row: 13
+      col: 23
+      idx: 263
+    - x_mm: 101.5
+      y_mm: -22.4
+      row: 13
+      col: 22
+      idx: 264
+    - x_mm: 91.5
+      y_mm: -22.4
+      row: 13
+      col: 21
+      idx: 265
+    - x_mm: 81.5
+      y_mm: -22.4
+      row: 13
+      col: 20
+      idx: 266
+    - x_mm: 71.5
+      y_mm: -22.4
+      row: 13
+      col: 19
+      idx: 267
+    - x_mm: 61.5
+      y_mm: -22.4
+      row: 13
+      col: 18
+      idx: 268
+    - x_mm: 51.5
+      y_mm: -22.4
+      row: 13
+      col: 17
+      idx: 269
+    - x_mm: 41.5
+      y_mm: -22.4
+      row: 13
+      col: 16
+      idx: 270
+    - x_mm: 31.5
+      y_mm: -22.4
+      row: 13
+      col: 15
+      idx: 271
+    - x_mm: 21.5
+      y_mm: -22.4
+      row: 13
+      col: 14
+      idx: 272
+    - x_mm: 11.5
+      y_mm: -22.4
+      row: 13
+      col: 13
+      idx: 273
+    - x_mm: 1.5
+      y_mm: -22.4
+      row: 13
+      col: 12
+      idx: 274
+    - x_mm: -8.5
+      y_mm: -22.4
+      row: 13
+      col: 11
+      idx: 275
+    - x_mm: -18.5
+      y_mm: -22.4
+      row: 13
+      col: 10
+      idx: 276
+    - x_mm: -28.5
+      y_mm: -22.4
+      row: 13
+      col: 9
+      idx: 277
+    - x_mm: -38.5
+      y_mm: -22.4
+      row: 13
+      col: 8
+      idx: 278
+    - x_mm: -48.5
+      y_mm: -22.4
+      row: 13
+      col: 7
+      idx: 279
+    - x_mm: -58.5
+      y_mm: -22.4
+      row: 13
+      col: 6
+      idx: 280
+    - x_mm: -68.5
+      y_mm: -22.4
+      row: 13
+      col: 5
+      idx: 281
+    - x_mm: -78.5
+      y_mm: -22.4
+      row: 13
+      col: 4
+      idx: 282
+    - x_mm: -88.5
+      y_mm: -22.4
+      row: 13
+      col: 3
+      idx: 283
+    - x_mm: -98.5
+      y_mm: -22.4
+      row: 13
+      col: 2
+      idx: 284
+    - x_mm: -108.5
+      y_mm: -22.4
+      row: 13
+      col: 1
+      idx: 285
+    - x_mm: -118.5
+      y_mm: -22.4
+      row: 13
+      col: 0
+      idx: 286
+    - x_mm: -118.5
+      y_mm: -34.4
+      row: 14
+      col: 0
+      idx: 287
+    - x_mm: -108.5
+      y_mm: -34.4
+      row: 14
+      col: 1
+      idx: 288
+    - x_mm: -98.5
+      y_mm: -34.4
+      row: 14
+      col: 2
+      idx: 289
+    - x_mm: -88.5
+      y_mm: -34.4
+      row: 14
+      col: 3
+      idx: 290
+    - x_mm: -78.5
+      y_mm: -34.4
+      row: 14
+      col: 4
+      idx: 291
+    - x_mm: -68.5
+      y_mm: -34.4
+      row: 14
+      col: 5
+      idx: 292
+    - x_mm: -58.5
+      y_mm: -34.4
+      row: 14
+      col: 6
+      idx: 293
+    - x_mm: -48.5
+      y_mm: -34.4
+      row: 14
+      col: 7
+      idx: 294
+    - x_mm: -38.5
+      y_mm: -34.4
+      row: 14
+      col: 8
+      idx: 295
+    - x_mm: -28.5
+      y_mm: -34.4
+      row: 14
+      col: 9
+      idx: 296
+    - x_mm: -18.5
+      y_mm: -34.4
+      row: 14
+      col: 10
+      idx: 297
+    - x_mm: -8.5
+      y_mm: -34.4
+      row: 14
+      col: 11
+      idx: 298
+    - x_mm: 1.5
+      y_mm: -34.4
+      row: 14
+      col: 12
+      idx: 299
+    - x_mm: 11.5
+      y_mm: -34.4
+      row: 14
+      col: 13
+      idx: 300
+    - x_mm: 21.5
+      y_mm: -34.4
+      row: 14
+      col: 14
+      idx: 301
+    - x_mm: 31.5
+      y_mm: -34.4
+      row: 14
+      col: 15
+      idx: 302
+    - x_mm: 41.5
+      y_mm: -34.4
+      row: 14
+      col: 16
+      idx: 303
+    - x_mm: 51.5
+      y_mm: -34.4
+      row: 14
+      col: 17
+      idx: 304
+    - x_mm: 61.5
+      y_mm: -34.4
+      row: 14
+      col: 18
+      idx: 305
+    - x_mm: 71.5
+      y_mm: -34.4
+      row: 14
+      col: 19
+      idx: 306
+    - x_mm: 81.5
+      y_mm: -34.4
+      row: 14
+      col: 20
+      idx: 307
+    - x_mm: 91.5
+      y_mm: -34.4
+      row: 14
+      col: 21
+      idx: 308
+    - x_mm: 101.5
+      y_mm: -34.4
+      row: 14
+      col: 22
+      idx: 309
+    - x_mm: 111.5
+      y_mm: -34.4
+      row: 14
+      col: 23
+      idx: 310
+    - x_mm: 121.5
+      y_mm: -34.4
+      row: 14
+      col: 24
+      idx: 311
+    - x_mm: 111.5
+      y_mm: -46.4
+      row: 15
+      col: 23
+      idx: 312
+    - x_mm: 101.5
+      y_mm: -46.4
+      row: 15
+      col: 22
+      idx: 313
+    - x_mm: 91.5
+      y_mm: -46.4
+      row: 15
+      col: 21
+      idx: 314
+    - x_mm: 81.5
+      y_mm: -46.4
+      row: 15
+      col: 20
+      idx: 315
+    - x_mm: 71.5
+      y_mm: -46.4
+      row: 15
+      col: 19
+      idx: 316
+    - x_mm: 61.5
+      y_mm: -46.4
+      row: 15
+      col: 18
+      idx: 317
+    - x_mm: 51.5
+      y_mm: -46.4
+      row: 15
+      col: 17
+      idx: 318
+    - x_mm: 41.5
+      y_mm: -46.4
+      row: 15
+      col: 16
+      idx: 319
+    - x_mm: 31.5
+      y_mm: -46.4
+      row: 15
+      col: 15
+      idx: 320
+    - x_mm: 21.5
+      y_mm: -46.4
+      row: 15
+      col: 14
+      idx: 321
+    - x_mm: 11.5
+      y_mm: -46.4
+      row: 15
+      col: 13
+      idx: 322
+    - x_mm: 1.5
+      y_mm: -46.4
+      row: 15
+      col: 12
+      idx: 323
+    - x_mm: -8.5
+      y_mm: -46.4
+      row: 15
+      col: 11
+      idx: 324
+    - x_mm: -18.5
+      y_mm: -46.4
+      row: 15
+      col: 10
+      idx: 325
+    - x_mm: -28.5
+      y_mm: -46.4
+      row: 15
+      col: 9
+      idx: 326
+    - x_mm: -38.5
+      y_mm: -46.4
+      row: 15
+      col: 8
+      idx: 327
+    - x_mm: -48.5
+      y_mm: -46.4
+      row: 15
+      col: 7
+      idx: 328
+    - x_mm: -58.5
+      y_mm: -46.4
+      row: 15
+      col: 6
+      idx: 329
+    - x_mm: -68.5
+      y_mm: -46.4
+      row: 15
+      col: 5
+      idx: 330
+    - x_mm: -78.5
+      y_mm: -46.4
+      row: 15
+      col: 4
+      idx: 331
+    - x_mm: -88.5
+      y_mm: -46.4
+      row: 15
+      col: 3
+      idx: 332
+    - x_mm: -98.5
+      y_mm: -46.4
+      row: 15
+      col: 2
+      idx: 333
+    - x_mm: -108.5
+      y_mm: -46.4
+      row: 15
+      col: 1
+      idx: 334
+    - x_mm: -108.5
+      y_mm: -58.4
+      row: 16
+      col: 1
+      idx: 335
+    - x_mm: -98.5
+      y_mm: -58.4
+      row: 16
+      col: 2
+      idx: 336
+    - x_mm: -88.5
+      y_mm: -58.4
+      row: 16
+      col: 3
+      idx: 337
+    - x_mm: -78.5
+      y_mm: -58.4
+      row: 16
+      col: 4
+      idx: 338
+    - x_mm: -68.5
+      y_mm: -58.4
+      row: 16
+      col: 5
+      idx: 339
+    - x_mm: -58.5
+      y_mm: -58.4
+      row: 16
+      col: 6
+      idx: 340
+    - x_mm: -48.5
+      y_mm: -58.4
+      row: 16
+      col: 7
+      idx: 341
+    - x_mm: -38.5
+      y_mm: -58.4
+      row: 16
+      col: 8
+      idx: 342
+    - x_mm: -28.5
+      y_mm: -58.4
+      row: 16
+      col: 9
+      idx: 343
+    - x_mm: -18.5
+      y_mm: -58.4
+      row: 16
+      col: 10
+      idx: 344
+    - x_mm: -8.5
+      y_mm: -58.4
+      row: 16
+      col: 11
+      idx: 345
+    - x_mm: 1.5
+      y_mm: -58.4
+      row: 16
+      col: 12
+      idx: 346
+    - x_mm: 21.5
+      y_mm: -58.4
+      row: 16
+      col: 14
+      idx: 347
+    - x_mm: 31.5
+      y_mm: -58.4
+      row: 16
+      col: 15
+      idx: 348
+    - x_mm: 41.5
+      y_mm: -58.4
+      row: 16
+      col: 16
+      idx: 349
+    - x_mm: 51.5
+      y_mm: -58.4
+      row: 16
+      col: 17
+      idx: 350
+    - x_mm: 61.5
+      y_mm: -58.4
+      row: 16
+      col: 18
+      idx: 351
+    - x_mm: 71.5
+      y_mm: -58.4
+      row: 16
+      col: 19
+      idx: 352
+    - x_mm: 81.5
+      y_mm: -58.4
+      row: 16
+      col: 20
+      idx: 353
+    - x_mm: 91.5
+      y_mm: -58.4
+      row: 16
+      col: 21
+      idx: 354
+    - x_mm: 101.5
+      y_mm: -58.4
+      row: 16
+      col: 22
+      idx: 355
+    - x_mm: 111.5
+      y_mm: -58.4
+      row: 16
+      col: 23
+      idx: 356
+    - x_mm: 101.5
+      y_mm: -70.4
+      row: 17
+      col: 22
+      idx: 357
+    - x_mm: 91.5
+      y_mm: -70.4
+      row: 17
+      col: 21
+      idx: 358
+    - x_mm: 81.5
+      y_mm: -70.4
+      row: 17
+      col: 20
+      idx: 359
+    - x_mm: 71.5
+      y_mm: -70.4
+      row: 17
+      col: 19
+      idx: 360
+    - x_mm: 61.5
+      y_mm: -70.4
+      row: 17
+      col: 18
+      idx: 361
+    - x_mm: 51.5
+      y_mm: -70.4
+      row: 17
+      col: 17
+      idx: 362
+    - x_mm: 41.5
+      y_mm: -70.4
+      row: 17
+      col: 16
+      idx: 363
+    - x_mm: 31.5
+      y_mm: -70.4
+      row: 17
+      col: 15
+      idx: 364
+    - x_mm: 21.5
+      y_mm: -70.4
+      row: 17
+      col: 14
+      idx: 365
+    - x_mm: 11.5
+      y_mm: -70.4
+      row: 17
+      col: 13
+      idx: 366
+    - x_mm: 1.5
+      y_mm: -70.4
+      row: 17
+      col: 12
+      idx: 367
+    - x_mm: -8.5
+      y_mm: -70.4
+      row: 17
+      col: 11
+      idx: 368
+    - x_mm: -18.5
+      y_mm: -70.4
+      row: 17
+      col: 10
+      idx: 369
+    - x_mm: -28.5
+      y_mm: -70.4
+      row: 17
+      col: 9
+      idx: 370
+    - x_mm: -38.5
+      y_mm: -70.4
+      row: 17
+      col: 8
+      idx: 371
+    - x_mm: -48.5
+      y_mm: -70.4
+      row: 17
+      col: 7
+      idx: 372
+    - x_mm: -58.5
+      y_mm: -70.4
+      row: 17
+      col: 6
+      idx: 373
+    - x_mm: -68.5
+      y_mm: -70.4
+      row: 17
+      col: 5
+      idx: 374
+    - x_mm: -78.5
+      y_mm: -70.4
+      row: 17
+      col: 4
+      idx: 375
+    - x_mm: -88.5
+      y_mm: -70.4
+      row: 17
+      col: 3
+      idx: 376
+    - x_mm: -98.5
+      y_mm: -70.4
+      row: 17
+      col: 2
+      idx: 377
+    - x_mm: -88.5
+      y_mm: -82.4
+      row: 18
+      col: 3
+      idx: 378
+    - x_mm: -78.5
+      y_mm: -82.4
+      row: 18
+      col: 4
+      idx: 379
+    - x_mm: -68.5
+      y_mm: -82.4
+      row: 18
+      col: 5
+      idx: 380
+    - x_mm: -58.5
+      y_mm: -82.4
+      row: 18
+      col: 6
+      idx: 381
+    - x_mm: -48.5
+      y_mm: -82.4
+      row: 18
+      col: 7
+      idx: 382
+    - x_mm: -38.5
+      y_mm: -82.4
+      row: 18
+      col: 8
+      idx: 383
+    - x_mm: -28.5
+      y_mm: -82.4
+      row: 18
+      col: 9
+      idx: 384
+    - x_mm: -18.5
+      y_mm: -82.4
+      row: 18
+      col: 10
+      idx: 385
+    - x_mm: -8.5
+      y_mm: -82.4
+      row: 18
+      col: 11
+      idx: 386
+    - x_mm: 1.5
+      y_mm: -82.4
+      row: 18
+      col: 12
+      idx: 387
+    - x_mm: 11.5
+      y_mm: -82.4
+      row: 18
+      col: 13
+      idx: 388
+    - x_mm: 21.5
+      y_mm: -82.4
+      row: 18
+      col: 14
+      idx: 389
+    - x_mm: 31.5
+      y_mm: -82.4
+      row: 18
+      col: 15
+      idx: 390
+    - x_mm: 41.5
+      y_mm: -82.4
+      row: 18
+      col: 16
+      idx: 391
+    - x_mm: 51.5
+      y_mm: -82.4
+      row: 18
+      col: 17
+      idx: 392
+    - x_mm: 61.5
+      y_mm: -82.4
+      row: 18
+      col: 18
+      idx: 393
+    - x_mm: 71.5
+      y_mm: -82.4
+      row: 18
+      col: 19
+      idx: 394
+    - x_mm: 81.5
+      y_mm: -82.4
+      row: 18
+      col: 20
+      idx: 395
+    - x_mm: 91.5
+      y_mm: -82.4
+      row: 18
+      col: 21
+      idx: 396
+    - x_mm: 81.5
+      y_mm: -94.4
+      row: 19
+      col: 20
+      idx: 397
+    - x_mm: 71.5
+      y_mm: -94.4
+      row: 19
+      col: 19
+      idx: 398
+    - x_mm: 61.5
+      y_mm: -94.4
+      row: 19
+      col: 18
+      idx: 399
+    - x_mm: 51.5
+      y_mm: -94.4
+      row: 19
+      col: 17
+      idx: 400
+    - x_mm: 41.5
+      y_mm: -94.4
+      row: 19
+      col: 16
+      idx: 401
+    - x_mm: 31.5
+      y_mm: -94.4
+      row: 19
+      col: 15
+      idx: 402
+    - x_mm: 21.5
+      y_mm: -94.4
+      row: 19
+      col: 14
+      idx: 403
+    - x_mm: 11.5
+      y_mm: -94.4
+      row: 19
+      col: 13
+      idx: 404
+    - x_mm: 1.5
+      y_mm: -94.4
+      row: 19
+      col: 12
+      idx: 405
+    - x_mm: -8.5
+      y_mm: -94.4
+      row: 19
+      col: 11
+      idx: 406
+    - x_mm: -18.5
+      y_mm: -94.4
+      row: 19
+      col: 10
+      idx: 407
+    - x_mm: -28.5
+      y_mm: -94.4
+      row: 19
+      col: 9
+      idx: 408
+    - x_mm: -38.5
+      y_mm: -94.4
+      row: 19
+      col: 8
+      idx: 409
+    - x_mm: -48.5
+      y_mm: -94.4
+      row: 19
+      col: 7
+      idx: 410
+    - x_mm: -58.5
+      y_mm: -94.4
+      row: 19
+      col: 6
+      idx: 411
+    - x_mm: -68.5
+      y_mm: -94.4
+      row: 19
+      col: 5
+      idx: 412
+    - x_mm: -78.5
+      y_mm: -94.4
+      row: 19
+      col: 4
+      idx: 413
+    - x_mm: -68.5
+      y_mm: -106.4
+      row: 20
+      col: 5
+      idx: 414
+    - x_mm: -58.5
+      y_mm: -106.4
+      row: 20
+      col: 6
+      idx: 415
+    - x_mm: -48.5
+      y_mm: -106.4
+      row: 20
+      col: 7
+      idx: 416
+    - x_mm: -38.5
+      y_mm: -106.4
+      row: 20
+      col: 8
+      idx: 417
+    - x_mm: -28.5
+      y_mm: -106.4
+      row: 20
+      col: 9
+      idx: 418
+    - x_mm: -18.5
+      y_mm: -106.4
+      row: 20
+      col: 10
+      idx: 419
+    - x_mm: -8.5
+      y_mm: -106.4
+      row: 20
+      col: 11
+      idx: 420
+    - x_mm: 1.5
+      y_mm: -106.4
+      row: 20
+      col: 12
+      idx: 421
+    - x_mm: 11.5
+      y_mm: -106.4
+      row: 20
+      col: 13
+      idx: 422
+    - x_mm: 21.5
+      y_mm: -106.4
+      row: 20
+      col: 14
+      idx: 423
+    - x_mm: 31.5
+      y_mm: -106.4
+      row: 20
+      col: 15
+      idx: 424
+    - x_mm: 41.5
+      y_mm: -106.4
+      row: 20
+      col: 16
+      idx: 425
+    - x_mm: 51.5
+      y_mm: -106.4
+      row: 20
+      col: 17
+      idx: 426
+    - x_mm: 61.5
+      y_mm: -106.4
+      row: 20
+      col: 18
+      idx: 427
+    - x_mm: 71.5
+      y_mm: -106.4
+      row: 20
+      col: 19
+      idx: 428
+    - x_mm: 51.5
+      y_mm: -118.4
+      row: 21
+      col: 17
+      idx: 429
+    - x_mm: 41.5
+      y_mm: -118.4
+      row: 21
+      col: 16
+      idx: 430
+    - x_mm: 31.5
+      y_mm: -118.4
+      row: 21
+      col: 15
+      idx: 431
+    - x_mm: 21.5
+      y_mm: -118.4
+      row: 21
+      col: 14
+      idx: 432
+    - x_mm: 11.5
+      y_mm: -118.4
+      row: 21
+      col: 13
+      idx: 433
+    - x_mm: 1.5
+      y_mm: -118.4
+      row: 21
+      col: 12
+      idx: 434
+    - x_mm: -8.5
+      y_mm: -118.4
+      row: 21
+      col: 11
+      idx: 435
+    - x_mm: -18.5
+      y_mm: -118.4
+      row: 21
+      col: 10
+      idx: 436
+    - x_mm: -28.5
+      y_mm: -118.4
+      row: 21
+      col: 9
+      idx: 437
+    - x_mm: -38.5
+      y_mm: -118.4
+      row: 21
+      col: 8
+      idx: 438
+    - x_mm: -48.5
+      y_mm: -118.4
+      row: 21
+      col: 7
+      idx: 439
+    - x_mm: -18.5
+      y_mm: -130.4
+      row: 22
+      col: 10
+      idx: 440
+    - x_mm: -8.5
+      y_mm: -130.4
+      row: 22
+      col: 11
+      idx: 441
+    - x_mm: 1.5
+      y_mm: -130.4
+      row: 22
+      col: 12
+      idx: 442
+    - x_mm: 11.5
+      y_mm: -130.4
+      row: 22
+      col: 13
+      idx: 443
+    - x_mm: 21.5
+      y_mm: -130.4
+      row: 22
+      col: 14
+      idx: 444
+    - x_mm: 1.4
+      y_mm: 1.8

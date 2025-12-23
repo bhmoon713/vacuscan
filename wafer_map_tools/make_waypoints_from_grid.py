@@ -39,14 +39,14 @@ class RouteConfig:
     y_pitch_mm: float = 12.0
 
     # Optional offsets (mm) if your physical origin isn't at grid center
-    x_offset_mm: float = 0.0
-    y_offset_mm: float = 0.0
+    x_offset_mm: float = 1.5
+    y_offset_mm: float = 1.6
 
     # Add "go home" start/end points like your old file often does
     add_home_start: bool = True
     add_home_end: bool = True
-    home_x_mm: float = 0.0
-    home_y_mm: float = 0.0
+    home_x_mm: float = 1.4
+    home_y_mm: float = 1.8
 
     # Rounding for nicer YAML numbers
     round_mm: int = 3
@@ -101,10 +101,18 @@ def build_route_points(grid: List[List[int]], cfg: RouteConfig) -> List[Dict[str
     if cfg.add_home_start:
         out.append({"x_mm": cfg.home_x_mm, "y_mm": cfg.home_y_mm})
 
+
     # Convert each good-die cell to {x_mm, y_mm}
     for i, (r, c) in enumerate(rc_points):
         x_mm, y_mm = cell_to_xy_mm(r, c, cx, cy, cfg)
-        out.append({"x_mm": x_mm, "y_mm": y_mm})
+        out.append({
+            "x_mm": x_mm,
+            "y_mm": y_mm,
+            "row": int(r),
+            "col": int(c),
+            "idx": int(i)   # optional
+            })
+
 
         # Optional pause insert
         if cfg.pause_every_n > 0 and cfg.pause_each_s > 0.0:
@@ -167,8 +175,8 @@ def main():
         y_pitch_mm=12.0,   # <-- your y pitch
         add_home_start=True,
         add_home_end=True,
-        home_x_mm=0.0,
-        home_y_mm=0.0,
+        # home_x_mm=1.1,
+        # home_y_mm=2.2,
         pause_every_n=0,   # e.g. 25 if you want a pause every 25 points
         pause_each_s=0.0,  # e.g. 0.2 seconds
     )
