@@ -70,7 +70,7 @@
         <label>&nbsp;</label>
         <button id="btnGoto" disabled>Go to</button>
       </div>
-      <div style="grid-column: span 1;">
+      <div style="grid-column: span 2;">
         <label>Jog step</label>
         <select id="jogStep">
           <option value="1">1 mm</option>
@@ -107,6 +107,33 @@
       Subscribed: <code>/wafer/pose</code> (geometry_msgs/msg/Pose2D).
     </div>
   </section>
+
+    <!-- Current Waypoint (row / col / idx) -->
+  <section class="card">
+    <h2>Current Waypoint</h2>
+    <div class="kpis" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="kpi"><div class="label">Row</div><div id="wpRow" class="value">—</div></div>
+      <div class="kpi"><div class="label">Col</div><div id="wpCol" class="value">—</div></div>
+      <div class="kpi"><div class="label">Idx</div><div id="wpIdx" class="value">—</div></div>
+    </div>
+    <div class="flex" style="gap:12px; margin-top:8px; flex-wrap:wrap;">
+      <span class="tag">From waypoints.yaml</span>
+      <span class="tag">Route + /wafer/route_progress</span>
+    </div>
+  
+    <!-- Timers -->
+    <div class="kpis" style="grid-template-columns: repeat(2, 1fr); margin-top:10px;">
+      <div class="kpi">
+        <div class="label">Elapsed (run)</div>
+        <div id="runTimer" class="value">00:00</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Elapsed (this WP)</div>
+        <div id="wpTimer" class="value">00:00</div>
+      </div>
+    </div>
+
+</section>
 </div>
 
 <!-- Waypoints -->
@@ -120,7 +147,7 @@
     <div>
       <div class="controls">
 
-        <div style="grid-column: span 3;">
+        <div style="grid-column: span 2;">
           <label>Route</label>
           <select id="wpRoute">
             <!-- <option value="calibration">calibration</option>
@@ -155,7 +182,7 @@
           </select>
         </div>
 
-        <div style="grid-column: span 1;">
+        <div style="grid-column: span 2;">
           <label>&nbsp;</label>
           <button id="btnRunRoute" class="ok" disabled>Run</button>
         </div>

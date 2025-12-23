@@ -70,9 +70,214 @@
     updateProgressBar(0);
   }
 
+
+// ================= Current Waypoint (row/col/idx) ==================
+// These elements exist only in your "Current Waypoint" card. If the card is not present, this block is a no-op.
+const wpRowEl = document.getElementById("wpRow") || document.getElementById("wpRowVal");
+const wpColEl = document.getElementById("wpCol") || document.getElementById("wpColVal");
+const wpIdxEl = document.getElementById("wpIdx") || document.getElementById("wpIdxVal");
+
+function setWpInfo(row, col, idx) {
+  if (wpRowEl) wpRowEl.textContent = (row ?? "—");
+  if (wpColEl) wpColEl.textContent = (col ?? "—");
+  if (wpIdxEl) wpIdxEl.textContent = (idx ?? "—");
+}
+
+// Holds the selected route's points from waypoints.yaml (if available)
+let wpPoints = null;
+
+// A tiny parser for YOUR waypoints.yaml format (no external libs).
+// Supports:
+// routes:
+//   <route_name>:
+//     points:
+//     - x_mm: ...
+//       y_mm: ...
+//       row: ...
+//       col: ...
+//       idx: ...
+function parseWaypointsYaml(text, routeName) {
+  const lines = text.split(/\r?\n/);
+  let inRoutes = false;
+  let inRoute = false;
+  let inPoints = false;
+
+  const points = [];
+  let cur = null;
+
+  function commit() {
+    if (cur) points.push(cur);
+    cur = null;
+  }
+
+  for (let raw of lines) {
+    const line = raw.replace(/\t/g, "    ");
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    if (trimmed === "routes:") {
+      inRoutes = true;
+      inRoute = false;
+      inPoints = false;
+      continue;
+    }
+
+    // Route header like: "  scan_from_grid:"
+    const routeMatch = inRoutes ? line.match(/^\s{2}([A-Za-z0-9_\-]+):\s*$/) : null;
+    if (routeMatch) {
+      const name = routeMatch[1];
+      inRoute = (name === routeName);
+      inPoints = false;
+      commit();
+      continue;
+    }
+
+    if (!inRoute) continue;
+
+    if (trimmed === "points:" || trimmed.startsWith("points:")) {
+      inPoints = true;
+      continue;
+    }
+
+    if (!inPoints) continue;
+
+    // New point starts with "- "
+    const pointStart = line.match(/^\s*-\s*(.*)$/);
+    if (pointStart) {
+      commit();
+      cur = {};
+      const rest = pointStart[1].trim();
+      if (rest) {
+        // handle "- x_mm: 1.0" style
+        const kv = rest.match(/^([A-Za-z0-9_]+):\s*(.*)$/);
+        if (kv) cur[kv[1]] = kv[2];
+      }
+      continue;
+    }
+
+    // key: value lines under a point
+    if (cur) {
+      const kv = trimmed.match(/^([A-Za-z0-9_]+):\s*(.*)$/);
+      if (kv) cur[kv[1]] = kv[2];
+    }
+  }
+  commit();
+
+  // normalize types
+  for (const p of points) {
+    for (const k of ["x_mm","y_mm","row","col","idx"]) {
+      if (p[k] === undefined) continue;
+      const n = Number(p[k]);
+      if (!Number.isNaN(n)) p[k] = n;
+    }
+  }
+  return points;
+}
+
+async function loadWaypointsForSelectedRoute() {
+  wpPoints = null;
+  setWpInfo("—", "—", "—");
+
+  // If the Current Waypoint card isn't present, don't do anything.
+  if (!wpRowEl && !wpColEl && !wpIdxEl) return;
+
+  const route = wpRoute ? wpRoute.value : null;
+  if (!route) return;
+
+  try {
+    const resp = await fetch("./waypoints.yaml", { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    const pts = parseWaypointsYaml(text, route);
+    wpPoints = pts;
+
+    // Immediately update with current index if we already have progress
+    updateCurrentWaypointInfo(currentWaypointIndex);
+    log(`[WAYPOINTS] Loaded ${pts.length} points for route "${route}" from waypoints.yaml`);
+  } catch (e) {
+    // Most common cause: waypoints.yaml is not being served next to index.html
+    log(`[WAYPOINTS] Could not load ./waypoints.yaml (${e}). Put waypoints.yaml next to index.html or update fetch path.`);
+  }
+}
+
+function updateCurrentWaypointInfo(progressIndex) {
+  // If we haven't loaded yaml yet, show the ROS progress index at least.
+  if (!wpPoints || progressIndex == null) {
+    setWpInfo("—", "—", (progressIndex != null ? progressIndex : "—"));
+    return;
+  }
+
+  const i = Math.max(0, Math.min(wpPoints.length - 1, progressIndex));
+  const p = wpPoints[i] || {};
+  setWpInfo(
+    (p.row !== undefined ? p.row : "—"),
+    (p.col !== undefined ? p.col : "—"),
+    (p.idx !== undefined ? p.idx : i)
+  );
+}
+
+
+
+
+// ================= Timers (Run / Current Waypoint) ==================
+const runTimerEl = document.getElementById("runTimer");
+const wpTimerEl2 = document.getElementById("wpTimer");
+
+let runActive = false;
+let runStartMs = 0;
+let wpStartMs = 0;
+let timerHandle = null;
+let lastWpIndexForTimer = null;
+
+function fmtMMSS(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const mm = String(Math.floor(s / 60)).padStart(2, "0");
+  const ss = String(s % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+}
+
+function renderTimers() {
+  if (!runTimerEl && !wpTimerEl2) return;
+  const now = Date.now();
+  if (runTimerEl) runTimerEl.textContent = fmtMMSS(runActive ? (now - runStartMs) : 0);
+  if (wpTimerEl2) wpTimerEl2.textContent = fmtMMSS(runActive ? (now - wpStartMs) : 0);
+}
+
+function startTimers() {
+  runActive = true;
+  runStartMs = Date.now();
+  wpStartMs = runStartMs;
+  lastWpIndexForTimer = null;
+  renderTimers();
+  if (!timerHandle) timerHandle = setInterval(renderTimers, 250);
+}
+
+function resetTimers() {
+  runActive = false;
+  runStartMs = 0;
+  wpStartMs = 0;
+  lastWpIndexForTimer = null;
+  if (timerHandle) { clearInterval(timerHandle); timerHandle = null; }
+  renderTimers(); // shows 00:00
+}
+
+function onWaypointIndexChangedForTimer(idx) {
+  if (!runActive) return;
+  if (idx == null) return;
+  if (lastWpIndexForTimer === null) {
+    lastWpIndexForTimer = idx;
+    wpStartMs = Date.now();
+    return;
+  }
+  if (idx !== lastWpIndexForTimer) {
+    lastWpIndexForTimer = idx;
+    wpStartMs = Date.now();
+  }
+}
+
+
   // ------------- Wire-length chart canvas ------------------
-  // If the UI section is removed, keep the rest of the app working by
-  // making the chart logic optional.
   const bars = document.getElementById("bars");
   const ctx = bars ? bars.getContext("2d") : null;
   let L = [0,0,0,0];
@@ -227,11 +432,15 @@
         messageType: "std_msgs/msg/Int32"
       });
       progIndex.subscribe(m => {
-        currentWaypointIndex = m.data;
-        if (totalWaypoints > 0) {
-          updateProgressBar( ((currentWaypointIndex+1)/totalWaypoints)*100 );
-        }
-      });
+          currentWaypointIndex = m.data;
+          onWaypointIndexChangedForTimer(currentWaypointIndex);
+          if (totalWaypoints > 0) {
+            updateProgressBar( ((currentWaypointIndex+1)/totalWaypoints)*100 );
+          }
+          updateCurrentWaypointInfo(currentWaypointIndex);
+        });
+
+      loadWaypointsForSelectedRoute();
 
       // ----- Services -----
       gotoSrv = new ROSLIB.Service({
@@ -257,12 +466,14 @@
       setConnected(false);
       btnConnect.disabled = false;
       log("Connection error: " + e);
+      resetTimers();
     });
 
     ros.on("close", () => {
       setConnected(false);
       btnConnect.disabled = false;
       log("Disconnected.");
+      resetTimers();
     });
   }
 
@@ -300,6 +511,9 @@
     if (!runWpSrv) return log("RunWaypoints not ready.");
 
     resetProgress();
+
+    // Ensure we have the latest route points loaded
+    loadWaypointsForSelectedRoute();
 
     const req = new ROSLIB.ServiceRequest({
       route: wpRoute.value,
@@ -343,8 +557,9 @@
   jogYm.addEventListener("click", () => jog(0,-parseFloat(jogStep.value)));
   jogYp.addEventListener("click", () => jog(0,+parseFloat(jogStep.value)));
 
-  btnRunRoute.addEventListener("click", callRunRoute);
-  btnStopRoute.addEventListener("click", callStopRoute);
+  if (wpRoute) wpRoute.addEventListener("change", () => loadWaypointsForSelectedRoute());
+  btnRunRoute.addEventListener("click", () => { startTimers(); callRunRoute(); });
+  btnStopRoute.addEventListener("click", () => { resetTimers(); callStopRoute(); });
 
   redrawBars();
   log("Vacuscan UI ready.");
