@@ -91,3 +91,52 @@ Visualization
 
 pkill -f gzserver
 pkill -f gzclient
+
+
+python3 wafer_image_to_grid.py \
+  --image wafer_image.png \
+  --rows 27 --cols 27 \
+  --pitch_x_mm 10.040 --pitch_y_mm 10.040 \
+  --x_offset_mm 5 --y_offset_mm 6 \
+  --ring_inner_d_mm 350 \
+  --wafer_d_mm 300 \
+  --out_grid wafer_grid.txt \
+  --out_csv waypoints.csv \
+  --out_yaml waypoints.yaml \
+  --out_debug debug_overlay.png
+
+
+python3 wafer_image_to_grid.py  \
+  --image wafer_image.jpg \
+  --rows 27 --cols 27   \
+  --pitch_x_mm 10.300 --pitch_y_mm 10.350   \
+  --x_offset_mm 1.0 --y_offset_mm -3.5   \
+  --ring_inner_d_mm 350   --wafer_d_mm 300   \
+  --out_grid wafer_grid.txt  \ 
+  --out_csv waypoints.csv  \ 
+  --out_yaml waypoints.yaml \  
+  --out_debug debug_overlay.png
+
+
+python3 wafer_grid_live_tuner.py \
+  --image wafer_image.jpg \
+  --rows 27 --cols 27   \
+  --pitch_x_mm 10.300 --pitch_y_mm 10.350   \
+  --x_offset_mm 1.0 --y_offset_mm -3.5   \
+  --out_dir out_live \
+  --base_name E5CA
+
+
+
+  Key bindings
+Parameter selection
+Key	Parameter
+1	pitch_x_mm
+2	pitch_y_mm
+3	x_offset_mm
+4	y_offset_mm
+Adjustment
+
+↑ / ↓ → ± 0.01 mm
+
+→ / ← → ± 0.10 mm
