@@ -1,7 +1,7 @@
 pitch_x_mm: 10.3
 pitch_y_mm: 10.35
-x_offset_mm: 0.8500000000000001
-y_offset_mm: -3.319999999999997
+x_offset_mm: 1.0
+y_offset_mm: -3.5
 roi_half_px: 22
 std_thr: 6.8
 edge_thr: 0.0

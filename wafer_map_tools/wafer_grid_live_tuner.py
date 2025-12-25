@@ -35,6 +35,7 @@ import math
 import os
 from dataclasses import dataclass
 from typing import List, Tuple
+import yaml
 
 import cv2
 import numpy as np
@@ -43,6 +44,22 @@ try:
     import yaml
 except Exception:
     yaml = None
+
+
+# ============================================================
+# Hard-coded waypoint YAML header (standard format)
+# ============================================================
+
+WAYPOINT_HEADER = {
+    "routes": {
+        "scan_from_grid": {
+            "tol_mm": 0.05,
+            "timeout_s": 2.0,
+            "pause_s": 0.0,
+            # "points" will be inserted dynamically
+        }
+    }
+}
 
 
 # ---------------------------- Data types ----------------------------
@@ -275,10 +292,16 @@ def grid_to_waypoints(grid: np.ndarray,
                       home_y_mm: float,
                       y_down_is_positive: bool = True) -> List[dict]:
     wps = []
-    for r in range(grid.shape[0]):
-        for c in range(grid.shape[1]):
+
+    rows, cols = grid.shape[0], grid.shape[1]
+    for r in range(rows):
+        # snake: even row L->R, odd row R->L
+        col_range = range(cols) if (r % 2 == 0) else range(cols - 1, -1, -1)
+
+        for c in col_range:
             if int(grid[r, c]) != 1:
                 continue
+
             x_px, y_px = die_center_px(geom, r, c)
             dx_px = x_px - wafer.cx
             dy_px = y_px - wafer.cy
@@ -296,7 +319,9 @@ def grid_to_waypoints(grid: np.ndarray,
                 "x_px": float(x_px),
                 "y_px": float(y_px),
             })
+
     return wps
+
 
 
 def save_waypoints_csv(waypoints: List[dict], path: str) -> None:
@@ -309,12 +334,22 @@ def save_waypoints_csv(waypoints: List[dict], path: str) -> None:
             w.writerow({k: wp.get(k) for k in fields})
 
 
-def save_waypoints_yaml(waypoints: List[dict], path: str) -> None:
-    if yaml is None:
-        return
-    ensure_dir(path)
-    with open(path, "w") as f:
-        yaml.safe_dump({"waypoints": waypoints}, f, sort_keys=False)
+def save_waypoints_yaml(waypoints, out_yaml):
+    data = WAYPOINT_HEADER.copy()
+
+    data["routes"]["scan_from_grid"]["points"] = waypoints
+
+    with open(out_yaml, "w") as f:
+        yaml.safe_dump(
+            data,
+            f,
+            sort_keys=False,
+            default_flow_style=False,
+            indent=2
+        )
+
+    print(f"[OK] Waypoints saved to {out_yaml} ({len(waypoints)} points)")
+
 
 
 def save_params_txt(path: str, params: dict) -> None:
